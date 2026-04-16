@@ -7,7 +7,7 @@ use hyperlane_core::{
 };
 
 use crate::{
-    contract_address_to_h256, h256_to_contract_address, AeternityProvider, FateValue,
+    h256_to_contract_address, AeternityProvider, FateValue,
     HyperlaneAeternityError,
 };
 
@@ -28,7 +28,7 @@ pub struct AeRoutingIsm {
 impl AeRoutingIsm {
     /// Creates a new Aeternity RoutingIsm instance
     pub fn new(provider: AeternityProvider, locator: &ContractLocator) -> ChainResult<Self> {
-        let contract_address = h256_to_contract_address(locator.address)?;
+        let contract_address = h256_to_contract_address(locator.address);
         Ok(Self {
             domain: provider.domain().clone(),
             provider,
@@ -99,7 +99,7 @@ impl RoutingIsm for AeRoutingIsm {
             .await?;
 
         match result {
-            FateValue::Address(addr) => contract_address_to_h256(&addr),
+            FateValue::Address(addr) => Ok(addr),
             other => Err(HyperlaneAeternityError::ContractCallError(format!(
                 "expected Address from route(), got {:?}",
                 other

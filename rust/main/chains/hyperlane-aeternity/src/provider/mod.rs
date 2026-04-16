@@ -1,3 +1,3 @@
 mod aeternity;
 
-pub use aeternity::{AeSigner, AeternityProvider, FateValue};
+pub use aeternity::{AeternityProvider, FateValue};

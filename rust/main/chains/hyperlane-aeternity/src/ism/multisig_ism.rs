@@ -28,7 +28,7 @@ pub struct AeMultisigIsm {
 impl AeMultisigIsm {
     /// Creates a new Aeternity MultisigIsm instance
     pub fn new(provider: AeternityProvider, locator: &ContractLocator) -> ChainResult<Self> {
-        let contract_address = h256_to_contract_address(locator.address)?;
+        let contract_address = h256_to_contract_address(locator.address);
         Ok(Self {
             domain: provider.domain().clone(),
             provider,

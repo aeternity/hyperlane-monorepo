@@ -1,6 +1,7 @@
 use std::ops::RangeInclusive;
 
 use async_trait::async_trait;
+use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     ChainResult, ContractLocator, HyperlaneChain, HyperlaneContract, HyperlaneDomain,
@@ -9,7 +10,7 @@ use hyperlane_core::{
 };
 
 use crate::events::{parse_gas_payment, ContractLogEntry, GAS_PAYMENT_HASH};
-use crate::provider::AeternityProvider;
+use crate::provider::{AeternityProvider, FateValue};
 use crate::types::h256_to_contract_address;
 
 /// Aeternity Interchain Gas Indexer
@@ -22,6 +23,7 @@ pub struct AeIgpIndexer {
 }
 
 impl AeIgpIndexer {
+    /// Creates a new Aeternity interchain gas payment indexer.
     pub fn new(provider: AeternityProvider, locator: &ContractLocator) -> ChainResult<Self> {
         let contract_address = h256_to_contract_address(locator.address);
         Ok(Self {
@@ -58,18 +60,21 @@ impl Indexer<InterchainGasPayment> for AeIgpIndexer {
         &self,
         range: RangeInclusive<u32>,
     ) -> ChainResult<Vec<(Indexed<InterchainGasPayment>, LogMeta)>> {
+        let from = *range.start() as u64;
+        let to = *range.end() as u64;
         let logs = self
             .provider
-            .fetch_logs_in_range(&self.contract_address, range)
+            .fetch_logs_in_range(&self.contract_address, from, to)
             .await?;
 
         let mut result = Vec::new();
-        for log in &logs {
-            if log.event_hash != *GAS_PAYMENT_HASH {
+        for (mdw_entry, _meta) in &logs {
+            let entry = ContractLogEntry::from(mdw_entry);
+            if entry.event_hash != *GAS_PAYMENT_HASH {
                 continue;
             }
-            match parse_gas_payment(log) {
-                Ok(Some(entry)) => result.push(entry),
+            match parse_gas_payment(&entry) {
+                Ok(Some(parsed)) => result.push(parsed),
                 Ok(None) => {}
                 Err(e) => {
                     tracing::warn!(error = %e, "failed to parse gas payment event");
@@ -80,7 +85,8 @@ impl Indexer<InterchainGasPayment> for AeIgpIndexer {
     }
 
     async fn get_finalized_block_number(&self) -> ChainResult<u32> {
-        self.provider.get_finalized_block_number().await
+        let block = self.provider.get_finalized_block_number().await?;
+        Ok(block as u32)
     }
 
     async fn fetch_logs_by_tx_hash(
@@ -89,20 +95,21 @@ impl Indexer<InterchainGasPayment> for AeIgpIndexer {
     ) -> ChainResult<Vec<(Indexed<InterchainGasPayment>, LogMeta)>> {
         let logs = self
             .provider
-            .fetch_logs_in_range(&self.contract_address, 0..=u32::MAX)
+            .fetch_logs_in_range(&self.contract_address, 0, u64::MAX)
             .await?;
 
         let tx_hash_hex = format!("{tx_hash:x}");
         let mut result = Vec::new();
-        for log in &logs {
-            if !log.call_tx_hash.contains(&tx_hash_hex) {
+        for (mdw_entry, _meta) in &logs {
+            let entry = ContractLogEntry::from(mdw_entry);
+            if !entry.call_tx_hash.contains(&tx_hash_hex) {
                 continue;
             }
-            if log.event_hash != *GAS_PAYMENT_HASH {
+            if entry.event_hash != *GAS_PAYMENT_HASH {
                 continue;
             }
-            match parse_gas_payment(log) {
-                Ok(Some(entry)) => result.push(entry),
+            match parse_gas_payment(&entry) {
+                Ok(Some(parsed)) => result.push(parsed),
                 Ok(None) => {}
                 Err(e) => {
                     tracing::warn!(error = %e, "failed to parse gas payment by tx");
@@ -121,8 +128,11 @@ impl SequenceAwareIndexer<InterchainGasPayment> for AeIgpIndexer {
             .call_contract(&self.contract_address, "sequence", vec![])
             .await?;
 
-        let sequence = count.as_u32().unwrap_or(0);
-        let tip = self.provider.get_finalized_block_number().await?;
+        let sequence = match count {
+            FateValue::Integer(n) => n.to_u32().unwrap_or(0),
+            _ => 0,
+        };
+        let tip = self.provider.get_finalized_block_number().await? as u32;
         Ok((Some(sequence), tip))
     }
 }

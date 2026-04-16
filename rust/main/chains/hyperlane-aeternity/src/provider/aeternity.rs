@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 use tracing::debug;
 
 use hyperlane_core::{
-    BlockInfo, ChainInfo, ChainResult, HyperlaneChain, HyperlaneDomain, HyperlaneProvider,
-    LogMeta, ReorgPeriod, TxnInfo, TxnReceiptInfo, H256, H512, U256,
+    BlockInfo, ChainInfo, ChainResult, FixedPointNumber, HyperlaneChain, HyperlaneDomain,
+    HyperlaneProvider, LogMeta, ReorgPeriod, TxOutcome, TxnInfo, TxnReceiptInfo, H256, H512, U256,
 };
 
 use crate::{
@@ -126,15 +126,22 @@ impl AeternityProvider {
     }
 
     /// Read a contract function via dry-run (no on-chain transaction).
+    ///
+    /// The returned `FateValue` currently wraps the raw FATE-encoded return
+    /// string; full decoding will be added once `aebytecode` bindings are
+    /// available.
     pub async fn call_contract(
         &self,
         contract_id: &str,
-        calldata: &str,
-        caller: Option<&str>,
-    ) -> ChainResult<String> {
+        function_name: &str,
+        args: Vec<FateValue>,
+    ) -> ChainResult<FateValue> {
+        let calldata_bytes = encode_calldata(function_name, &args);
+        use base64::{engine::general_purpose::STANDARD, Engine};
+        let calldata_str = format!("cb_{}", STANDARD.encode(&calldata_bytes));
+
         let default_caller =
             "ak_11111111111111111111111111111111273Yts".to_string();
-        let caller_addr = caller.unwrap_or(&default_caller);
 
         let request = DryRunRequest {
             top: None,
@@ -143,8 +150,8 @@ impl AeternityProvider {
                 tx: String::new(),
                 call_req: Some(DryRunCallReq {
                     contract: contract_id.to_string(),
-                    calldata: calldata.to_string(),
-                    caller: caller_addr.to_string(),
+                    calldata: calldata_str,
+                    caller: default_caller,
                     abi_version: Some(3),
                     amount: Some(0),
                     gas: Some(1_000_000),
@@ -177,17 +184,62 @@ impl AeternityProvider {
             .into());
         }
 
-        call_obj.return_value.ok_or_else(|| {
-            HyperlaneAeternityError::ReturnDecodingError("missing return value".into()).into()
-        })
+        let return_value = call_obj.return_value.ok_or_else(|| {
+            HyperlaneAeternityError::ReturnDecodingError("missing return value".into())
+        })?;
+
+        // TODO: decode FATE-encoded return value into proper FateValue variant
+        Ok(FateValue::String(return_value))
     }
 
-    /// Post a signed contract call transaction.
+    /// Build, sign, and submit a contract call transaction.
+    ///
+    /// Encodes the function name and arguments into FATE calldata, constructs
+    /// the RLP-encoded transaction, signs it with the configured signer, and
+    /// posts it to the node.
     pub async fn send_contract_call(
         &self,
-        signed_tx: &str,
-    ) -> ChainResult<H512> {
-        let resp = self.node.post_transaction(signed_tx).await?;
+        contract_id: &str,
+        function_name: &str,
+        args: Vec<FateValue>,
+        amount: u64,
+        _gas: u64,
+    ) -> ChainResult<TxOutcome> {
+        let signer = self.get_signer()?;
+        let calldata_bytes = encode_calldata(function_name, &args);
+        use base64::{engine::general_purpose::STANDARD, Engine};
+        let calldata_str = format!("cb_{}", STANDARD.encode(&calldata_bytes));
+
+        let tx_builder = crate::tx::AeTxBuilder::new(
+            crate::signer::AeSigner::new(
+                signer.private_key.clone(),
+                self.network_id.clone(),
+            )?,
+            self.network_id.clone(),
+        );
+
+        let caller_bytes = signer.address_h256.as_bytes().to_vec();
+        let contract_h256 = ae_address_to_h256(contract_id)?;
+        let contract_bytes = contract_h256.as_bytes().to_vec();
+
+        let nonce_resp = self.node.get_account(&signer.encoded_address).await?;
+        let nonce = nonce_resp.nonce + 1;
+        let gas = 1_000_000u64;
+        let gas_price = 1_000_000_000u64;
+        let fee = crate::tx::AeTxBuilder::calculate_fee(200);
+
+        let signed_tx = tx_builder.build_contract_call(
+            &caller_bytes,
+            nonce,
+            &contract_bytes,
+            fee,
+            amount,
+            gas,
+            gas_price,
+            calldata_str.as_bytes(),
+        )?;
+
+        let resp = self.node.post_transaction(&signed_tx.encoded).await?;
         let hash_str = resp
             .get("tx_hash")
             .and_then(|v| v.as_str())
@@ -200,7 +252,14 @@ impl AeternityProvider {
         let h256 = decode_ae_hash(hash_str)?;
         let mut h512_bytes = [0u8; 64];
         h512_bytes[32..].copy_from_slice(h256.as_bytes());
-        Ok(H512::from(h512_bytes))
+
+        Ok(TxOutcome {
+            transaction_id: H512::from(h512_bytes),
+            executed: true,
+            gas_used: U256::from(gas),
+            gas_price: FixedPointNumber::try_from(U256::from(gas_price))
+                .unwrap_or_default(),
+        })
     }
 
     /// Fetch contract log entries within a block-height range from the middleware.

@@ -1,7 +1,6 @@
 use std::io::Cursor;
 
 use once_cell::sync::Lazy;
-use tracing::warn;
 
 use hyperlane_core::{
     Decode, HyperlaneMessage, Indexed, InterchainGasPayment, LogMeta, MerkleTreeInsertion, H256,
@@ -11,18 +10,37 @@ use hyperlane_core::{
 use crate::utils::{blake2b_hex, decode_ae_hash};
 use crate::types::contract_address_to_h256;
 
-/// Middleware log entry from the AE middleware API.
+/// Middleware log entry used internally by event parsers.
+///
+/// This mirrors the fields from `crate::rpc::ContractLogEntry` with types
+/// convenient for parsing (non-optional `event_hash`, `u64` heights).
 #[derive(Debug, Clone)]
 pub struct ContractLogEntry {
     pub contract_id: String,
     pub call_tx_hash: String,
     pub block_hash: String,
-    pub height: u32,
-    pub micro_index: u32,
-    pub log_idx: u32,
+    pub height: u64,
+    pub micro_index: u64,
+    pub log_idx: u64,
     pub event_hash: String,
     pub args: Vec<String>,
     pub data: String,
+}
+
+impl From<&crate::rpc::ContractLogEntry> for ContractLogEntry {
+    fn from(mdw: &crate::rpc::ContractLogEntry) -> Self {
+        Self {
+            contract_id: mdw.contract_id.clone(),
+            call_tx_hash: mdw.call_tx_hash.clone(),
+            block_hash: mdw.block_hash.clone(),
+            height: mdw.height,
+            micro_index: mdw.micro_index,
+            log_idx: mdw.log_idx,
+            event_hash: mdw.event_hash.clone().unwrap_or_default(),
+            args: mdw.args.clone(),
+            data: mdw.data.clone(),
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -30,7 +48,9 @@ pub struct ContractLogEntry {
 // ---------------------------------------------------------------------------
 
 pub(crate) static DISPATCH_EVENT_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("Dispatch"));
+#[allow(dead_code)]
 pub(crate) static DISPATCH_ID_EVENT_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("DispatchId"));
+#[allow(dead_code)]
 pub(crate) static PROCESS_EVENT_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("Process"));
 pub(crate) static PROCESS_ID_EVENT_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("ProcessId"));
 pub(crate) static INSERTED_INTO_TREE_HASH: Lazy<String> =
@@ -65,10 +85,10 @@ pub fn build_log_meta(log: &ContractLogEntry) -> LogMeta {
 
     LogMeta {
         address,
-        block_number: log.height as u64,
+        block_number: log.height,
         block_hash,
         transaction_id: tx_id,
-        transaction_index: log.micro_index as u64,
+        transaction_index: log.micro_index,
         log_index: U256::from(log.log_idx),
     }
 }
@@ -281,9 +301,9 @@ mod tests {
             contract_id: "ct_2swhLkgBPeeADxVTAby2CaivPq43LDJzWGKfSstbn1epwMuQzv".into(),
             call_tx_hash: "th_2swhLkgBPeeADxVTAby2CaivPq43LDJzWGKfSstbn1epwMuQzv".into(),
             block_hash: "mh_2swhLkgBPeeADxVTAby2CaivPq43LDJzWGKfSstbn1epwMuQzv".into(),
-            height: 100,
-            micro_index: 0,
-            log_idx: 0,
+            height: 100u64,
+            micro_index: 0u64,
+            log_idx: 0u64,
             event_hash: event_hash.into(),
             args: args.into_iter().map(String::from).collect(),
             data: data.into(),

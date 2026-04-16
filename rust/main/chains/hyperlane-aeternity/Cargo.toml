@@ -37,6 +37,9 @@ hyperlane-warp-route = { path = "../../applications/hyperlane-warp-route" }
 reqwest-utils = { path = "../../utils/reqwest-utils" }
 crypto = { path = "../../utils/crypto" }
 
+once_cell = { workspace = true }
+rlp = { workspace = true }
+
 blake2 = "0.10"
 
 [dev-dependencies]
