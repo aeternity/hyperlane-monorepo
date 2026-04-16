@@ -378,7 +378,7 @@ mod tests {
 
     #[test]
     fn test_parse_merkle_insertion_success() {
-        let msg_id = "0x" + &"ab".repeat(32);
+        let msg_id = "0x".to_owned() + &"ab".repeat(32);
         let leaf_idx = "0x05";
         let log = make_log(&INSERTED_INTO_TREE_HASH, vec![&msg_id, leaf_idx], "");
         let result = parse_merkle_insertion(&log).unwrap();
@@ -389,7 +389,7 @@ mod tests {
 
     #[test]
     fn test_parse_delivery_success() {
-        let msg_id = "0x" + &"cd".repeat(32);
+        let msg_id = "0x".to_owned() + &"cd".repeat(32);
         let seq = "0x03";
         let log = make_log(&PROCESS_ID_EVENT_HASH, vec![&msg_id, seq], "");
         let result = parse_delivery_event(&log).unwrap();
@@ -400,7 +400,7 @@ mod tests {
 
     #[test]
     fn test_parse_gas_payment_success() {
-        let msg_id = "0x" + &"ee".repeat(32);
+        let msg_id = "0x".to_owned() + &"ee".repeat(32);
         let dest = "0x01";
         let gas = "0x64";
         let payment = "0xc8";

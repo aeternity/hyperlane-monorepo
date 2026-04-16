@@ -341,7 +341,8 @@ fn parse_chain(
             | HyperlaneDomainProtocol::Aleo
             | HyperlaneDomainProtocol::Radix
             | HyperlaneDomainProtocol::Sealevel
-            | HyperlaneDomainProtocol::Tron => SubmitterType::Lander,
+            | HyperlaneDomainProtocol::Tron
+            | HyperlaneDomainProtocol::Aeternity => SubmitterType::Lander,
             _ => Default::default(),
         },
     };
@@ -522,6 +523,22 @@ fn parse_signer(signer: ValueParser) -> ConfigResult<SignerConf> {
                 suffix: suffix.to_owned(),
             })
         }};
+        (aeternityKey) => {{
+            let key = signer
+                .chain(&mut err)
+                .get_key("key")
+                .parse_private_key()
+                .unwrap_or_default();
+            let network_id = signer
+                .chain(&mut err)
+                .get_opt_key("networkId")
+                .parse_string()
+                .unwrap_or("ae_mainnet");
+            err.into_result(SignerConf::AeternityKey {
+                key,
+                network_id: network_id.to_owned(),
+            })
+        }};
     }
 
     match signer_type {
@@ -530,6 +547,7 @@ fn parse_signer(signer: ValueParser) -> ConfigResult<SignerConf> {
         Some("cosmosKey") => parse_signer!(cosmosKey),
         Some("starkKey") => parse_signer!(starkKey),
         Some("radixKey") => parse_signer!(radixKey),
+        Some("aeternityKey") => parse_signer!(aeternityKey),
         Some(t) => {
             Err(eyre!("Unknown signer type `{t}`")).into_config_result(|| (&signer.cwp).add("type"))
         }

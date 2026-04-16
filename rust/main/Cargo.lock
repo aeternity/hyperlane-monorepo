@@ -5921,6 +5921,7 @@ dependencies = [
  "fuels",
  "futures",
  "futures-util",
+ "hyperlane-aeternity",
  "hyperlane-aleo",
  "hyperlane-core",
  "hyperlane-cosmos",
