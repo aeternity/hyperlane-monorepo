@@ -1,13 +1,14 @@
 use std::ops::RangeInclusive;
 
 use async_trait::async_trait;
+use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     ChainResult, ContractLocator, Indexed, Indexer, LogMeta, SequenceAwareIndexer, H256, H512,
 };
 
 use crate::events::{parse_delivery_event, ContractLogEntry, PROCESS_ID_EVENT_HASH};
-use crate::provider::AeternityProvider;
+use crate::provider::{AeternityProvider, FateValue};
 use crate::types::h256_to_contract_address;
 
 /// Aeternity Delivery Indexer
@@ -18,6 +19,7 @@ pub struct AeDeliveryIndexer {
 }
 
 impl AeDeliveryIndexer {
+    /// Creates a new Aeternity delivery indexer.
     pub fn new(provider: AeternityProvider, locator: &ContractLocator) -> ChainResult<Self> {
         let contract_address = h256_to_contract_address(locator.address);
         Ok(Self {
@@ -33,18 +35,21 @@ impl Indexer<H256> for AeDeliveryIndexer {
         &self,
         range: RangeInclusive<u32>,
     ) -> ChainResult<Vec<(Indexed<H256>, LogMeta)>> {
+        let from = *range.start() as u64;
+        let to = *range.end() as u64;
         let logs = self
             .provider
-            .fetch_logs_in_range(&self.contract_address, range)
+            .fetch_logs_in_range(&self.contract_address, from, to)
             .await?;
 
         let mut result = Vec::new();
-        for log in &logs {
-            if log.event_hash != *PROCESS_ID_EVENT_HASH {
+        for (mdw_entry, _meta) in &logs {
+            let entry = ContractLogEntry::from(mdw_entry);
+            if entry.event_hash != *PROCESS_ID_EVENT_HASH {
                 continue;
             }
-            match parse_delivery_event(log) {
-                Ok(Some(entry)) => result.push(entry),
+            match parse_delivery_event(&entry) {
+                Ok(Some(parsed)) => result.push(parsed),
                 Ok(None) => {}
                 Err(e) => {
                     tracing::warn!(error = %e, "failed to parse delivery event");
@@ -55,7 +60,8 @@ impl Indexer<H256> for AeDeliveryIndexer {
     }
 
     async fn get_finalized_block_number(&self) -> ChainResult<u32> {
-        self.provider.get_finalized_block_number().await
+        let block = self.provider.get_finalized_block_number().await?;
+        Ok(block as u32)
     }
 
     async fn fetch_logs_by_tx_hash(
@@ -64,20 +70,21 @@ impl Indexer<H256> for AeDeliveryIndexer {
     ) -> ChainResult<Vec<(Indexed<H256>, LogMeta)>> {
         let logs = self
             .provider
-            .fetch_logs_in_range(&self.contract_address, 0..=u32::MAX)
+            .fetch_logs_in_range(&self.contract_address, 0, u64::MAX)
             .await?;
 
         let tx_hash_hex = format!("{tx_hash:x}");
         let mut result = Vec::new();
-        for log in &logs {
-            if !log.call_tx_hash.contains(&tx_hash_hex) {
+        for (mdw_entry, _meta) in &logs {
+            let entry = ContractLogEntry::from(mdw_entry);
+            if !entry.call_tx_hash.contains(&tx_hash_hex) {
                 continue;
             }
-            if log.event_hash != *PROCESS_ID_EVENT_HASH {
+            if entry.event_hash != *PROCESS_ID_EVENT_HASH {
                 continue;
             }
-            match parse_delivery_event(log) {
-                Ok(Some(entry)) => result.push(entry),
+            match parse_delivery_event(&entry) {
+                Ok(Some(parsed)) => result.push(parsed),
                 Ok(None) => {}
                 Err(e) => {
                     tracing::warn!(error = %e, "failed to parse delivery event by tx");
@@ -96,8 +103,11 @@ impl SequenceAwareIndexer<H256> for AeDeliveryIndexer {
             .call_contract(&self.contract_address, "processed_count", vec![])
             .await?;
 
-        let sequence = count.as_u32().unwrap_or(0);
-        let tip = self.provider.get_finalized_block_number().await?;
+        let sequence = match count {
+            FateValue::Integer(n) => n.to_u32().unwrap_or(0),
+            _ => 0,
+        };
+        let tip = self.provider.get_finalized_block_number().await? as u32;
         Ok((Some(sequence), tip))
     }
 }

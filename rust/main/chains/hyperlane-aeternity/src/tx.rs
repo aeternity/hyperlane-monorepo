@@ -4,7 +4,6 @@ use sha2::{Digest, Sha256};
 use hyperlane_core::ChainResult;
 
 use crate::signer::AeSigner;
-use crate::HyperlaneAeternityError;
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -26,6 +25,7 @@ const SIGNATURE_SIZE: u64 = 64;
 
 /// RLP-encoded + signed transaction ready for submission.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct SignedTransaction {
     /// Transaction hash (`th_...` prefixed)
     pub hash: String,
@@ -39,6 +39,7 @@ pub struct SignedTransaction {
 
 /// Outcome of a submitted + confirmed transaction.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct TxOutcome {
     /// Transaction hash
     pub txid: String,
@@ -56,6 +57,7 @@ pub struct TxOutcome {
 #[derive(Debug)]
 pub struct AeTxBuilder {
     signer: AeSigner,
+    #[allow(dead_code)]
     network_id: String,
 }
 
@@ -114,6 +116,7 @@ impl AeTxBuilder {
     }
 
     /// Return a reference to the inner signer.
+    #[allow(dead_code)]
     pub fn signer(&self) -> &AeSigner {
         &self.signer
     }

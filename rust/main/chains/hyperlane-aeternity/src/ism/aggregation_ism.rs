@@ -8,7 +8,7 @@ use hyperlane_core::{
 };
 
 use crate::{
-    contract_address_to_h256, h256_to_contract_address, AeternityProvider, FateValue,
+    h256_to_contract_address, AeternityProvider, FateValue,
     HyperlaneAeternityError,
 };
 
@@ -29,7 +29,7 @@ pub struct AeAggregationIsm {
 impl AeAggregationIsm {
     /// Creates a new Aeternity AggregationIsm instance
     pub fn new(provider: AeternityProvider, locator: &ContractLocator) -> ChainResult<Self> {
-        let contract_address = h256_to_contract_address(locator.address)?;
+        let contract_address = h256_to_contract_address(locator.address);
         Ok(Self {
             domain: provider.domain().clone(),
             provider,
@@ -86,7 +86,7 @@ impl AggregationIsm for AeAggregationIsm {
     /// Calls Sophia entrypoint:
     ///   `modules_and_threshold(message: bytes) : { modules: list(IInterchainSecurityModule), threshold: int }`
     ///
-    /// Each module address is converted from `ct_...` format to H256.
+    /// Each module address is returned as H256 directly from the FATE Address value.
     async fn modules_and_threshold(
         &self,
         message: &HyperlaneMessage,
@@ -121,7 +121,7 @@ impl AggregationIsm for AeAggregationIsm {
                 for item in items {
                     match item {
                         FateValue::Address(addr) => {
-                            addrs.push(contract_address_to_h256(&addr)?);
+                            addrs.push(addr);
                         }
                         other => {
                             return Err(HyperlaneAeternityError::ContractCallError(

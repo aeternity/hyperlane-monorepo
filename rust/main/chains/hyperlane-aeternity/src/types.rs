@@ -80,6 +80,7 @@ pub fn h256_to_contract_address(h256: H256) -> String {
 }
 
 /// Convert an `ak_...` account address to [`H256`].
+#[allow(dead_code)]
 pub fn account_address_to_h256(address: &str) -> ChainResult<H256> {
     if !address.starts_with("ak_") {
         return Err(HyperlaneAeternityError::AddressError(format!(

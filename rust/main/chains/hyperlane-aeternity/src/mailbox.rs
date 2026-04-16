@@ -9,7 +9,7 @@ use hyperlane_core::{
 };
 
 use crate::{
-    contract_address_to_h256, h256_to_contract_address, AeternityProvider, FateValue,
+    h256_to_contract_address, AeternityProvider, FateValue,
     HyperlaneAeternityError,
 };
 
@@ -39,7 +39,7 @@ pub struct AeMailbox {
 impl AeMailbox {
     /// Creates a new Aeternity Mailbox instance
     pub fn new(provider: AeternityProvider, locator: &ContractLocator) -> ChainResult<Self> {
-        let contract_address = h256_to_contract_address(locator.address)?;
+        let contract_address = h256_to_contract_address(locator.address);
         Ok(Self {
             domain: provider.domain().clone(),
             provider,
@@ -158,11 +158,7 @@ impl Mailbox for AeMailbox {
             .await?;
 
         match result {
-            FateValue::Address(addr) => contract_address_to_h256(&addr),
-            FateValue::None => Err(HyperlaneAeternityError::ContractCallError(
-                "no default ISM configured".into(),
-            )
-            .into()),
+            FateValue::Address(addr) => Ok(addr),
             other => Err(HyperlaneAeternityError::ContractCallError(format!(
                 "expected Address from default_ism(), got {:?}",
                 other
@@ -173,24 +169,18 @@ impl Mailbox for AeMailbox {
 
     /// Get the ISM address for a specific recipient.
     async fn recipient_ism(&self, recipient: H256) -> ChainResult<H256> {
-        let recipient_addr = h256_to_contract_address(recipient)?;
         let result = self
             .provider
             .call_contract(
                 &self.contract_address,
                 "recipient_ism",
-                vec![FateValue::Address(recipient_addr)],
+                vec![FateValue::Address(recipient)],
             )
             .await?;
 
         match result {
-            FateValue::Address(addr) => contract_address_to_h256(&addr),
-            FateValue::None => self.default_ism().await,
-            other => Err(HyperlaneAeternityError::ContractCallError(format!(
-                "expected Address from recipient_ism(), got {:?}",
-                other
-            ))
-            .into()),
+            FateValue::Address(addr) => Ok(addr),
+            _ => self.default_ism().await,
         }
     }
 
@@ -242,7 +232,7 @@ impl Mailbox for AeMailbox {
         match result {
             Ok(_) => Ok(TxCostEstimate {
                 gas_limit: U256::from(1_000_000u64),
-                gas_price: FixedPointNumber::try_from("1000000000")?,
+                gas_price: FixedPointNumber::try_from(U256::from(1_000_000_000u64))?,
                 l2_gas_limit: None,
             }),
             Err(e) => Err(e),

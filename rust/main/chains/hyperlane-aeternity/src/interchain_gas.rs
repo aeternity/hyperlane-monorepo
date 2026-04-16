@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use num_bigint::BigInt;
+use num_bigint::BigUint;
 use num_traits::ToPrimitive;
 
 use hyperlane_core::{
@@ -23,7 +23,7 @@ pub struct AeInterchainGasPaymaster {
 impl AeInterchainGasPaymaster {
     /// Creates a new Aeternity InterchainGasPaymaster instance
     pub fn new(provider: AeternityProvider, locator: &ContractLocator) -> ChainResult<Self> {
-        let contract_address = h256_to_contract_address(locator.address)?;
+        let contract_address = h256_to_contract_address(locator.address);
         Ok(Self {
             domain: provider.domain().clone(),
             provider,
@@ -46,8 +46,8 @@ impl AeInterchainGasPaymaster {
                 &self.contract_address,
                 "quote_gas_payment",
                 vec![
-                    FateValue::Integer(BigInt::from(destination_domain)),
-                    FateValue::Integer(BigInt::from(gas_amount.as_u128())),
+                    FateValue::Integer(BigUint::from(destination_domain)),
+                    FateValue::Integer(BigUint::from(gas_amount.as_u128())),
                 ],
             )
             .await?;
@@ -79,8 +79,6 @@ impl AeInterchainGasPaymaster {
         gas_amount: U256,
         refund_address: H256,
     ) -> ChainResult<TxOutcome> {
-        let refund_addr = h256_to_contract_address(refund_address)?;
-
         let payment = self
             .quote_gas_payment(destination_domain, gas_amount)
             .await?;
@@ -92,9 +90,9 @@ impl AeInterchainGasPaymaster {
                 "pay_for_gas",
                 vec![
                     FateValue::Bytes(message_id.as_bytes().to_vec()),
-                    FateValue::Integer(BigInt::from(destination_domain)),
-                    FateValue::Integer(BigInt::from(gas_amount.as_u128())),
-                    FateValue::Address(refund_addr),
+                    FateValue::Integer(BigUint::from(destination_domain)),
+                    FateValue::Integer(BigUint::from(gas_amount.as_u128())),
+                    FateValue::Address(refund_address),
                 ],
                 payment_amount,
                 0,
