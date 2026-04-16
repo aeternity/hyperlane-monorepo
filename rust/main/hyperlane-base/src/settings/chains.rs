@@ -35,6 +35,7 @@ use hyperlane_sealevel::{
 };
 use hyperlane_starknet::{self as h_starknet, StarknetProvider};
 use hyperlane_tron::{self as h_tron, TronProvider};
+use hyperlane_aeternity as h_aeternity;
 
 use crate::{
     metrics::AgentMetricsConf,
@@ -191,6 +192,8 @@ pub enum ChainConnectionConf {
     Aleo(h_aleo::ConnectionConf),
     /// Tron configuration
     Tron(h_tron::ConnectionConf),
+    /// Aeternity configuration
+    Aeternity(h_aeternity::ConnectionConf),
 }
 
 impl ChainConnectionConf {
@@ -207,6 +210,7 @@ impl ChainConnectionConf {
             Self::Tron(_) => HyperlaneDomainProtocol::Tron,
             #[cfg(feature = "aleo")]
             Self::Aleo(_) => HyperlaneDomainProtocol::Aleo,
+            Self::Aeternity(_) => HyperlaneDomainProtocol::Aeternity,
         }
     }
 
@@ -298,6 +302,10 @@ impl ChainConf {
                 h_aleo::application::AleoApplicationOperationVerifier::new(),
             )
                 as Box<dyn ApplicationOperationVerifier>),
+            ChainConnectionConf::Aeternity(_) => Ok(Box::new(
+                h_aeternity::application::AeApplicationOperationVerifier::new(),
+            )
+                as Box<dyn ApplicationOperationVerifier>),
         };
 
         result.context(ctx)
@@ -352,6 +360,10 @@ impl ChainConf {
             #[cfg(feature = "aleo")]
             ChainConnectionConf::Aleo(conf) => {
                 let provider = build_aleo_provider(self, conf, metrics, &locator, None)?;
+                Ok(Box::new(provider) as Box<dyn HyperlaneProvider>)
+            }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
                 Ok(Box::new(provider) as Box<dyn HyperlaneProvider>)
             }
         }
@@ -435,6 +447,12 @@ impl ChainConf {
                 let mailbox = h_aleo::AleoMailbox::new(provider, &locator, conf);
                 Ok(Box::new(mailbox) as Box<dyn Mailbox>)
             }
+            ChainConnectionConf::Aeternity(conf) => {
+                let _signer = self.aeternity_signer().await?;
+                let provider = build_aeternity_provider(self, conf)?;
+                let mailbox = h_aeternity::AeMailbox::new(provider, &locator)?;
+                Ok(Box::new(mailbox) as Box<dyn Mailbox>)
+            }
         }
         .context(ctx)
     }
@@ -501,6 +519,11 @@ impl ChainConf {
                 let provider = build_aleo_provider(self, conf, metrics, &locator, None)?;
                 let hook = h_aleo::AleoMerkleTreeHook::new(provider, &locator, conf)?;
 
+                Ok(Box::new(hook) as Box<dyn MerkleTreeHook>)
+            }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let hook = h_aeternity::AeMerkleTreeHook::new(provider, &locator)?;
                 Ok(Box::new(hook) as Box<dyn MerkleTreeHook>)
             }
         }
@@ -592,6 +615,11 @@ impl ChainConf {
 
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<HyperlaneMessage>>)
             }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let indexer = h_aeternity::indexer::AeDispatchIndexer::new(provider, &locator)?;
+                Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<HyperlaneMessage>>)
+            }
         }
         .context(ctx)
     }
@@ -677,6 +705,11 @@ impl ChainConf {
 
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<H256>>)
             }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let indexer = h_aeternity::indexer::AeDeliveryIndexer::new(provider, &locator)?;
+                Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<H256>>)
+            }
         }
         .context(ctx)
     }
@@ -753,6 +786,11 @@ impl ChainConf {
                 let indexer = h_aleo::AleoInterchainGasIndexer::new(provider, &locator, conf)?;
 
                 Ok(Box::new(indexer) as Box<dyn InterchainGasPaymaster>)
+            }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let paymaster = h_aeternity::AeInterchainGasPaymaster::new(provider, &locator)?;
+                Ok(Box::new(paymaster) as Box<dyn InterchainGasPaymaster>)
             }
         }
         .context(ctx)
@@ -832,6 +870,11 @@ impl ChainConf {
                 let provider = build_aleo_provider(self, conf, metrics, &locator, None)?;
                 let indexer = h_aleo::AleoInterchainGasIndexer::new(provider, &locator, conf)?;
 
+                Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<InterchainGasPayment>>)
+            }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let indexer = h_aeternity::indexer::AeIgpIndexer::new(provider, &locator)?;
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<InterchainGasPayment>>)
             }
         }
@@ -922,6 +965,11 @@ impl ChainConf {
 
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<MerkleTreeInsertion>>)
             }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let indexer = h_aeternity::indexer::AeMerkleTreeIndexer::new(provider, &locator)?;
+                Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<MerkleTreeInsertion>>)
+            }
         }
         .context(ctx)
     }
@@ -1010,6 +1058,12 @@ impl ChainConf {
                     h_aleo::AleoValidatorAnnounce::new(provider, &locator, conf);
                 Ok(Box::new(validator_announce) as Box<dyn ValidatorAnnounce>)
             }
+            ChainConnectionConf::Aeternity(conf) => {
+                let _signer = self.aeternity_signer().await?;
+                let provider = build_aeternity_provider(self, conf)?;
+                let va = h_aeternity::AeValidatorAnnounce::new(provider, &locator)?;
+                Ok(Box::new(va) as Box<dyn ValidatorAnnounce>)
+            }
         }
         .context("Building ValidatorAnnounce")
     }
@@ -1084,6 +1138,11 @@ impl ChainConf {
                 let ism = h_aleo::AleoIsm::new(provider, &locator, conf)?;
                 Ok(Box::new(ism) as Box<dyn InterchainSecurityModule>)
             }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let ism = h_aeternity::AeIsm::new(provider, &locator)?;
+                Ok(Box::new(ism) as Box<dyn InterchainSecurityModule>)
+            }
         }
         .context(ctx)
     }
@@ -1149,6 +1208,11 @@ impl ChainConf {
                 let ism = h_aleo::AleoIsm::new(provider, &locator, conf)?;
                 Ok(Box::new(ism) as Box<dyn MultisigIsm>)
             }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let ism = h_aeternity::AeMultisigIsm::new(provider, &locator)?;
+                Ok(Box::new(ism) as Box<dyn MultisigIsm>)
+            }
         }
         .context(ctx)
     }
@@ -1209,6 +1273,11 @@ impl ChainConf {
                 let ism = h_aleo::AleoIsm::new(provider, &locator, conf)?;
                 Ok(Box::new(ism) as Box<dyn RoutingIsm>)
             }
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let ism = h_aeternity::AeRoutingIsm::new(provider, &locator)?;
+                Ok(Box::new(ism) as Box<dyn RoutingIsm>)
+            }
         }
         .context(ctx)
     }
@@ -1265,6 +1334,11 @@ impl ChainConf {
             }
             #[cfg(feature = "aleo")]
             ChainConnectionConf::Aleo(_) => Err(eyre!("Aleo support missing")).context(ctx),
+            ChainConnectionConf::Aeternity(conf) => {
+                let provider = build_aeternity_provider(self, conf)?;
+                let ism = h_aeternity::AeAggregationIsm::new(provider, &locator)?;
+                Ok(Box::new(ism) as Box<dyn AggregationIsm>)
+            }
         }
         .context(ctx)
     }
@@ -1307,6 +1381,9 @@ impl ChainConf {
             }
             #[cfg(feature = "aleo")]
             ChainConnectionConf::Aleo(_) => Err(eyre!("Aleo support missing")).context(ctx),
+            ChainConnectionConf::Aeternity(_) => {
+                Err(eyre!("Aeternity does not support CCIP read ISM yet")).context(ctx)
+            }
         }
         .context(ctx)
     }
@@ -1343,6 +1420,9 @@ impl ChainConf {
                 ChainConnectionConf::Tron(_) => Box::new(conf.build::<h_tron::TronSigner>().await?),
                 #[cfg(feature = "aleo")]
                 ChainConnectionConf::Aleo(_) => Box::new(conf.build::<h_aleo::AleoSigner>().await?),
+                ChainConnectionConf::Aeternity(_) => {
+                    Box::new(conf.build::<h_aeternity::AeSigner>().await?)
+                }
             };
             Ok(Some(chain_signer))
         } else {
@@ -1383,6 +1463,10 @@ impl ChainConf {
     }
 
     async fn tron_signer(&self) -> Result<Option<h_tron::TronSigner>> {
+        self.signer().await
+    }
+
+    async fn aeternity_signer(&self) -> Result<Option<h_aeternity::AeSigner>> {
         self.signer().await
     }
 
@@ -1623,5 +1707,17 @@ fn build_tron_provider(
         signer,
         metrics,
         middleware_metrics.chain.clone(),
+    )
+}
+
+fn build_aeternity_provider(
+    chain_conf: &ChainConf,
+    connection_conf: &h_aeternity::ConnectionConf,
+) -> ChainResult<h_aeternity::AeternityProvider> {
+    h_aeternity::AeternityProvider::new(
+        chain_conf.domain.clone(),
+        connection_conf,
+        chain_conf.reorg_period.clone(),
+        None,
     )
 }

@@ -371,6 +371,8 @@ pub enum HyperlaneDomainProtocol {
     Aleo,
     /// Tron chain
     Tron,
+    /// Aeternity chain
+    Aeternity,
 }
 
 impl HyperlaneDomainProtocol {
@@ -693,7 +695,7 @@ impl HyperlaneDomain {
         use HyperlaneDomainProtocol::*;
         let protocol = self.domain_protocol();
         match protocol {
-            Ethereum | Cosmos | CosmosNative | Starknet | Tron => IndexMode::Block,
+            Ethereum | Cosmos | CosmosNative | Starknet | Tron | Aeternity => IndexMode::Block,
             Fuel | Sealevel | Radix | Aleo => IndexMode::Sequence,
         }
     }

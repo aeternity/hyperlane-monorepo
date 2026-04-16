@@ -57,6 +57,13 @@ pub enum SignerConf {
         /// Whether the Starknet signer is legacy
         is_legacy: bool,
     },
+    /// Aeternity Ed25519 key
+    AeternityKey {
+        /// Private key value (Ed25519)
+        key: H256,
+        /// Network ID (`ae_mainnet`, `ae_uat`)
+        network_id: String,
+    },
     /// Assume node will sign on RPC calls
     #[default]
     Node,
@@ -114,6 +121,9 @@ impl BuildableWithSignerConf for hyperlane_ethereum::Signers {
             SignerConf::Node => bail!("Node signer"),
             SignerConf::RadixKey { .. } => {
                 bail!("radixKey signer is not supported by Ethereum")
+            }
+            SignerConf::AeternityKey { .. } => {
+                bail!("aeternityKey signer is not supported by Ethereum")
             }
         })
     }
@@ -293,6 +303,29 @@ impl ChainSigner for hyperlane_radix::RadixSigner {
 
     fn address_h256(&self) -> H256 {
         self.address_256
+    }
+}
+
+#[async_trait]
+impl BuildableWithSignerConf for hyperlane_aeternity::AeSigner {
+    async fn build(conf: &SignerConf) -> Result<Self, Report> {
+        if let SignerConf::AeternityKey { key, network_id } = conf {
+            Ok(hyperlane_aeternity::AeSigner::new(
+                key.as_bytes().to_vec(),
+                network_id.clone(),
+            )?)
+        } else {
+            bail!(format!("{conf:?} key is not supported by aeternity"));
+        }
+    }
+}
+
+impl ChainSigner for hyperlane_aeternity::AeSigner {
+    fn address_string(&self) -> String {
+        self.encoded_address.clone()
+    }
+    fn address_h256(&self) -> H256 {
+        self.address_h256
     }
 }
 
