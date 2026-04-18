@@ -11,7 +11,10 @@ use hyperlane_core::{
 use crate::{
     ae_address_to_h256, ae_timestamp_to_seconds, decode_ae_hash, encode_ae_hash,
     h256_to_contract_address,
-    rpc::{AeMdwClient, AeNodeClient, ContractLogEntry, DryRunCallReq, DryRunRequest, DryRunTx},
+    rpc::{
+        AeCompilerClient, AeMdwClient, AeNodeClient, ContractLogEntry, DryRunCallReq,
+        DryRunRequest, DryRunTx,
+    },
     ConnectionConf, HyperlaneAeternityError,
 };
 
@@ -42,16 +45,32 @@ pub enum FateValue {
 
 /// Encode function name + arguments into calldata suitable for a dry-run call.
 ///
-/// This uses a simplified scheme: Blake2b-256 hash of the function name (first 4
-/// bytes) followed by the serialized argument representation. Real FATE ABI
-/// encoding would use the `aebytecode` library; this helper is sufficient for
-/// dry-run-based read calls via the node API.
+/// **Deprecated**: This uses a simplified scheme that ignores arguments.
+/// Use `AeternityProvider::call_contract` with the compiler-based approach instead.
 #[allow(dead_code)]
+#[deprecated(note = "use compiler-based call_contract instead")]
 pub fn encode_calldata(function: &str, _args: &[FateValue]) -> Vec<u8> {
     let hash = crate::blake2b_256(function.as_bytes());
     let mut calldata = Vec::with_capacity(4);
     calldata.extend_from_slice(&hash[..4]);
     calldata
+}
+
+/// Decode a `cb_<base64(payload ++ 4-byte checksum)>` string to raw bytes.
+fn decode_cb(encoded: &str) -> ChainResult<Vec<u8>> {
+    let body = encoded.strip_prefix("cb_").ok_or_else(|| {
+        HyperlaneAeternityError::Other(format!("expected cb_ prefix, got: {encoded}"))
+    })?;
+    use base64::{engine::general_purpose::STANDARD, Engine};
+    let decoded = STANDARD.decode(body).map_err(|e| {
+        HyperlaneAeternityError::Other(format!("base64 decode of cb_ calldata failed: {e}"))
+    })?;
+    if decoded.len() < 4 {
+        return Err(
+            HyperlaneAeternityError::Other("cb_ payload too short for checksum".into()).into(),
+        );
+    }
+    Ok(decoded[..decoded.len() - 4].to_vec())
 }
 
 // ---------------------------------------------------------------------------
@@ -64,6 +83,7 @@ pub struct AeternityProvider {
     domain: HyperlaneDomain,
     node: AeNodeClient,
     mdw: AeMdwClient,
+    compiler: AeCompilerClient,
     signer: Option<AeSigner>,
     reorg_period: ReorgPeriod,
     #[allow(dead_code)]
@@ -97,11 +117,15 @@ impl AeternityProvider {
         let mdw_url = conf.mdw_urls.first().ok_or_else(|| {
             HyperlaneAeternityError::Other("no middleware URLs configured".into())
         })?;
+        let compiler_url = conf.compiler_urls.first().ok_or_else(|| {
+            HyperlaneAeternityError::Other("no compiler URLs configured".into())
+        })?;
 
         Ok(Self {
             domain,
             node: AeNodeClient::new(node_url.clone()),
             mdw: AeMdwClient::new(mdw_url.clone()),
+            compiler: AeCompilerClient::new(compiler_url.clone()),
             signer,
             reorg_period,
             network_id: conf.network_id.clone(),
@@ -118,6 +142,11 @@ impl AeternityProvider {
         &self.mdw
     }
 
+    /// Return a reference to the Sophia compiler client.
+    pub fn compiler(&self) -> &AeCompilerClient {
+        &self.compiler
+    }
+
     /// Return the configured signer, or an error if none was set.
     pub fn get_signer(&self) -> ChainResult<&AeSigner> {
         self.signer
@@ -125,35 +154,45 @@ impl AeternityProvider {
             .ok_or_else(|| HyperlaneAeternityError::SignerMissing.into())
     }
 
-    /// Read a contract function via dry-run (no on-chain transaction).
+    /// Read a contract function via dry-run using the Sophia compiler for
+    /// calldata encoding and return value decoding.
     ///
-    /// The returned `FateValue` currently wraps the raw FATE-encoded return
-    /// string; full decoding will be added once `aebytecode` bindings are
-    /// available.
+    /// # Arguments
+    ///
+    /// * `contract_id` -- deployed contract address (`ct_...`)
+    /// * `function_name` -- Sophia entrypoint name
+    /// * `args` -- Sophia-formatted string arguments (e.g. `"42"`, `"true"`,
+    ///   `"#abc..."` for bytes)
+    /// * `contract_source` -- compilable Sophia source with matching entrypoint
+    ///   signatures (typically a stub from `crate::contracts`)
     pub async fn call_contract(
         &self,
         contract_id: &str,
         function_name: &str,
-        args: Vec<FateValue>,
-    ) -> ChainResult<FateValue> {
-        let calldata_bytes = encode_calldata(function_name, &args);
-        use base64::{engine::general_purpose::STANDARD, Engine};
-        let calldata_str = format!("cb_{}", STANDARD.encode(&calldata_bytes));
+        args: &[String],
+        contract_source: &str,
+    ) -> ChainResult<serde_json::Value> {
+        let calldata = self
+            .compiler
+            .encode_calldata(contract_source, function_name, args, None)
+            .await?;
 
-        let default_caller =
-            "ak_11111111111111111111111111111111273Yts".to_string();
+        let default_caller = "ak_11111111111111111111111111111111273Yts".to_string();
 
         let request = DryRunRequest {
             top: None,
-            accounts: vec![],
+            accounts: vec![crate::rpc::DryRunAccount {
+                pub_key: default_caller.clone(),
+                amount: 100_000_000_000_000_000,
+            }],
             txs: vec![DryRunTx {
-                tx: String::new(),
+                tx: None,
                 call_req: Some(DryRunCallReq {
                     contract: contract_id.to_string(),
-                    calldata: calldata_str,
+                    calldata,
                     caller: default_caller,
                     abi_version: Some(3),
-                    amount: Some(0),
+                    amount: None,
                     gas: Some(1_000_000),
                 }),
             }],
@@ -164,9 +203,10 @@ impl AeternityProvider {
             HyperlaneAeternityError::ContractCallError("empty dry-run results".into())
         })?;
 
-        if result.result_type != "ok" {
+        if result.result != "ok" {
             return Err(HyperlaneAeternityError::ContractCallError(format!(
-                "dry-run failed: {:?}",
+                "dry-run failed ({}): {:?}",
+                result.result,
                 result.reason
             ))
             .into());
@@ -188,27 +228,33 @@ impl AeternityProvider {
             HyperlaneAeternityError::ReturnDecodingError("missing return value".into())
         })?;
 
-        // TODO: decode FATE-encoded return value into proper FateValue variant
-        Ok(FateValue::String(return_value))
+        self.compiler
+            .decode_call_result(contract_source, function_name, "ok", &return_value, None)
+            .await
     }
 
     /// Build, sign, and submit a contract call transaction.
     ///
-    /// Encodes the function name and arguments into FATE calldata, constructs
-    /// the RLP-encoded transaction, signs it with the configured signer, and
-    /// posts it to the node.
+    /// Encodes the function name and arguments into FATE calldata via the
+    /// Sophia compiler, constructs the RLP-encoded transaction, signs it with
+    /// the configured signer, and posts it to the node.
     pub async fn send_contract_call(
         &self,
         contract_id: &str,
         function_name: &str,
-        args: Vec<FateValue>,
+        args: &[String],
+        contract_source: &str,
         amount: u64,
         _gas: u64,
     ) -> ChainResult<TxOutcome> {
         let signer = self.get_signer()?;
-        let calldata_bytes = encode_calldata(function_name, &args);
-        use base64::{engine::general_purpose::STANDARD, Engine};
-        let calldata_str = format!("cb_{}", STANDARD.encode(&calldata_bytes));
+        let calldata_str = self
+            .compiler
+            .encode_calldata(contract_source, function_name, args, None)
+            .await?;
+
+        // Decode cb_<base64(payload ++ 4-byte checksum)> to raw FATE bytes
+        let calldata_bytes = decode_cb(&calldata_str)?;
 
         let tx_builder = crate::tx::AeTxBuilder::new(
             crate::signer::AeSigner::new(
@@ -218,15 +264,18 @@ impl AeternityProvider {
             self.network_id.clone(),
         );
 
-        let caller_bytes = signer.address_h256.as_bytes().to_vec();
+        // AE RLP id-encoding: 1-byte tag ++ 32-byte pubkey
+        let mut caller_bytes = vec![1u8]; // 1 = account tag
+        caller_bytes.extend_from_slice(signer.address_h256.as_bytes());
         let contract_h256 = ae_address_to_h256(contract_id)?;
-        let contract_bytes = contract_h256.as_bytes().to_vec();
+        let mut contract_bytes = vec![5u8]; // 5 = contract tag
+        contract_bytes.extend_from_slice(contract_h256.as_bytes());
 
         let nonce_resp = self.node.get_account(&signer.encoded_address).await?;
         let nonce = nonce_resp.nonce + 1;
         let gas = 1_000_000u64;
         let gas_price = 1_000_000_000u64;
-        let fee = crate::tx::AeTxBuilder::calculate_fee(200);
+        let fee = 200_000_000_000_000u64; // 200T aettos — generous to cover any contract call
 
         let signed_tx = tx_builder.build_contract_call(
             &caller_bytes,
@@ -236,7 +285,7 @@ impl AeternityProvider {
             amount,
             gas,
             gas_price,
-            calldata_str.as_bytes(),
+            &calldata_bytes,
         )?;
 
         let resp = self.node.post_transaction(&signed_tx.encoded).await?;
@@ -406,7 +455,7 @@ impl HyperlaneProvider for AeternityProvider {
 
     async fn get_balance(&self, address: String) -> ChainResult<U256> {
         let account = self.node.get_account(&address).await?;
-        Ok(U256::from(account.balance))
+        Ok(U256::from(account.balance_u128()))
     }
 
     async fn get_chain_metrics(&self) -> ChainResult<Option<ChainInfo>> {

@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     accumulator::incremental::IncrementalMerkle, ChainResult, Checkpoint, CheckpointAtBlock,
@@ -8,7 +7,7 @@ use hyperlane_core::{
 };
 
 use crate::{
-    h256_to_contract_address, AeternityProvider, FateValue, HyperlaneAeternityError,
+    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
 };
 
 /// Number of branch nodes in the incremental Merkle tree (depth = 32).
@@ -35,119 +34,90 @@ impl AeMerkleTreeHook {
         })
     }
 
-    /// Parse a FATE tree response into branch array and count.
+    /// Parse the compiler-decoded tree value into an `IncrementalMerkle`.
     ///
-    /// The Sophia contract's `tree()` returns a record:
-    /// `{ branch: list(bytes(32)), count: int }`
-    /// which FATE encodes as a Tuple with fields in alphabetical order.
-    fn parse_tree(value: FateValue) -> ChainResult<(IncrementalMerkle, Option<u64>)> {
-        let (branch_values, count_value) = match value {
-            FateValue::Tuple(fields) if fields.len() == 2 => {
-                (fields[0].clone(), fields[1].clone())
-            }
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Tuple(2) from tree(), got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+    /// The compiler decodes `{ branch: map(int, bytes(32)), count: int }` as a
+    /// JSON object with `"branch"` and `"count"` fields.
+    fn parse_tree(value: &serde_json::Value) -> ChainResult<IncrementalMerkle> {
+        let obj = value.as_object().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected object from tree(), got {value}"
+            ))
+        })?;
 
-        let branch_list = match branch_values {
-            FateValue::List(items) => items,
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected List for tree branch, got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+        let count = obj
+            .get("count")
+            .and_then(|v| v.as_u64())
+            .unwrap_or(0) as usize;
 
         let mut branch = [H256::zero(); TREE_DEPTH];
-        for (i, item) in branch_list.into_iter().enumerate() {
-            if i >= TREE_DEPTH {
-                break;
-            }
-            match item {
-                FateValue::Bytes(b) if b.len() == 32 => {
-                    branch[i] = H256::from_slice(&b);
-                }
-                other => {
-                    return Err(HyperlaneAeternityError::ContractCallError(format!(
-                        "expected Bytes(32) for branch node, got {:?}",
-                        other
-                    ))
-                    .into())
+        if let Some(branch_map) = obj.get("branch").and_then(|v| v.as_object()) {
+            for (key, val) in branch_map {
+                if let (Ok(idx), Some(hex_str)) = (key.parse::<usize>(), val.as_str()) {
+                    if idx < TREE_DEPTH {
+                        let hex_clean = hex_str.trim_start_matches('#');
+                        if let Ok(bytes) = hex::decode(hex_clean) {
+                            if bytes.len() == 32 {
+                                branch[idx] = H256::from_slice(&bytes);
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        let count = match count_value {
-            FateValue::Integer(n) => n.to_usize().ok_or_else(|| {
-                HyperlaneAeternityError::ContractCallError(
-                    "tree count overflow for usize".into(),
-                )
-            })?,
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Integer for tree count, got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
-
-        Ok((IncrementalMerkle::new(branch, count), None))
+        Ok(IncrementalMerkle::new(branch, count))
     }
 
-    /// Parse a FATE checkpoint response into root and index.
+    /// Parse the compiler-decoded checkpoint value into `(root, index)`.
     ///
-    /// The Sophia contract's `latest_checkpoint()` returns:
-    /// `{ root: bytes(32), index: int }`
-    fn parse_checkpoint(value: FateValue) -> ChainResult<(H256, u32)> {
-        let (root_value, index_value) = match value {
-            FateValue::Tuple(fields) if fields.len() == 2 => {
-                (fields[0].clone(), fields[1].clone())
-            }
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Tuple(2) from latest_checkpoint(), got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+    /// The compiler decodes `bytes(32) * int` as a JSON array `[hex_bytes, int]`.
+    fn parse_checkpoint(value: &serde_json::Value) -> ChainResult<(H256, u32)> {
+        let arr = value.as_array().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected tuple array from latest_checkpoint(), got {value}"
+            ))
+        })?;
 
-        let root = match root_value {
-            FateValue::Bytes(b) if b.len() == 32 => H256::from_slice(&b),
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Bytes(32) for checkpoint root, got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+        if arr.len() != 2 {
+            return Err(HyperlaneAeternityError::ContractCallError(format!(
+                "expected 2-element tuple from latest_checkpoint(), got {} elements",
+                arr.len()
+            ))
+            .into());
+        }
 
-        let index = match index_value {
-            FateValue::Integer(n) => n.to_u32().ok_or_else(|| {
-                HyperlaneAeternityError::ContractCallError(
-                    "checkpoint index overflow for u32".into(),
-                )
-            })?,
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Integer for checkpoint index, got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+        let root = parse_bytes32(&arr[0])?;
+        let index = arr[1].as_u64().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected integer for checkpoint index, got {}",
+                arr[1]
+            ))
+        })? as u32;
 
         Ok((root, index))
     }
+}
+
+/// Parse a compiler-decoded `bytes(32)` value (hex string with `#` prefix).
+fn parse_bytes32(value: &serde_json::Value) -> ChainResult<H256> {
+    let hex_str = value.as_str().ok_or_else(|| {
+        HyperlaneAeternityError::ContractCallError(format!(
+            "expected hex string for bytes(32), got {value}"
+        ))
+    })?;
+    let hex_clean = hex_str.trim_start_matches('#');
+    let bytes = hex::decode(hex_clean).map_err(|e| {
+        HyperlaneAeternityError::ContractCallError(format!("invalid hex for bytes(32): {e}"))
+    })?;
+    if bytes.len() != 32 {
+        return Err(HyperlaneAeternityError::ContractCallError(format!(
+            "expected 32 bytes, got {}",
+            bytes.len()
+        ))
+        .into());
+    }
+    Ok(H256::from_slice(&bytes))
 }
 
 impl HyperlaneContract for AeMerkleTreeHook {
@@ -172,14 +142,19 @@ impl MerkleTreeHook for AeMerkleTreeHook {
     async fn tree(&self, _reorg_period: &ReorgPeriod) -> ChainResult<IncrementalMerkleAtBlock> {
         let result = self
             .provider
-            .call_contract(&self.contract_address, "tree", vec![])
+            .call_contract(
+                &self.contract_address,
+                "tree",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
 
-        let (tree, block_height) = Self::parse_tree(result)?;
+        let tree = Self::parse_tree(&result)?;
 
         Ok(IncrementalMerkleAtBlock {
             tree,
-            block_height,
+            block_height: None,
         })
     }
 
@@ -187,19 +162,23 @@ impl MerkleTreeHook for AeMerkleTreeHook {
     async fn count(&self, _reorg_period: &ReorgPeriod) -> ChainResult<u32> {
         let result = self
             .provider
-            .call_contract(&self.contract_address, "count", vec![])
+            .call_contract(
+                &self.contract_address,
+                "count",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
 
-        match result {
-            FateValue::Integer(n) => n.to_u32().ok_or_else(|| {
-                HyperlaneAeternityError::ContractCallError("count overflow for u32".into()).into()
-            }),
-            other => Err(HyperlaneAeternityError::ContractCallError(format!(
-                "expected Integer from count(), got {:?}",
-                other
-            ))
-            .into()),
-        }
+        result
+            .as_u64()
+            .and_then(|n| u32::try_from(n).ok())
+            .ok_or_else(|| {
+                HyperlaneAeternityError::ContractCallError(format!(
+                    "expected integer from count(), got {result}"
+                ))
+                .into()
+            })
     }
 
     /// Get the latest checkpoint (root + index).
@@ -209,10 +188,15 @@ impl MerkleTreeHook for AeMerkleTreeHook {
     ) -> ChainResult<CheckpointAtBlock> {
         let result = self
             .provider
-            .call_contract(&self.contract_address, "latest_checkpoint", vec![])
+            .call_contract(
+                &self.contract_address,
+                "latest_checkpoint",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
 
-        let (root, index) = Self::parse_checkpoint(result)?;
+        let (root, index) = Self::parse_checkpoint(&result)?;
 
         Ok(CheckpointAtBlock {
             checkpoint: Checkpoint {
@@ -230,14 +214,17 @@ impl MerkleTreeHook for AeMerkleTreeHook {
         &self,
         _height: u64,
     ) -> ChainResult<CheckpointAtBlock> {
-        // AE does not natively support querying at a specific block height
-        // via dry-run; fall back to latest state.
         let result = self
             .provider
-            .call_contract(&self.contract_address, "latest_checkpoint", vec![])
+            .call_contract(
+                &self.contract_address,
+                "latest_checkpoint",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
 
-        let (root, index) = Self::parse_checkpoint(result)?;
+        let (root, index) = Self::parse_checkpoint(&result)?;
 
         Ok(CheckpointAtBlock {
             checkpoint: Checkpoint {

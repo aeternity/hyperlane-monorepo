@@ -6,7 +6,7 @@ use hyperlane_core::{
 };
 
 use crate::{
-    h256_to_contract_address, AeternityProvider, FateValue, HyperlaneAeternityError,
+    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
 };
 
 /// Aeternity Validator Announce
@@ -38,8 +38,8 @@ impl AeValidatorAnnounce {
     ///
     /// Hyperlane identifies validators by their secp256k1 Ethereum address (20 bytes)
     /// stored in H256 (32 bytes, left-padded with 12 zero bytes).
-    fn h256_to_eth_address_bytes(h: &H256) -> Vec<u8> {
-        h.as_bytes()[12..].to_vec()
+    fn h256_to_eth_address_hex(h: &H256) -> String {
+        format!("#{}", hex::encode(&h.as_bytes()[12..]))
     }
 }
 
@@ -63,95 +63,67 @@ impl HyperlaneChain for AeValidatorAnnounce {
 impl ValidatorAnnounce for AeValidatorAnnounce {
     /// Returns the announced storage locations for the provided validators.
     ///
-    /// For each validator (identified by secp256k1 Ethereum-style address as H256),
-    /// returns the list of storage location strings they've announced.
-    ///
     /// Calls Sophia entrypoint:
     ///   `get_announced_storage_locations(validators: list(bytes(20))) : list(list(string))`
     async fn get_announced_storage_locations(
         &self,
         validators: &[H256],
     ) -> ChainResult<Vec<Vec<String>>> {
-        let validator_bytes: Vec<FateValue> = validators
+        let validator_args: Vec<String> = validators
             .iter()
-            .map(|v| FateValue::Bytes(Self::h256_to_eth_address_bytes(v)))
+            .map(Self::h256_to_eth_address_hex)
             .collect();
+        let list_arg = format!("[{}]", validator_args.join(", "));
 
         let result = self
             .provider
             .call_contract(
                 &self.contract_address,
                 "get_announced_storage_locations",
-                vec![FateValue::List(validator_bytes)],
+                &[list_arg],
+                contracts::VALIDATOR_ANNOUNCE_SOURCE,
             )
             .await?;
 
-        match result {
-            FateValue::List(outer) => {
-                let mut all_locations = Vec::with_capacity(outer.len());
-                for inner_value in outer {
-                    match inner_value {
-                        FateValue::List(inner) => {
-                            let mut locations = Vec::with_capacity(inner.len());
-                            for item in inner {
-                                match item {
-                                    FateValue::String(s) => locations.push(s),
-                                    other => {
-                                        return Err(
-                                            HyperlaneAeternityError::ContractCallError(
-                                                format!(
-                                                "expected String for storage location, got {:?}",
-                                                other
-                                            ),
-                                            )
-                                            .into(),
-                                        )
-                                    }
-                                }
-                            }
-                            all_locations.push(locations);
-                        }
-                        other => {
-                            return Err(HyperlaneAeternityError::ContractCallError(format!(
-                                "expected List for validator locations, got {:?}",
-                                other
-                            ))
-                            .into())
-                        }
-                    }
-                }
-                Ok(all_locations)
-            }
-            other => Err(HyperlaneAeternityError::ContractCallError(format!(
-                "expected List from get_announced_storage_locations(), got {:?}",
-                other
+        let outer = result.as_array().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected list from get_announced_storage_locations(), got {result}"
             ))
-            .into()),
+        })?;
+
+        let mut all_locations = Vec::with_capacity(outer.len());
+        for inner_value in outer {
+            let inner = inner_value.as_array().ok_or_else(|| {
+                HyperlaneAeternityError::ContractCallError(format!(
+                    "expected list for validator locations, got {inner_value}"
+                ))
+            })?;
+            let mut locations = Vec::with_capacity(inner.len());
+            for item in inner {
+                let s = item.as_str().ok_or_else(|| {
+                    HyperlaneAeternityError::ContractCallError(format!(
+                        "expected string for storage location, got {item}"
+                    ))
+                })?;
+                locations.push(s.to_string());
+            }
+            all_locations.push(locations);
         }
+        Ok(all_locations)
     }
 
     /// Announce a validator's storage location.
-    ///
-    /// The announcement must be signed with the validator's secp256k1 key.
-    /// The signature is verified on-chain by the ValidatorAnnounce contract.
-    ///
-    /// Calls Sophia entrypoint:
-    ///   `announce(validator: bytes(20), storage_location: string, signature: bytes(65))`
     async fn announce(&self, announcement: SignedType<Announcement>) -> ChainResult<TxOutcome> {
-        let validator_bytes =
-            Self::h256_to_eth_address_bytes(&announcement.value.validator.into());
-        let storage_location = announcement.value.storage_location.clone();
-        let signature = announcement.signature.to_vec();
+        let validator_hex = Self::h256_to_eth_address_hex(&announcement.value.validator.into());
+        let storage_location = format!("\"{}\"", announcement.value.storage_location);
+        let signature_hex = format!("#{}", hex::encode(announcement.signature.to_vec()));
 
         self.provider
             .send_contract_call(
                 &self.contract_address,
                 "announce",
-                vec![
-                    FateValue::Bytes(validator_bytes),
-                    FateValue::String(storage_location),
-                    FateValue::Bytes(signature),
-                ],
+                &[validator_hex, storage_location, signature_hex],
+                contracts::VALIDATOR_ANNOUNCE_SOURCE,
                 0,
                 0,
             )
@@ -160,8 +132,6 @@ impl ValidatorAnnounce for AeValidatorAnnounce {
 
     /// Returns the number of additional tokens needed to pay for the announce
     /// transaction.
-    ///
-    /// Announce on Aeternity only costs gas — no additional tokens are required.
     async fn announce_tokens_needed(
         &self,
         _announcement: SignedType<Announcement>,
