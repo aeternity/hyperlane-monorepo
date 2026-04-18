@@ -1,7 +1,6 @@
 use std::ops::RangeInclusive;
 
 use async_trait::async_trait;
-use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     ChainResult, ContractLocator, HyperlaneChain, HyperlaneContract, HyperlaneDomain,
@@ -9,8 +8,9 @@ use hyperlane_core::{
     SequenceAwareIndexer, H256, H512,
 };
 
+use crate::contracts;
 use crate::events::{parse_gas_payment, ContractLogEntry, GAS_PAYMENT_HASH};
-use crate::provider::{AeternityProvider, FateValue};
+use crate::provider::AeternityProvider;
 use crate::types::h256_to_contract_address;
 
 /// Aeternity Interchain Gas Indexer
@@ -125,13 +125,15 @@ impl SequenceAwareIndexer<InterchainGasPayment> for AeIgpIndexer {
     async fn latest_sequence_count_and_tip(&self) -> ChainResult<(Option<u32>, u32)> {
         let count = self
             .provider
-            .call_contract(&self.contract_address, "sequence", vec![])
+            .call_contract(
+                &self.contract_address,
+                "sequence",
+                &[],
+                contracts::IGP_SOURCE,
+            )
             .await?;
 
-        let sequence = match count {
-            FateValue::Integer(n) => n.to_u32().unwrap_or(0),
-            _ => 0,
-        };
+        let sequence = count.as_u64().map(|n| n as u32).unwrap_or(0);
         let tip = self.provider.get_finalized_block_number().await? as u32;
         Ok((Some(sequence), tip))
     }

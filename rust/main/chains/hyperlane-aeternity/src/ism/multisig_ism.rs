@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     ChainResult, ContractLocator, Encode, HyperlaneChain, HyperlaneContract, HyperlaneDomain,
@@ -8,10 +7,10 @@ use hyperlane_core::{
 };
 
 use crate::{
-    h256_to_contract_address, AeternityProvider, FateValue, HyperlaneAeternityError,
+    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
 };
 
-use super::interchain_security_module::fate_to_module_type;
+use super::interchain_security_module::json_to_module_type;
 
 /// Aeternity Multisig ISM
 ///
@@ -56,19 +55,20 @@ impl HyperlaneChain for AeMultisigIsm {
 
 #[async_trait]
 impl InterchainSecurityModule for AeMultisigIsm {
-    /// Returns the module type of this ISM.
     async fn module_type(&self) -> ChainResult<ModuleType> {
         let result = self
             .provider
-            .call_contract(&self.contract_address, "module_type", vec![])
+            .call_contract(
+                &self.contract_address,
+                "module_type",
+                &[],
+                contracts::MULTISIG_ISM_SOURCE,
+            )
             .await?;
 
-        fate_to_module_type(result)
+        json_to_module_type(&result)
     }
 
-    /// Dry runs the `verify()` ISM call.
-    ///
-    /// Returns `None` — Aeternity handles verification on-chain.
     async fn dry_run_verify(
         &self,
         _message: &HyperlaneMessage,
@@ -80,84 +80,73 @@ impl InterchainSecurityModule for AeMultisigIsm {
 
 #[async_trait]
 impl MultisigIsm for AeMultisigIsm {
-    /// Returns the validator and threshold needed to verify message.
+    /// Returns the validators and threshold needed to verify a message.
     ///
     /// Calls Sophia entrypoint:
-    ///   `validators_and_threshold(message: bytes) : { validators: list(bytes(20)), threshold: int }`
-    ///
-    /// Each 20-byte validator address is left-padded with 12 zero bytes to produce H256.
+    ///   `validators_and_threshold(message: bytes()) : list(bytes(20)) * int`
     async fn validators_and_threshold(
         &self,
         message: &HyperlaneMessage,
     ) -> ChainResult<(Vec<H256>, u8)> {
-        let message_bytes = message.to_vec();
+        let message_hex = format!("#{}", hex::encode(message.to_vec()));
 
         let result = self
             .provider
             .call_contract(
                 &self.contract_address,
                 "validators_and_threshold",
-                vec![FateValue::Bytes(message_bytes)],
+                &[message_hex],
+                contracts::MULTISIG_ISM_SOURCE,
             )
             .await?;
 
-        let (validators_value, threshold_value) = match result {
-            FateValue::Tuple(fields) if fields.len() == 2 => {
-                (fields[0].clone(), fields[1].clone())
-            }
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Tuple(2) from validators_and_threshold(), got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+        let arr = result.as_array().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected tuple array from validators_and_threshold(), got {result}"
+            ))
+        })?;
 
-        let validators = match validators_value {
-            FateValue::List(items) => {
-                let mut addrs = Vec::with_capacity(items.len());
-                for item in items {
-                    match item {
-                        FateValue::Bytes(b) if b.len() == 20 => {
-                            let mut h256_bytes = [0u8; 32];
-                            h256_bytes[12..].copy_from_slice(&b);
-                            addrs.push(H256::from(h256_bytes));
-                        }
-                        other => {
-                            return Err(HyperlaneAeternityError::ContractCallError(
-                                format!(
-                                    "expected Bytes(20) for validator address, got {:?}",
-                                    other
-                                ),
-                            )
-                            .into())
-                        }
-                    }
-                }
-                addrs
-            }
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected List for validators, got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+        if arr.len() != 2 {
+            return Err(HyperlaneAeternityError::ContractCallError(format!(
+                "expected 2-element tuple, got {} elements",
+                arr.len()
+            ))
+            .into());
+        }
 
-        let threshold = match threshold_value {
-            FateValue::Integer(n) => n.to_u8().ok_or_else(|| {
-                HyperlaneAeternityError::ContractCallError("threshold overflow for u8".into())
-            })?,
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Integer for threshold, got {:?}",
-                    other
+        let validators_arr = arr[0].as_array().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected list for validators, got {}",
+                arr[0]
+            ))
+        })?;
+
+        let mut validators = Vec::with_capacity(validators_arr.len());
+        for item in validators_arr {
+            let hex_str = item.as_str().ok_or_else(|| {
+                HyperlaneAeternityError::ContractCallError(format!(
+                    "expected hex string for validator, got {item}"
                 ))
-                .into())
+            })?;
+            let hex_clean = hex_str.trim_start_matches('#');
+            let bytes = hex::decode(hex_clean).map_err(|e| {
+                HyperlaneAeternityError::ContractCallError(format!(
+                    "invalid hex for validator: {e}"
+                ))
+            })?;
+            if bytes.len() == 20 {
+                let mut h256_bytes = [0u8; 32];
+                h256_bytes[12..].copy_from_slice(&bytes);
+                validators.push(H256::from(h256_bytes));
             }
-        };
+        }
+
+        let threshold = arr[1].as_u64().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected integer for threshold, got {}",
+                arr[1]
+            ))
+        })? as u8;
 
         Ok((validators, threshold))
     }

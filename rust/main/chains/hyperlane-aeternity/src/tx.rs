@@ -9,15 +9,15 @@ use crate::signer::AeSigner;
 // Constants
 // ---------------------------------------------------------------------------
 
-const CONTRACT_CALL_TX_TAG: u64 = 42;
+const CONTRACT_CALL_TX_TAG: u64 = 43;
 const CONTRACT_CALL_TX_VERSION: u64 = 1;
 const SIGNED_TX_TAG: u64 = 11;
 const SIGNED_TX_VERSION: u64 = 1;
 const FATE_ABI_VERSION: u64 = 3;
 
-const GAS_PER_BYTE: u64 = 20;
-const BASE_GAS_PRICE: u64 = 1_000_000_000;
-const SIGNATURE_SIZE: u64 = 64;
+const _GAS_PER_BYTE: u64 = 20;
+const _BASE_GAS_PRICE: u64 = 1_000_000_000;
+const _SIGNATURE_SIZE: u64 = 64;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -99,8 +99,12 @@ impl AeTxBuilder {
         let tx_hash = Sha256::digest(Sha256::digest(&signed_tx));
         let hash_str = crate::utils::encode_ae_hash(&tx_hash, "th")?;
 
+        // AE API encoding: tx_<base64(rlp_bytes ++ sha256(sha256(rlp_bytes))[0..4])>
         use base64::{engine::general_purpose::STANDARD, Engine};
-        let encoded = format!("tx_{}", STANDARD.encode(&signed_tx));
+        let checksum = &Sha256::digest(Sha256::digest(&signed_tx))[..4];
+        let mut payload = signed_tx;
+        payload.extend_from_slice(checksum);
+        let encoded = format!("tx_{}", STANDARD.encode(&payload));
 
         Ok(SignedTransaction {
             hash: hash_str,
@@ -111,8 +115,9 @@ impl AeTxBuilder {
     }
 
     /// Calculate the minimum fee for a given transaction byte size.
+    #[allow(dead_code)]
     pub fn calculate_fee(tx_byte_size: u64) -> u64 {
-        (tx_byte_size + SIGNATURE_SIZE) * GAS_PER_BYTE * BASE_GAS_PRICE
+        (tx_byte_size + _SIGNATURE_SIZE) * _GAS_PER_BYTE * _BASE_GAS_PRICE
     }
 
     /// Return a reference to the inner signer.
@@ -126,7 +131,18 @@ impl AeTxBuilder {
 // RLP encoding
 // ---------------------------------------------------------------------------
 
-/// RLP-encode a ContractCallTx with tag=42, version=1.
+/// Encode a u64 as AE-style big-endian bytes (0 becomes [0x00], not empty).
+fn ae_int(val: u64) -> Vec<u8> {
+    if val == 0 {
+        return vec![0u8];
+    }
+    val.to_be_bytes()
+        .into_iter()
+        .skip_while(|&b| b == 0)
+        .collect()
+}
+
+/// RLP-encode a ContractCallTx with tag=43 (FATE), version=1.
 fn rlp_encode_contract_call(
     caller_id: &[u8],
     nonce: u64,
@@ -139,18 +155,18 @@ fn rlp_encode_contract_call(
     gas_price: u64,
     call_data: &[u8],
 ) -> Vec<u8> {
-    let mut stream = RlpStream::new_list(11);
-    stream.append(&CONTRACT_CALL_TX_TAG);
-    stream.append(&CONTRACT_CALL_TX_VERSION);
+    let mut stream = RlpStream::new_list(12);
+    stream.append(&ae_int(CONTRACT_CALL_TX_TAG));
+    stream.append(&ae_int(CONTRACT_CALL_TX_VERSION));
     stream.append(&caller_id);
-    stream.append(&nonce);
+    stream.append(&ae_int(nonce));
     stream.append(&contract_id);
-    stream.append(&abi_version);
-    stream.append(&fee);
-    stream.append(&ttl);
-    stream.append(&amount);
-    stream.append(&gas);
-    stream.append(&gas_price);
+    stream.append(&ae_int(abi_version));
+    stream.append(&ae_int(fee));
+    stream.append(&ae_int(ttl));
+    stream.append(&ae_int(amount));
+    stream.append(&ae_int(gas));
+    stream.append(&ae_int(gas_price));
     stream.append(&call_data);
     stream.out().to_vec()
 }
@@ -158,8 +174,8 @@ fn rlp_encode_contract_call(
 /// RLP-encode a SignedTx with tag=11, version=1.
 fn rlp_encode_signed_tx(signatures: Vec<Vec<u8>>, tx_bytes: &[u8]) -> Vec<u8> {
     let mut stream = RlpStream::new_list(4);
-    stream.append(&SIGNED_TX_TAG);
-    stream.append(&SIGNED_TX_VERSION);
+    stream.append(&ae_int(SIGNED_TX_TAG));
+    stream.append(&ae_int(SIGNED_TX_VERSION));
     stream.append_list::<Vec<u8>, Vec<u8>>(&signatures);
     stream.append(&tx_bytes);
     stream.out().to_vec()

@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     AggregationIsm, ChainResult, ContractLocator, Encode, HyperlaneChain, HyperlaneContract,
@@ -8,11 +7,11 @@ use hyperlane_core::{
 };
 
 use crate::{
-    h256_to_contract_address, AeternityProvider, FateValue,
+    ae_address_to_h256, contracts, h256_to_contract_address, AeternityProvider,
     HyperlaneAeternityError,
 };
 
-use super::interchain_security_module::fate_to_module_type;
+use super::interchain_security_module::json_to_module_type;
 
 /// Aeternity Aggregation ISM
 ///
@@ -57,19 +56,20 @@ impl HyperlaneChain for AeAggregationIsm {
 
 #[async_trait]
 impl InterchainSecurityModule for AeAggregationIsm {
-    /// Returns the module type of this ISM.
     async fn module_type(&self) -> ChainResult<ModuleType> {
         let result = self
             .provider
-            .call_contract(&self.contract_address, "module_type", vec![])
+            .call_contract(
+                &self.contract_address,
+                "module_type",
+                &[],
+                contracts::AGGREGATION_ISM_SOURCE,
+            )
             .await?;
 
-        fate_to_module_type(result)
+        json_to_module_type(&result)
     }
 
-    /// Dry runs the `verify()` ISM call.
-    ///
-    /// Returns `None` — Aeternity handles verification on-chain.
     async fn dry_run_verify(
         &self,
         _message: &HyperlaneMessage,
@@ -84,76 +84,60 @@ impl AggregationIsm for AeAggregationIsm {
     /// Returns the `m` sub-ISMs and `n` threshold needed for n-of-m verification.
     ///
     /// Calls Sophia entrypoint:
-    ///   `modules_and_threshold(message: bytes) : { modules: list(IInterchainSecurityModule), threshold: int }`
-    ///
-    /// Each module address is returned as H256 directly from the FATE Address value.
+    ///   `modules_and_threshold(message: bytes()) : list(address) * int`
     async fn modules_and_threshold(
         &self,
         message: &HyperlaneMessage,
     ) -> ChainResult<(Vec<H256>, u8)> {
-        let message_bytes = message.to_vec();
+        let message_hex = format!("#{}", hex::encode(message.to_vec()));
 
         let result = self
             .provider
             .call_contract(
                 &self.contract_address,
                 "modules_and_threshold",
-                vec![FateValue::Bytes(message_bytes)],
+                &[message_hex],
+                contracts::AGGREGATION_ISM_SOURCE,
             )
             .await?;
 
-        let (modules_value, threshold_value) = match result {
-            FateValue::Tuple(fields) if fields.len() == 2 => {
-                (fields[0].clone(), fields[1].clone())
-            }
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Tuple(2) from modules_and_threshold(), got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+        let arr = result.as_array().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected tuple array from modules_and_threshold(), got {result}"
+            ))
+        })?;
 
-        let modules = match modules_value {
-            FateValue::List(items) => {
-                let mut addrs = Vec::with_capacity(items.len());
-                for item in items {
-                    match item {
-                        FateValue::Address(addr) => {
-                            addrs.push(addr);
-                        }
-                        other => {
-                            return Err(HyperlaneAeternityError::ContractCallError(
-                                format!("expected Address for module, got {:?}", other),
-                            )
-                            .into())
-                        }
-                    }
-                }
-                addrs
-            }
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected List for modules, got {:?}",
-                    other
-                ))
-                .into())
-            }
-        };
+        if arr.len() != 2 {
+            return Err(HyperlaneAeternityError::ContractCallError(format!(
+                "expected 2-element tuple, got {} elements",
+                arr.len()
+            ))
+            .into());
+        }
 
-        let threshold = match threshold_value {
-            FateValue::Integer(n) => n.to_u8().ok_or_else(|| {
-                HyperlaneAeternityError::ContractCallError("threshold overflow for u8".into())
-            })?,
-            other => {
-                return Err(HyperlaneAeternityError::ContractCallError(format!(
-                    "expected Integer for threshold, got {:?}",
-                    other
+        let modules_arr = arr[0].as_array().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected list for modules, got {}",
+                arr[0]
+            ))
+        })?;
+
+        let mut modules = Vec::with_capacity(modules_arr.len());
+        for item in modules_arr {
+            let addr_str = item.as_str().ok_or_else(|| {
+                HyperlaneAeternityError::ContractCallError(format!(
+                    "expected address string for module, got {item}"
                 ))
-                .into())
-            }
-        };
+            })?;
+            modules.push(ae_address_to_h256(addr_str)?);
+        }
+
+        let threshold = arr[1].as_u64().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected integer for threshold, got {}",
+                arr[1]
+            ))
+        })? as u8;
 
         Ok((modules, threshold))
     }

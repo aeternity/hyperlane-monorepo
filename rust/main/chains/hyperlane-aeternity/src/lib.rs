@@ -6,6 +6,8 @@
 /// Aeternity application-specific functionality
 pub mod application;
 mod config;
+/// Sophia contract source stubs for compiler-based calldata encoding/decoding.
+pub mod contracts;
 mod error;
 mod events;
 /// Aeternity event indexers
@@ -31,7 +33,7 @@ pub use {
     ism::{AeAggregationIsm, AeIsm, AeMultisigIsm, AeRoutingIsm},
     mailbox::{AeMailbox, AeTxCalldata},
     merkle_tree_hook::AeMerkleTreeHook,
-    provider::{AeternityProvider, FateValue},
+    provider::{AeProviderSigner, AeternityProvider, FateValue},
     signer::AeSigner,
     validator_announce::AeValidatorAnnounce,
 };

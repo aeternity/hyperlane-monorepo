@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
 
 use hyperlane_core::{
@@ -9,8 +8,7 @@ use hyperlane_core::{
 };
 
 use crate::{
-    h256_to_contract_address, AeternityProvider, FateValue,
-    HyperlaneAeternityError,
+    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
 };
 
 /// Data required to send a contract call on Aeternity.
@@ -109,78 +107,77 @@ impl Mailbox for AeMailbox {
     async fn count(&self, _reorg_period: &ReorgPeriod) -> ChainResult<u32> {
         let result = self
             .provider
-            .call_contract(&self.contract_address, "nonce", vec![])
+            .call_contract(
+                &self.contract_address,
+                "nonce",
+                &[],
+                contracts::MAILBOX_SOURCE,
+            )
             .await?;
 
-        match result {
-            FateValue::Integer(n) => n
-                .to_u32()
-                .ok_or_else(|| {
-                    HyperlaneAeternityError::ContractCallError(
-                        "nonce value overflow for u32".into(),
-                    )
-                    .into()
-                }),
-            other => Err(HyperlaneAeternityError::ContractCallError(format!(
-                "expected Integer from nonce(), got {:?}",
-                other
-            ))
-            .into()),
-        }
+        result
+            .as_u64()
+            .and_then(|n| u32::try_from(n).ok())
+            .ok_or_else(|| {
+                HyperlaneAeternityError::ContractCallError(format!(
+                    "expected integer from nonce(), got {result}"
+                ))
+                .into()
+            })
     }
 
     /// Check if a message has been delivered.
     async fn delivered(&self, id: H256) -> ChainResult<bool> {
+        let id_hex = format!("#{}", hex::encode(id.as_bytes()));
         let result = self
             .provider
             .call_contract(
                 &self.contract_address,
                 "delivered",
-                vec![FateValue::Bytes(id.as_bytes().to_vec())],
+                &[id_hex],
+                contracts::MAILBOX_SOURCE,
             )
             .await?;
 
-        match result {
-            FateValue::Boolean(b) => Ok(b),
-            other => Err(HyperlaneAeternityError::ContractCallError(format!(
-                "expected Boolean from delivered(), got {:?}",
-                other
+        result.as_bool().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected bool from delivered(), got {result}"
             ))
-            .into()),
-        }
+            .into()
+        })
     }
 
     /// Fetch the current default interchain security module address.
     async fn default_ism(&self) -> ChainResult<H256> {
         let result = self
             .provider
-            .call_contract(&self.contract_address, "default_ism", vec![])
+            .call_contract(
+                &self.contract_address,
+                "default_ism",
+                &[],
+                contracts::MAILBOX_SOURCE,
+            )
             .await?;
 
-        match result {
-            FateValue::Address(addr) => Ok(addr),
-            other => Err(HyperlaneAeternityError::ContractCallError(format!(
-                "expected Address from default_ism(), got {:?}",
-                other
-            ))
-            .into()),
-        }
+        parse_option_contract_address(&result)
     }
 
     /// Get the ISM address for a specific recipient.
     async fn recipient_ism(&self, recipient: H256) -> ChainResult<H256> {
+        let recipient_addr = crate::h256_to_account_address(recipient);
         let result = self
             .provider
             .call_contract(
                 &self.contract_address,
-                "recipient_ism",
-                vec![FateValue::Address(recipient)],
+                "get_recipient_ism",
+                &[recipient_addr],
+                contracts::MAILBOX_SOURCE,
             )
-            .await?;
+            .await;
 
         match result {
-            FateValue::Address(addr) => Ok(addr),
-            _ => self.default_ism().await,
+            Ok(val) => parse_option_contract_address(&val),
+            Err(_) => self.default_ism().await,
         }
     }
 
@@ -191,17 +188,15 @@ impl Mailbox for AeMailbox {
         metadata: &Metadata,
         _tx_gas_limit: Option<U256>,
     ) -> ChainResult<TxOutcome> {
-        let message_bytes = message.to_vec();
-        let metadata_bytes = metadata.to_vec();
+        let message_hex = format!("#{}", hex::encode(message.to_vec()));
+        let metadata_hex = format!("#{}", hex::encode(metadata.to_vec()));
 
         self.provider
             .send_contract_call(
                 &self.contract_address,
                 "process",
-                vec![
-                    FateValue::Bytes(metadata_bytes),
-                    FateValue::Bytes(message_bytes),
-                ],
+                &[metadata_hex, message_hex],
+                contracts::MAILBOX_SOURCE,
                 0,
                 0,
             )
@@ -214,18 +209,16 @@ impl Mailbox for AeMailbox {
         message: &HyperlaneMessage,
         metadata: &Metadata,
     ) -> ChainResult<TxCostEstimate> {
-        let message_bytes = message.to_vec();
-        let metadata_bytes = metadata.to_vec();
+        let message_hex = format!("#{}", hex::encode(message.to_vec()));
+        let metadata_hex = format!("#{}", hex::encode(metadata.to_vec()));
 
         let result = self
             .provider
             .call_contract(
                 &self.contract_address,
                 "process",
-                vec![
-                    FateValue::Bytes(metadata_bytes),
-                    FateValue::Bytes(message_bytes),
-                ],
+                &[metadata_hex, message_hex],
+                contracts::MAILBOX_SOURCE,
             )
             .await;
 
@@ -252,6 +245,24 @@ impl Mailbox for AeMailbox {
     fn delivered_calldata(&self, message_id: H256) -> ChainResult<Option<Vec<u8>>> {
         Self::build_delivered_calldata(&self.contract_address, message_id)
     }
+}
+
+/// Parse `option(contract_ref)` decoded by the compiler.
+///
+/// The compiler decodes `Some(ct_...)` as `{"Some": ["ct_..."]}` and `None` as `"None"`.
+fn parse_option_contract_address(value: &serde_json::Value) -> ChainResult<H256> {
+    if let Some(map) = value.as_object() {
+        if let Some(args) = map.get("Some") {
+            if let Some(addr_str) = args.as_array().and_then(|a| a.first()).and_then(|v| v.as_str())
+            {
+                return crate::ae_address_to_h256(addr_str);
+            }
+        }
+    }
+    Err(HyperlaneAeternityError::ContractCallError(format!(
+        "expected Some(ct_...) for ISM address, got {value}"
+    ))
+    .into())
 }
 
 #[cfg(test)]

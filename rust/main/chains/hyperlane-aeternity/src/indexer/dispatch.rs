@@ -1,15 +1,15 @@
 use std::ops::RangeInclusive;
 
 use async_trait::async_trait;
-use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     ChainResult, ContractLocator, HyperlaneMessage, Indexed, Indexer, LogMeta,
     SequenceAwareIndexer, H512,
 };
 
+use crate::contracts;
 use crate::events::{parse_dispatch_event, ContractLogEntry, DISPATCH_EVENT_HASH};
-use crate::provider::{AeternityProvider, FateValue};
+use crate::provider::AeternityProvider;
 use crate::types::h256_to_contract_address;
 
 /// Aeternity Dispatch Indexer
@@ -101,13 +101,15 @@ impl SequenceAwareIndexer<HyperlaneMessage> for AeDispatchIndexer {
     async fn latest_sequence_count_and_tip(&self) -> ChainResult<(Option<u32>, u32)> {
         let nonce = self
             .provider
-            .call_contract(&self.contract_address, "nonce", vec![])
+            .call_contract(
+                &self.contract_address,
+                "nonce",
+                &[],
+                contracts::MAILBOX_SOURCE,
+            )
             .await?;
 
-        let sequence = match nonce {
-            FateValue::Integer(n) => n.to_u32().unwrap_or(0),
-            _ => 0,
-        };
+        let sequence = nonce.as_u64().map(|n| n as u32).unwrap_or(0);
         let tip = self.provider.get_finalized_block_number().await? as u32;
         Ok((Some(sequence), tip))
     }

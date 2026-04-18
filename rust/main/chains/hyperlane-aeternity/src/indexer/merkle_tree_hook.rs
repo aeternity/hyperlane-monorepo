@@ -1,7 +1,6 @@
 use std::ops::RangeInclusive;
 
 use async_trait::async_trait;
-use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     accumulator::incremental::IncrementalMerkle, ChainResult, Checkpoint, CheckpointAtBlock,
@@ -10,8 +9,9 @@ use hyperlane_core::{
     ReorgPeriod, SequenceAwareIndexer, H256, H512,
 };
 
+use crate::contracts;
 use crate::events::{parse_merkle_insertion, ContractLogEntry, INSERTED_INTO_TREE_HASH};
-use crate::provider::{AeternityProvider, FateValue};
+use crate::provider::AeternityProvider;
 use crate::types::h256_to_contract_address;
 
 /// Aeternity Merkle Tree Indexer
@@ -57,36 +57,15 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
     async fn tree(&self, _reorg_period: &ReorgPeriod) -> ChainResult<IncrementalMerkleAtBlock> {
         let tree_data = self
             .provider
-            .call_contract(&self.contract_address, "tree", vec![])
+            .call_contract(
+                &self.contract_address,
+                "tree",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
 
-        let (branch, count) = match tree_data {
-            FateValue::Tuple(fields) if fields.len() == 2 => {
-                let branch_list = match &fields[0] {
-                    FateValue::List(items) => {
-                        let mut branch = [H256::zero(); 32];
-                        for (i, item) in items.iter().enumerate() {
-                            if i >= 32 { break; }
-                            if let FateValue::Bytes(b) = item {
-                                if b.len() == 32 {
-                                    branch[i] = H256::from_slice(b);
-                                }
-                            }
-                        }
-                        branch
-                    }
-                    _ => [H256::zero(); 32],
-                };
-                let count = match &fields[1] {
-                    FateValue::Integer(n) => n.to_usize().unwrap_or(0),
-                    _ => 0,
-                };
-                (branch_list, count)
-            }
-            _ => ([H256::zero(); 32], 0),
-        };
-
-        let tree = IncrementalMerkle::new(branch, count);
+        let tree = parse_tree_json(&tree_data);
         let block_height = self.provider.get_finalized_block_number().await?;
 
         Ok(IncrementalMerkleAtBlock {
@@ -98,16 +77,17 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
     async fn count(&self, _reorg_period: &ReorgPeriod) -> ChainResult<u32> {
         let count = self
             .provider
-            .call_contract(&self.contract_address, "count", vec![])
+            .call_contract(
+                &self.contract_address,
+                "count",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
-        match count {
-            FateValue::Integer(n) => n.to_u32().ok_or_else(|| {
-                hyperlane_core::ChainCommunicationError::from_other_str("failed to decode count")
-            }),
-            _ => Err(hyperlane_core::ChainCommunicationError::from_other_str(
-                "unexpected type from count()",
-            )),
-        }
+
+        count.as_u64().map(|n| n as u32).ok_or_else(|| {
+            hyperlane_core::ChainCommunicationError::from_other_str("failed to decode count")
+        })
     }
 
     async fn latest_checkpoint(
@@ -124,33 +104,27 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
     ) -> ChainResult<CheckpointAtBlock> {
         let checkpoint_data = self
             .provider
-            .call_contract(&self.contract_address, "latest_checkpoint", vec![])
+            .call_contract(
+                &self.contract_address,
+                "latest_checkpoint",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
 
-        let (root, index) = match checkpoint_data {
-            FateValue::Tuple(fields) if fields.len() == 2 => {
-                let root = match &fields[0] {
-                    FateValue::Bytes(b) if b.len() == 32 => H256::from_slice(b),
-                    _ => H256::zero(),
-                };
-                let index = match &fields[1] {
-                    FateValue::Integer(n) => n.to_u32().unwrap_or(0),
-                    _ => 0,
-                };
-                (root, index)
-            }
-            _ => (H256::zero(), 0u32),
-        };
+        let (root, index) = parse_checkpoint_json(&checkpoint_data);
 
         let domain_data = self
             .provider
-            .call_contract(&self.contract_address, "local_domain", vec![])
+            .call_contract(
+                &self.contract_address,
+                "local_domain",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
 
-        let mailbox_domain = match domain_data {
-            FateValue::Integer(n) => n.to_u32().unwrap_or(self.domain.id()),
-            _ => self.domain.id(),
-        };
+        let mailbox_domain = domain_data.as_u64().map(|n| n as u32).unwrap_or(self.domain.id());
 
         Ok(CheckpointAtBlock {
             checkpoint: Checkpoint {
@@ -162,6 +136,54 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
             block_height: Some(block_height),
         })
     }
+}
+
+/// Parse compiler-decoded tree JSON into `IncrementalMerkle`.
+fn parse_tree_json(value: &serde_json::Value) -> IncrementalMerkle {
+    let mut branch = [H256::zero(); 32];
+    let mut count = 0usize;
+
+    if let Some(obj) = value.as_object() {
+        if let Some(branch_map) = obj.get("branch").and_then(|v| v.as_object()) {
+            for (key, val) in branch_map {
+                if let (Ok(idx), Some(hex_str)) = (key.parse::<usize>(), val.as_str()) {
+                    if idx < 32 {
+                        let hex_clean = hex_str.trim_start_matches('#');
+                        if let Ok(bytes) = hex::decode(hex_clean) {
+                            if bytes.len() == 32 {
+                                branch[idx] = H256::from_slice(&bytes);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if let Some(c) = obj.get("count").and_then(|v| v.as_u64()) {
+            count = c as usize;
+        }
+    }
+
+    IncrementalMerkle::new(branch, count)
+}
+
+/// Parse compiler-decoded checkpoint tuple JSON into `(root, index)`.
+fn parse_checkpoint_json(value: &serde_json::Value) -> (H256, u32) {
+    if let Some(arr) = value.as_array() {
+        if arr.len() == 2 {
+            let root = arr[0]
+                .as_str()
+                .and_then(|s| {
+                    let clean = s.trim_start_matches('#');
+                    hex::decode(clean).ok()
+                })
+                .filter(|b| b.len() == 32)
+                .map(|b| H256::from_slice(&b))
+                .unwrap_or_default();
+            let index = arr[1].as_u64().unwrap_or(0) as u32;
+            return (root, index);
+        }
+    }
+    (H256::zero(), 0)
 }
 
 #[async_trait]
@@ -235,13 +257,15 @@ impl SequenceAwareIndexer<MerkleTreeInsertion> for AeMerkleTreeIndexer {
     async fn latest_sequence_count_and_tip(&self) -> ChainResult<(Option<u32>, u32)> {
         let count = self
             .provider
-            .call_contract(&self.contract_address, "count", vec![])
+            .call_contract(
+                &self.contract_address,
+                "count",
+                &[],
+                contracts::MERKLE_TREE_HOOK_SOURCE,
+            )
             .await?;
 
-        let sequence = match count {
-            FateValue::Integer(n) => n.to_u32().unwrap_or(0),
-            _ => 0,
-        };
+        let sequence = count.as_u64().map(|n| n as u32).unwrap_or(0);
         let tip = self.provider.get_finalized_block_number().await? as u32;
         Ok((Some(sequence), tip))
     }

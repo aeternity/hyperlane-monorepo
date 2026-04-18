@@ -62,11 +62,13 @@ impl AeSigner {
 
     /// Sign an AE transaction.
     ///
-    /// AE protocol: `sign(network_id_bytes ++ tx_bytes)`
+    /// AE protocol: `sign(network_id_bytes ++ blake2b_256(tx_bytes))`
+    /// AE protocol: `sign(network_id_bytes ++ blake2b_256(tx_bytes))`
     pub fn sign_transaction(&self, tx_bytes: &[u8]) -> ChainResult<Vec<u8>> {
-        let mut payload = Vec::with_capacity(self.network_id.len() + tx_bytes.len());
+        let tx_hash = crate::blake2b_256(tx_bytes);
+        let mut payload = Vec::with_capacity(self.network_id.len() + 32);
         payload.extend_from_slice(self.network_id.as_bytes());
-        payload.extend_from_slice(tx_bytes);
+        payload.extend_from_slice(&tx_hash);
         self.sign(&payload)
     }
 
@@ -131,9 +133,10 @@ mod tests {
         pk_bytes.copy_from_slice(&signer.public_key);
         let verifying_key = VerifyingKey::from_bytes(&pk_bytes).unwrap();
 
+        let tx_hash = crate::blake2b_256(tx_bytes);
         let mut expected_payload = Vec::new();
         expected_payload.extend_from_slice(b"ae_uat");
-        expected_payload.extend_from_slice(tx_bytes);
+        expected_payload.extend_from_slice(&tx_hash);
 
         let signature = Signature::from_bytes(sig.as_slice().try_into().unwrap());
         assert!(verifying_key.verify(&expected_payload, &signature).is_ok());

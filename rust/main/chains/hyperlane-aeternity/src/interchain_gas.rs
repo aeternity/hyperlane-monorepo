@@ -1,6 +1,4 @@
 use async_trait::async_trait;
-use num_bigint::BigUint;
-use num_traits::ToPrimitive;
 
 use hyperlane_core::{
     ChainResult, ContractLocator, HyperlaneChain, HyperlaneContract, HyperlaneDomain,
@@ -8,7 +6,7 @@ use hyperlane_core::{
 };
 
 use crate::{
-    h256_to_contract_address, AeternityProvider, FateValue, HyperlaneAeternityError,
+    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
 };
 
 /// Aeternity Interchain Gas Paymaster
@@ -45,28 +43,20 @@ impl AeInterchainGasPaymaster {
             .call_contract(
                 &self.contract_address,
                 "quote_gas_payment",
-                vec![
-                    FateValue::Integer(BigUint::from(destination_domain)),
-                    FateValue::Integer(BigUint::from(gas_amount.as_u128())),
+                &[
+                    destination_domain.to_string(),
+                    gas_amount.as_u128().to_string(),
                 ],
+                contracts::IGP_SOURCE,
             )
             .await?;
 
-        match result {
-            FateValue::Integer(n) => {
-                let val = n.to_u128().ok_or_else(|| {
-                    HyperlaneAeternityError::ContractCallError(
-                        "quote_gas_payment overflow for u128".into(),
-                    )
-                })?;
-                Ok(U256::from(val))
-            }
-            other => Err(HyperlaneAeternityError::ContractCallError(format!(
-                "expected Integer from quote_gas_payment(), got {:?}",
-                other
+        let val = result.as_u64().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected integer from quote_gas_payment(), got {result}"
             ))
-            .into()),
-        }
+        })?;
+        Ok(U256::from(val))
     }
 
     /// Pay for gas on the destination chain.
@@ -84,16 +74,20 @@ impl AeInterchainGasPaymaster {
             .await?;
         let payment_amount = payment.as_u64();
 
+        let msg_id_hex = format!("#{}", hex::encode(message_id.as_bytes()));
+        let refund_addr = crate::h256_to_account_address(refund_address);
+
         self.provider
             .send_contract_call(
                 &self.contract_address,
                 "pay_for_gas",
-                vec![
-                    FateValue::Bytes(message_id.as_bytes().to_vec()),
-                    FateValue::Integer(BigUint::from(destination_domain)),
-                    FateValue::Integer(BigUint::from(gas_amount.as_u128())),
-                    FateValue::Address(refund_address),
+                &[
+                    msg_id_hex,
+                    destination_domain.to_string(),
+                    gas_amount.as_u128().to_string(),
+                    refund_addr,
                 ],
+                contracts::IGP_SOURCE,
                 payment_amount,
                 0,
             )

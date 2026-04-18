@@ -7,16 +7,24 @@ pub struct ConnectionConf {
     pub node_urls: Vec<Url>,
     /// Aeternity middleware endpoints (`/mdw/v3/...`)
     pub mdw_urls: Vec<Url>,
+    /// Sophia HTTP compiler endpoints (e.g. `http://localhost:3080`)
+    pub compiler_urls: Vec<Url>,
     /// Network identifier (e.g. `ae_mainnet`, `ae_uat`)
     pub network_id: String,
 }
 
 impl ConnectionConf {
     /// Create a new connection configuration.
-    pub fn new(node_urls: Vec<Url>, mdw_urls: Vec<Url>, network_id: String) -> Self {
+    pub fn new(
+        node_urls: Vec<Url>,
+        mdw_urls: Vec<Url>,
+        compiler_urls: Vec<Url>,
+        network_id: String,
+    ) -> Self {
         Self {
             node_urls,
             mdw_urls,
+            compiler_urls,
             network_id,
         }
     }

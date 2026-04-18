@@ -127,18 +127,32 @@ pub struct CallLogEntry {
 pub struct AccountResponse {
     /// Account address
     pub id: String,
-    /// Account balance in aettos
-    pub balance: u64,
+    /// Account balance in aettos (can exceed u64 on devnets).
+    pub balance: serde_json::Number,
     /// Current nonce
     pub nonce: u64,
     /// Account kind (basic | generalized)
     pub kind: Option<String>,
 }
 
+impl AccountResponse {
+    /// Best-effort conversion of balance to u128 (saturates on overflow).
+    pub fn balance_u128(&self) -> u128 {
+        if let Some(v) = self.balance.as_u64() {
+            return v as u128;
+        }
+        if let Some(f) = self.balance.as_f64() {
+            return f as u128;
+        }
+        0
+    }
+}
+
 /// Request body for the `/v3/dry-run` endpoint.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DryRunRequest {
     /// Top block hash to simulate against (optional)
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub top: Option<String>,
     /// Accounts to inject into state
     pub accounts: Vec<DryRunAccount>,
@@ -158,9 +172,11 @@ pub struct DryRunAccount {
 /// A transaction to simulate in a dry-run.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DryRunTx {
-    /// Base64-encoded transaction
-    pub tx: String,
+    /// Base64-encoded transaction (omit when using `call_req`)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tx: Option<String>,
     /// Call-specific fields
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub call_req: Option<DryRunCallReq>,
 }
 
@@ -174,10 +190,13 @@ pub struct DryRunCallReq {
     /// Caller address
     pub caller: String,
     /// ABI version (default 3 for FATE)
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub abi_version: Option<u32>,
     /// Gas amount
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
     /// Gas limit
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gas: Option<u64>,
 }
 
@@ -191,9 +210,11 @@ pub struct DryRunResponse {
 /// A single dry-run result.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DryRunResult {
-    /// Whether the call succeeded
+    /// The kind of dry-run entry (e.g. `"contract_call"`)
     #[serde(rename = "type")]
     pub result_type: String,
+    /// Whether the call succeeded (`"ok"` or `"error"`)
+    pub result: String,
     /// Call object (present on success)
     pub call_obj: Option<CallInfoResponse>,
     /// Reason string (present on failure)
@@ -459,7 +480,7 @@ mod tests {
             "kind": "basic"
         }"#;
         let account: AccountResponse = serde_json::from_str(json).unwrap();
-        assert_eq!(account.balance, 1_000_000);
+        assert_eq!(account.balance_u128(), 1_000_000);
         assert_eq!(account.nonce, 5);
     }
 
@@ -472,6 +493,7 @@ mod tests {
         };
         let json = serde_json::to_string(&req).unwrap();
         assert!(json.contains("\"accounts\":[]"));
+        assert!(!json.contains("\"top\""), "top: None must be omitted");
     }
 
     #[test]
