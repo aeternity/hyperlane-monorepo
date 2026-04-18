@@ -793,6 +793,15 @@ pub fn build_aeternity_connection_conf(
         false,
     );
 
+    let compiler_urls = parse_base_and_override_urls(
+        chain,
+        "compilerUrls",
+        "customCompilerUrls",
+        "http",
+        &mut local_err,
+        false,
+    );
+
     let network_id = chain
         .chain(&mut local_err)
         .get_key("networkId")
@@ -814,6 +823,7 @@ pub fn build_aeternity_connection_conf(
             hyperlane_aeternity::ConnectionConf::new(
                 rpcs.to_vec(),
                 mdw_urls,
+                compiler_urls,
                 network_id?.to_string(),
             ),
         ))
