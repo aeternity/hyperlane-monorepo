@@ -1,9 +1,14 @@
+use std::collections::HashMap;
+use std::time::Instant;
+
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use url::Url;
 
 use hyperlane_core::ChainResult;
+use hyperlane_metric::prometheus_metric::{
+    ChainInfo, ClientConnectionType, PrometheusClientMetrics, PrometheusConfig,
+};
 
 use crate::HyperlaneAeternityError;
 
@@ -16,6 +21,8 @@ use crate::HyperlaneAeternityError;
 pub struct AeCompilerClient {
     client: Client,
     base_url: Url,
+    metrics: PrometheusClientMetrics,
+    config: PrometheusConfig,
 }
 
 #[derive(Debug, Serialize)]
@@ -52,11 +59,23 @@ struct EncodeCalldataResponse {
 
 impl AeCompilerClient {
     /// Create a new compiler client pointing at `base_url`.
-    pub fn new(base_url: Url) -> Self {
+    pub fn new(
+        base_url: Url,
+        metrics: PrometheusClientMetrics,
+        chain: Option<ChainInfo>,
+    ) -> Self {
+        let config = PrometheusConfig::from_url(&base_url, ClientConnectionType::Rpc, chain);
         Self {
             client: Client::new(),
             base_url,
+            metrics,
+            config,
         }
+    }
+
+    fn track(&self, method: &str, start: Instant, success: bool) {
+        self.metrics
+            .increment_metrics(&self.config, method, start, success);
     }
 
     /// Encode calldata for a contract function call.
@@ -71,43 +90,48 @@ impl AeCompilerClient {
         arguments: &[String],
         file_system: Option<&HashMap<String, String>>,
     ) -> ChainResult<String> {
-        let url = format!(
-            "{}/encode-calldata",
-            self.base_url.as_str().trim_end_matches('/')
-        );
+        let start = Instant::now();
+        let res: ChainResult<_> = async {
+            let url = format!(
+                "{}/encode-calldata",
+                self.base_url.as_str().trim_end_matches('/')
+            );
 
-        let options = file_system.map(|fs| CompilerOptions {
-            file_system: Some(fs.clone()),
-        });
+            let options = file_system.map(|fs| CompilerOptions {
+                file_system: Some(fs.clone()),
+            });
 
-        let body = EncodeCalldataRequest {
-            source: source.to_string(),
-            function: function.to_string(),
-            arguments: arguments.to_vec(),
-            options,
-        };
+            let body = EncodeCalldataRequest {
+                source: source.to_string(),
+                function: function.to_string(),
+                arguments: arguments.to_vec(),
+                options,
+            };
 
-        let resp = self
-            .client
-            .post(&url)
-            .json(&body)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .post(&url)
+                .json(&body)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
 
-        let status = resp.status();
-        let text = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let text = resp.text().await.map_err(HyperlaneAeternityError::from)?;
 
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::CalldataEncodingError(format!(
-                "POST {url} => {status}: {text}"
-            ))
-            .into());
-        }
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::CalldataEncodingError(format!(
+                    "POST {url} => {status}: {text}"
+                ))
+                .into());
+            }
 
-        let parsed: EncodeCalldataResponse =
-            serde_json::from_str(&text).map_err(HyperlaneAeternityError::from)?;
-        Ok(parsed.calldata)
+            let parsed: EncodeCalldataResponse =
+                serde_json::from_str(&text).map_err(HyperlaneAeternityError::from)?;
+            Ok(parsed.calldata)
+        }.await;
+        self.track("encode_calldata", start, res.is_ok());
+        res
     }
 
     /// Decode the return value from a contract call.
@@ -123,42 +147,47 @@ impl AeCompilerClient {
         call_value: &str,
         file_system: Option<&HashMap<String, String>>,
     ) -> ChainResult<serde_json::Value> {
-        let url = format!(
-            "{}/decode-call-result",
-            self.base_url.as_str().trim_end_matches('/')
-        );
+        let start = Instant::now();
+        let res: ChainResult<_> = async {
+            let url = format!(
+                "{}/decode-call-result",
+                self.base_url.as_str().trim_end_matches('/')
+            );
 
-        let options = file_system.map(|fs| CompilerOptions {
-            file_system: Some(fs.clone()),
-        });
+            let options = file_system.map(|fs| CompilerOptions {
+                file_system: Some(fs.clone()),
+            });
 
-        let body = DecodeCallResultRequest {
-            source: source.to_string(),
-            function: function.to_string(),
-            call_result: call_result.to_string(),
-            call_value: call_value.to_string(),
-            options,
-        };
+            let body = DecodeCallResultRequest {
+                source: source.to_string(),
+                function: function.to_string(),
+                call_result: call_result.to_string(),
+                call_value: call_value.to_string(),
+                options,
+            };
 
-        let resp = self
-            .client
-            .post(&url)
-            .json(&body)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .post(&url)
+                .json(&body)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
 
-        let status = resp.status();
-        let text = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let text = resp.text().await.map_err(HyperlaneAeternityError::from)?;
 
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::ReturnDecodingError(format!(
-                "POST {url} => {status}: {text}"
-            ))
-            .into());
-        }
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::ReturnDecodingError(format!(
+                    "POST {url} => {status}: {text}"
+                ))
+                .into());
+            }
 
-        serde_json::from_str(&text).map_err(|e| HyperlaneAeternityError::from(e).into())
+            serde_json::from_str(&text).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("decode_call_result", start, res.is_ok());
+        res
     }
 }
 

@@ -81,7 +81,7 @@ impl ValidatorAnnounce for AeValidatorAnnounce {
                 &self.contract_address,
                 "get_announced_storage_locations",
                 &[list_arg],
-                contracts::VALIDATOR_ANNOUNCE_SOURCE,
+                &contracts::VALIDATOR_ANNOUNCE_SOURCE,
             )
             .await?;
 
@@ -116,14 +116,23 @@ impl ValidatorAnnounce for AeValidatorAnnounce {
     async fn announce(&self, announcement: SignedType<Announcement>) -> ChainResult<TxOutcome> {
         let validator_hex = Self::h256_to_eth_address_hex(&announcement.value.validator.into());
         let storage_location = format!("\"{}\"", announcement.value.storage_location);
-        let signature_hex = format!("#{}", hex::encode(announcement.signature.to_vec()));
+
+        // FATE VM expects signatures in V+R+S byte order, but Hyperlane's
+        // Signature::to_vec() returns Ethereum-convention R+S+V.
+        let rsv = announcement.signature.to_vec();
+        let mut vrs = Vec::with_capacity(65);
+        let v = rsv[64];
+        // FATE ecrecover_secp256k1 expects V = 27 or 28
+        vrs.push(if v < 27 { v + 27 } else { v });
+        vrs.extend_from_slice(&rsv[..64]); // R + S
+        let signature_hex = format!("#{}", hex::encode(vrs));
 
         self.provider
             .send_contract_call(
                 &self.contract_address,
                 "announce",
                 &[validator_hex, storage_location, signature_hex],
-                contracts::VALIDATOR_ANNOUNCE_SOURCE,
+                &contracts::VALIDATOR_ANNOUNCE_SOURCE,
                 0,
                 0,
             )

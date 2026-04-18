@@ -61,7 +61,7 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
                 &self.contract_address,
                 "tree",
                 &[],
-                contracts::MERKLE_TREE_HOOK_SOURCE,
+                &contracts::MERKLE_TREE_HOOK_SOURCE,
             )
             .await?;
 
@@ -81,7 +81,7 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
                 &self.contract_address,
                 "count",
                 &[],
-                contracts::MERKLE_TREE_HOOK_SOURCE,
+                &contracts::MERKLE_TREE_HOOK_SOURCE,
             )
             .await?;
 
@@ -108,7 +108,7 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
                 &self.contract_address,
                 "latest_checkpoint",
                 &[],
-                contracts::MERKLE_TREE_HOOK_SOURCE,
+                &contracts::MERKLE_TREE_HOOK_SOURCE,
             )
             .await?;
 
@@ -120,7 +120,7 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
                 &self.contract_address,
                 "local_domain",
                 &[],
-                contracts::MERKLE_TREE_HOOK_SOURCE,
+                &contracts::MERKLE_TREE_HOOK_SOURCE,
             )
             .await?;
 
@@ -261,7 +261,7 @@ impl SequenceAwareIndexer<MerkleTreeInsertion> for AeMerkleTreeIndexer {
                 &self.contract_address,
                 "count",
                 &[],
-                contracts::MERKLE_TREE_HOOK_SOURCE,
+                &contracts::MERKLE_TREE_HOOK_SOURCE,
             )
             .await?;
 

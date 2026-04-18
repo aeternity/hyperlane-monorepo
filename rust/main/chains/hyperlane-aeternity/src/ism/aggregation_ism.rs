@@ -63,7 +63,7 @@ impl InterchainSecurityModule for AeAggregationIsm {
                 &self.contract_address,
                 "module_type",
                 &[],
-                contracts::AGGREGATION_ISM_SOURCE,
+                &contracts::AGGREGATION_ISM_SOURCE,
             )
             .await?;
 
@@ -97,7 +97,7 @@ impl AggregationIsm for AeAggregationIsm {
                 &self.contract_address,
                 "modules_and_threshold",
                 &[message_hex],
-                contracts::AGGREGATION_ISM_SOURCE,
+                &contracts::AGGREGATION_ISM_SOURCE,
             )
             .await?;
 

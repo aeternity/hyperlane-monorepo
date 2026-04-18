@@ -47,7 +47,7 @@ impl AeInterchainGasPaymaster {
                     destination_domain.to_string(),
                     gas_amount.as_u128().to_string(),
                 ],
-                contracts::IGP_SOURCE,
+                &contracts::IGP_SOURCE,
             )
             .await?;
 
@@ -87,7 +87,7 @@ impl AeInterchainGasPaymaster {
                     gas_amount.as_u128().to_string(),
                     refund_addr,
                 ],
-                contracts::IGP_SOURCE,
+                &contracts::IGP_SOURCE,
                 payment_amount,
                 0,
             )

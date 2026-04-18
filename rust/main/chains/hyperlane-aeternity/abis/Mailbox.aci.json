@@ -1,0 +1,705 @@
+[
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IInterchainSecurityModule",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IPostDispatchHook",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "_3",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_4",
+              "type": "address"
+            }
+          ],
+          "name": "handle",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IMessageRecipient",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "MessageLib",
+      "typedefs": [
+        {
+          "name": "message",
+          "typedef": {
+            "record": [
+              {
+                "name": "version",
+                "type": "int"
+              },
+              {
+                "name": "nonce",
+                "type": "int"
+              },
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "sender",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "destination",
+                "type": "int"
+              },
+              {
+                "name": "recipient",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "body",
+                "type": {
+                  "bytes": "any"
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "Dispatch": [
+              "address",
+              "int",
+              {
+                "bytes": 32
+              },
+              {
+                "bytes": "any"
+              }
+            ]
+          },
+          {
+            "DispatchId": [
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          {
+            "Process": [
+              "int",
+              {
+                "bytes": 32
+              },
+              "address"
+            ]
+          },
+          {
+            "ProcessId": [
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          {
+            "DefaultIsmSet": [
+              "address"
+            ]
+          },
+          {
+            "DefaultHookSet": [
+              "address"
+            ]
+          },
+          {
+            "RequiredHookSet": [
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "local_domain",
+              "type": "int"
+            },
+            {
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "Mailbox.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "version",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "local_domain",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "deployed_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "nonce",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "latest_dispatched_id",
+          "payable": false,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "default_ism",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IInterchainSecurityModule"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "default_hook",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IPostDispatchHook"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "required_hook",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IPostDispatchHook"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "delivered",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "get_delivery",
+          "payable": false,
+          "returns": {
+            "option": [
+              "Mailbox.delivery"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "recipient",
+              "type": "address"
+            }
+          ],
+          "name": "get_recipient_ism",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IInterchainSecurityModule"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "ism",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_default_ism",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "hook",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_default_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "hook",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_required_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "ism",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_recipient_ism",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination_domain",
+              "type": "int"
+            },
+            {
+              "name": "recipient_address",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "message_body",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "hook_metadata",
+              "type": {
+                "option": [
+                  {
+                    "bytes": "any"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "custom_hook",
+              "type": {
+                "option": [
+                  "IPostDispatchHook"
+                ]
+              }
+            }
+          ],
+          "name": "dispatch",
+          "payable": true,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination_domain",
+              "type": "int"
+            },
+            {
+              "name": "recipient_address",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "message_body",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "hook_metadata",
+              "type": {
+                "option": [
+                  {
+                    "bytes": "any"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "custom_hook",
+              "type": {
+                "option": [
+                  "IPostDispatchHook"
+                ]
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "recipient_addr",
+              "type": "address"
+            },
+            {
+              "name": "body_recipient_addr",
+              "type": "address"
+            }
+          ],
+          "name": "process",
+          "payable": true,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "Mailbox",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "local_domain",
+            "type": "int"
+          },
+          {
+            "name": "nonce",
+            "type": "int"
+          },
+          {
+            "name": "latest_dispatched_id",
+            "type": {
+              "bytes": 32
+            }
+          },
+          {
+            "name": "default_ism",
+            "type": {
+              "option": [
+                "IInterchainSecurityModule"
+              ]
+            }
+          },
+          {
+            "name": "default_hook",
+            "type": {
+              "option": [
+                "IPostDispatchHook"
+              ]
+            }
+          },
+          {
+            "name": "required_hook",
+            "type": {
+              "option": [
+                "IPostDispatchHook"
+              ]
+            }
+          },
+          {
+            "name": "deliveries",
+            "type": {
+              "map": [
+                {
+                  "bytes": 32
+                },
+                "Mailbox.delivery"
+              ]
+            }
+          },
+          {
+            "name": "recipient_isms",
+            "type": {
+              "map": [
+                "address",
+                "IInterchainSecurityModule"
+              ]
+            }
+          },
+          {
+            "name": "deployed_block",
+            "type": "int"
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "delivery",
+          "typedef": {
+            "record": [
+              {
+                "name": "processor",
+                "type": "address"
+              },
+              {
+                "name": "block_number",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

@@ -15,9 +15,9 @@ const SIGNED_TX_TAG: u64 = 11;
 const SIGNED_TX_VERSION: u64 = 1;
 const FATE_ABI_VERSION: u64 = 3;
 
-const _GAS_PER_BYTE: u64 = 20;
-const _BASE_GAS_PRICE: u64 = 1_000_000_000;
-const _SIGNATURE_SIZE: u64 = 64;
+const GAS_PER_BYTE: u64 = 20;
+const BASE_GAS_PRICE: u64 = 1_000_000_000;
+const SIGNATURE_SIZE: u64 = 64;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -117,7 +117,7 @@ impl AeTxBuilder {
     /// Calculate the minimum fee for a given transaction byte size.
     #[allow(dead_code)]
     pub fn calculate_fee(tx_byte_size: u64) -> u64 {
-        (tx_byte_size + _SIGNATURE_SIZE) * _GAS_PER_BYTE * _BASE_GAS_PRICE
+        (tx_byte_size + SIGNATURE_SIZE) * GAS_PER_BYTE * BASE_GAS_PRICE
     }
 
     /// Return a reference to the inner signer.

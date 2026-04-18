@@ -363,7 +363,7 @@ impl ChainConf {
                 Ok(Box::new(provider) as Box<dyn HyperlaneProvider>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 Ok(Box::new(provider) as Box<dyn HyperlaneProvider>)
             }
         }
@@ -448,8 +448,8 @@ impl ChainConf {
                 Ok(Box::new(mailbox) as Box<dyn Mailbox>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let _signer = self.aeternity_signer().await?;
-                let provider = build_aeternity_provider(self, conf)?;
+                let signer = self.aeternity_signer().await?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, signer)?;
                 let mailbox = h_aeternity::AeMailbox::new(provider, &locator)?;
                 Ok(Box::new(mailbox) as Box<dyn Mailbox>)
             }
@@ -522,7 +522,7 @@ impl ChainConf {
                 Ok(Box::new(hook) as Box<dyn MerkleTreeHook>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let hook = h_aeternity::AeMerkleTreeHook::new(provider, &locator)?;
                 Ok(Box::new(hook) as Box<dyn MerkleTreeHook>)
             }
@@ -616,7 +616,7 @@ impl ChainConf {
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<HyperlaneMessage>>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let indexer = h_aeternity::indexer::AeDispatchIndexer::new(provider, &locator)?;
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<HyperlaneMessage>>)
             }
@@ -706,7 +706,7 @@ impl ChainConf {
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<H256>>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let indexer = h_aeternity::indexer::AeDeliveryIndexer::new(provider, &locator)?;
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<H256>>)
             }
@@ -788,7 +788,7 @@ impl ChainConf {
                 Ok(Box::new(indexer) as Box<dyn InterchainGasPaymaster>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let paymaster = h_aeternity::AeInterchainGasPaymaster::new(provider, &locator)?;
                 Ok(Box::new(paymaster) as Box<dyn InterchainGasPaymaster>)
             }
@@ -873,7 +873,7 @@ impl ChainConf {
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<InterchainGasPayment>>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let indexer = h_aeternity::indexer::AeIgpIndexer::new(provider, &locator)?;
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<InterchainGasPayment>>)
             }
@@ -966,7 +966,7 @@ impl ChainConf {
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<MerkleTreeInsertion>>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let indexer = h_aeternity::indexer::AeMerkleTreeIndexer::new(provider, &locator)?;
                 Ok(Box::new(indexer) as Box<dyn SequenceAwareIndexer<MerkleTreeInsertion>>)
             }
@@ -1059,8 +1059,8 @@ impl ChainConf {
                 Ok(Box::new(validator_announce) as Box<dyn ValidatorAnnounce>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let _signer = self.aeternity_signer().await?;
-                let provider = build_aeternity_provider(self, conf)?;
+                let signer = self.aeternity_signer().await?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, signer)?;
                 let va = h_aeternity::AeValidatorAnnounce::new(provider, &locator)?;
                 Ok(Box::new(va) as Box<dyn ValidatorAnnounce>)
             }
@@ -1139,7 +1139,7 @@ impl ChainConf {
                 Ok(Box::new(ism) as Box<dyn InterchainSecurityModule>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let ism = h_aeternity::AeIsm::new(provider, &locator)?;
                 Ok(Box::new(ism) as Box<dyn InterchainSecurityModule>)
             }
@@ -1209,7 +1209,7 @@ impl ChainConf {
                 Ok(Box::new(ism) as Box<dyn MultisigIsm>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let ism = h_aeternity::AeMultisigIsm::new(provider, &locator)?;
                 Ok(Box::new(ism) as Box<dyn MultisigIsm>)
             }
@@ -1274,7 +1274,7 @@ impl ChainConf {
                 Ok(Box::new(ism) as Box<dyn RoutingIsm>)
             }
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let ism = h_aeternity::AeRoutingIsm::new(provider, &locator)?;
                 Ok(Box::new(ism) as Box<dyn RoutingIsm>)
             }
@@ -1335,7 +1335,7 @@ impl ChainConf {
             #[cfg(feature = "aleo")]
             ChainConnectionConf::Aleo(_) => Err(eyre!("Aleo support missing")).context(ctx),
             ChainConnectionConf::Aeternity(conf) => {
-                let provider = build_aeternity_provider(self, conf)?;
+                let provider = build_aeternity_provider(self, conf, metrics, &locator, None)?;
                 let ism = h_aeternity::AeAggregationIsm::new(provider, &locator)?;
                 Ok(Box::new(ism) as Box<dyn AggregationIsm>)
             }
@@ -1713,11 +1713,18 @@ fn build_tron_provider(
 fn build_aeternity_provider(
     chain_conf: &ChainConf,
     connection_conf: &h_aeternity::ConnectionConf,
+    metrics: &CoreMetrics,
+    locator: &ContractLocator,
+    signer: Option<h_aeternity::AeSigner>,
 ) -> ChainResult<h_aeternity::AeternityProvider> {
+    let middleware_metrics = chain_conf.metrics_conf();
+    let metrics = metrics.client_metrics();
     h_aeternity::AeternityProvider::new(
-        chain_conf.domain.clone(),
         connection_conf,
+        locator,
         chain_conf.reorg_period.clone(),
-        None,
+        signer,
+        metrics,
+        middleware_metrics.chain.clone(),
     )
 }

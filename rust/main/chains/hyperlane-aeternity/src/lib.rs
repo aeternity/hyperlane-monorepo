@@ -33,7 +33,7 @@ pub use {
     ism::{AeAggregationIsm, AeIsm, AeMultisigIsm, AeRoutingIsm},
     mailbox::{AeMailbox, AeTxCalldata},
     merkle_tree_hook::AeMerkleTreeHook,
-    provider::{AeProviderSigner, AeternityProvider, FateValue},
+    provider::{AeternityProvider, FateValue},
     signer::AeSigner,
     validator_announce::AeValidatorAnnounce,
 };

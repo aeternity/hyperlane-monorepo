@@ -63,13 +63,17 @@ impl AeSigner {
     /// Sign an AE transaction.
     ///
     /// AE protocol: `sign(network_id_bytes ++ blake2b_256(tx_bytes))`
-    /// AE protocol: `sign(network_id_bytes ++ blake2b_256(tx_bytes))`
     pub fn sign_transaction(&self, tx_bytes: &[u8]) -> ChainResult<Vec<u8>> {
         let tx_hash = crate::blake2b_256(tx_bytes);
         let mut payload = Vec::with_capacity(self.network_id.len() + 32);
         payload.extend_from_slice(self.network_id.as_bytes());
         payload.extend_from_slice(&tx_hash);
         self.sign(&payload)
+    }
+
+    /// Return the raw private key bytes.
+    pub fn private_key(&self) -> &[u8] {
+        &self.private_key
     }
 
     /// Return the raw public key bytes.

@@ -1,87 +1,383 @@
-//! Sophia contract source stubs for compiler-based calldata encoding/decoding.
+//! ACI-based Sophia contract stubs for compiler-based calldata encoding/decoding.
 //!
-//! Each constant contains a minimal, self-contained Sophia contract that
-//! mirrors the entrypoint signatures of the deployed Hyperlane contracts.
-//! The compiler only needs the type information (function name, parameter types,
-//! return type) to encode calldata and decode return values -- the bodies are
-//! irrelevant and just satisfy the Sophia compiler's requirement that all
-//! entrypoints have implementations.
+//! ACI (Aeternity Contract Interface) files are generated from the real
+//! deployed Sophia contracts and stored in `abis/*.aci.json`, mirroring
+//! how Ethereum/Tron/Starknet store ABI JSON in their chain crates.
+//!
+//! At runtime, minimal Sophia source stubs are generated from the ACI type
+//! information, which is what the Sophia compiler's `/encode-calldata` and
+//! `/decode-call-result` endpoints require.
 
-/// Mailbox contract stub (entrypoints for read calls used by the agent).
-pub const MAILBOX_SOURCE: &str = r#"@compiler >= 6
+use once_cell::sync::Lazy;
+use serde_json::Value;
 
-contract interface IInterchainSecurityModule =
-    entrypoint module_type : () => int
-    entrypoint verify : (bytes(), bytes()) => bool
+const MAILBOX_ACI: &str = include_str!("../../abis/Mailbox.aci.json");
+const MERKLE_TREE_HOOK_ACI: &str = include_str!("../../abis/MerkleTreeHook.aci.json");
+const VALIDATOR_ANNOUNCE_ACI: &str = include_str!("../../abis/ValidatorAnnounce.aci.json");
+const IGP_ACI: &str = include_str!("../../abis/InterchainGasPaymaster.aci.json");
+const MULTISIG_ISM_ACI: &str = include_str!("../../abis/MessageIdMultisigIsm.aci.json");
+const ROUTING_ISM_ACI: &str = include_str!("../../abis/DomainRoutingIsm.aci.json");
 
-main contract MailboxStub =
-    entrypoint nonce() : int = 0
-    entrypoint delivered(id : bytes(32)) : bool = false
-    entrypoint default_ism() : option(IInterchainSecurityModule) = None
-    entrypoint local_domain() : int = 0
-    entrypoint latest_dispatched_id() : bytes(32) = #0000000000000000000000000000000000000000000000000000000000000000
-    entrypoint get_recipient_ism(recipient : address) : option(IInterchainSecurityModule) = None
-"#;
+/// Mailbox contract stub generated from ACI.
+pub static MAILBOX_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(MAILBOX_ACI));
+/// MerkleTreeHook contract stub generated from ACI.
+pub static MERKLE_TREE_HOOK_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(MERKLE_TREE_HOOK_ACI));
+/// ValidatorAnnounce contract stub generated from ACI.
+pub static VALIDATOR_ANNOUNCE_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(VALIDATOR_ANNOUNCE_ACI));
+/// InterchainGasPaymaster contract stub generated from ACI.
+pub static IGP_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(IGP_ACI));
+/// MessageIdMultisigIsm contract stub generated from ACI.
+pub static MULTISIG_ISM_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(MULTISIG_ISM_ACI));
+/// DomainRoutingIsm contract stub generated from ACI.
+pub static ROUTING_ISM_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(ROUTING_ISM_ACI));
 
-/// MerkleTreeHook contract stub.
-pub const MERKLE_TREE_HOOK_SOURCE: &str = r#"@compiler >= 6
+/// Generic ISM stub for contracts where only `module_type` is called.
+pub static BASE_ISM_SOURCE: Lazy<String> = Lazy::new(|| {
+    "@compiler >= 6\n\nmain contract IsmStub =\n    entrypoint module_type() : int = 0\n"
+        .to_string()
+});
 
-main contract MerkleTreeHookStub =
-    record merkle_tree = { branch : map(int, bytes(32)), count : int }
-    entrypoint count() : int = 0
-    entrypoint root() : bytes(32) = #0000000000000000000000000000000000000000000000000000000000000000
-    entrypoint latest_checkpoint() : bytes(32) * int = (#0000000000000000000000000000000000000000000000000000000000000000, 0)
-    entrypoint tree() : merkle_tree = { branch = {}, count = 0 }
-    entrypoint get_mailbox() : address = Contract.address
-    entrypoint local_domain() : int = 0
-"#;
+/// Aggregation ISM stub for contracts where `module_type` and
+/// `modules_and_threshold` are called.
+pub static AGGREGATION_ISM_SOURCE: Lazy<String> = Lazy::new(|| {
+    "@compiler >= 6\n\n\
+     main contract AggregationIsmStub =\n\
+     \x20   entrypoint module_type() : int = 0\n\
+     \x20   entrypoint modules_and_threshold(message : bytes()) : list(address) * int = ([], 0)\n"
+        .to_string()
+});
 
-/// ValidatorAnnounce contract stub.
-pub const VALIDATOR_ANNOUNCE_SOURCE: &str = r#"@compiler >= 6
+// ---------------------------------------------------------------------------
+// ACI → Sophia stub generation
+// ---------------------------------------------------------------------------
 
-contract ValidatorAnnounceStub =
-    entrypoint get_announced_storage_locations(validators : list(bytes(20))) : list(list(string)) = []
-"#;
+/// Convert an ACI JSON string to a minimal Sophia source stub.
+///
+/// The generated source satisfies the Sophia compiler for calldata
+/// encoding/decoding — function bodies are dummy implementations.
+fn aci_to_sophia(aci_json: &str) -> String {
+    let entries: Vec<Value> = serde_json::from_str(aci_json)
+        .expect("invalid ACI JSON");
 
-/// InterchainGasPaymaster contract stub.
-pub const IGP_SOURCE: &str = r#"@compiler >= 6
+    let mut out = String::from("@compiler >= 6\n");
 
-main contract IgpStub =
-    entrypoint quote_gas_payment(dest_domain : int, gas_amount : int) : int = 0
-    entrypoint sequence() : int = 0
-"#;
+    // First pass: emit contract interfaces
+    for entry in &entries {
+        if let Some(contract) = entry.get("contract") {
+            let kind = contract.get("kind").and_then(|k| k.as_str()).unwrap_or("");
+            if kind == "contract_interface" {
+                out.push('\n');
+                emit_interface(&mut out, contract);
+            }
+        }
+    }
 
-/// MessageIdMultisigIsm contract stub.
-pub const MULTISIG_ISM_SOURCE: &str = r#"@compiler >= 6
+    // Second pass: emit namespaces with typedefs (needed for record types)
+    for entry in &entries {
+        if let Some(ns) = entry.get("namespace") {
+            let typedefs = ns.get("typedefs").and_then(|t| t.as_array());
+            if let Some(tds) = typedefs {
+                if !tds.is_empty() {
+                    out.push('\n');
+                    emit_namespace(&mut out, ns);
+                }
+            }
+        }
+    }
 
-main contract MultisigIsmStub =
-    entrypoint module_type() : int = 0
-    entrypoint validators_and_threshold(message : bytes()) : list(bytes(20)) * int = ([], 0)
-"#;
+    // Third pass: emit main contract
+    for entry in &entries {
+        if let Some(contract) = entry.get("contract") {
+            let kind = contract.get("kind").and_then(|k| k.as_str()).unwrap_or("");
+            if kind == "contract_main" {
+                out.push('\n');
+                emit_main_contract(&mut out, contract);
+            }
+        }
+    }
 
-/// DomainRoutingIsm contract stub.
-pub const ROUTING_ISM_SOURCE: &str = r#"@compiler >= 6
+    out
+}
 
-contract interface IInterchainSecurityModule =
-    entrypoint module_type : () => int
-    entrypoint verify : (bytes(), bytes()) => bool
+fn emit_interface(out: &mut String, contract: &Value) {
+    let name = contract["name"].as_str().unwrap_or("Unknown");
+    out.push_str(&format!("contract interface {name} =\n"));
 
-main contract RoutingIsmStub =
-    entrypoint module_type() : int = 0
-    entrypoint route(message : bytes()) : IInterchainSecurityModule = abort("stub")
-"#;
+    if let Some(functions) = contract.get("functions").and_then(|f| f.as_array()) {
+        for func in functions {
+            let fname = func["name"].as_str().unwrap_or("unknown");
+            let args = func.get("arguments").and_then(|a| a.as_array());
+            let returns = &func["returns"];
 
-/// AggregationIsm contract stub.
-pub const AGGREGATION_ISM_SOURCE: &str = r#"@compiler >= 6
+            let arg_types: Vec<String> = args
+                .map(|a| a.iter().map(|arg| aci_type_to_sophia(&arg["type"])).collect())
+                .unwrap_or_default();
 
-main contract AggregationIsmStub =
-    entrypoint module_type() : int = 0
-    entrypoint modules_and_threshold(message : bytes()) : list(address) * int = ([], 0)
-"#;
+            let ret_type = aci_type_to_sophia(returns);
+            let arg_str = if arg_types.is_empty() {
+                "()".to_string()
+            } else {
+                format!("({})", arg_types.join(", "))
+            };
 
-/// Base ISM stub (for generic ISM instances where only `module_type` is called).
-pub const BASE_ISM_SOURCE: &str = r#"@compiler >= 6
+            out.push_str(&format!("    entrypoint {fname} : {arg_str} => {ret_type}\n"));
+        }
+    }
+}
 
-main contract IsmStub =
-    entrypoint module_type() : int = 0
-"#;
+fn emit_namespace(out: &mut String, ns: &Value) {
+    let name = ns["name"].as_str().unwrap_or("Unknown");
+    out.push_str(&format!("namespace {name} =\n"));
+
+    if let Some(typedefs) = ns.get("typedefs").and_then(|t| t.as_array()) {
+        for td in typedefs {
+            let td_name = td["name"].as_str().unwrap_or("unknown");
+            let typedef = &td["typedef"];
+            if let Some(fields) = typedef.get("record").and_then(|r| r.as_array()) {
+                out.push_str(&format!("    record {td_name} = {{ "));
+                let field_strs: Vec<String> = fields
+                    .iter()
+                    .map(|f| {
+                        let fn_name = f["name"].as_str().unwrap_or("x");
+                        let fn_type = aci_type_to_sophia(&f["type"]);
+                        format!("{fn_name} : {fn_type}")
+                    })
+                    .collect();
+                out.push_str(&field_strs.join(", "));
+                out.push_str(" }\n");
+            }
+        }
+    }
+}
+
+fn emit_main_contract(out: &mut String, contract: &Value) {
+    let name = contract["name"].as_str().unwrap_or("Unknown");
+    out.push_str(&format!("main contract {name}Stub =\n"));
+
+    // Emit record typedefs
+    if let Some(typedefs) = contract.get("typedefs").and_then(|t| t.as_array()) {
+        for td in typedefs {
+            let td_name = td["name"].as_str().unwrap_or("unknown");
+            let typedef = &td["typedef"];
+            if let Some(fields) = typedef.get("record").and_then(|r| r.as_array()) {
+                out.push_str(&format!("    record {td_name} = {{ "));
+                let field_strs: Vec<String> = fields
+                    .iter()
+                    .map(|f| {
+                        let fn_name = f["name"].as_str().unwrap_or("x");
+                        let fn_type = aci_type_to_sophia(&f["type"]);
+                        format!("{fn_name} : {fn_type}")
+                    })
+                    .collect();
+                out.push_str(&field_strs.join(", "));
+                out.push_str(" }\n");
+            }
+        }
+    }
+
+    if let Some(functions) = contract.get("functions").and_then(|f| f.as_array()) {
+        for func in functions {
+            let fname = func["name"].as_str().unwrap_or("unknown");
+            if fname == "init" {
+                continue;
+            }
+
+            let stateful = func.get("stateful").and_then(|s| s.as_bool()).unwrap_or(false);
+            let args = func.get("arguments").and_then(|a| a.as_array());
+            let returns = &func["returns"];
+
+            let arg_strs: Vec<String> = args
+                .map(|a| {
+                    a.iter()
+                        .map(|arg| {
+                            let aname = arg["name"].as_str().unwrap_or("_");
+                            let atype = aci_type_to_sophia(&arg["type"]);
+                            format!("{aname} : {atype}")
+                        })
+                        .collect()
+                })
+                .unwrap_or_default();
+
+            let ret_type = aci_type_to_sophia(returns);
+            let default = aci_type_default(returns);
+
+            let prefix = if stateful { "stateful entrypoint" } else { "entrypoint" };
+            let args_str = arg_strs.join(", ");
+
+            out.push_str(&format!(
+                "    {prefix} {fname}({args_str}) : {ret_type} = {default}\n"
+            ));
+        }
+    }
+}
+
+/// Convert an ACI type JSON value to its Sophia source representation.
+fn aci_type_to_sophia(ty: &Value) -> String {
+    match ty {
+        Value::String(s) => match s.as_str() {
+            "unit" => "unit".into(),
+            other => other.to_string(),
+        },
+        Value::Object(map) => {
+            if let Some(n) = map.get("bytes") {
+                match n {
+                    Value::Number(num) => format!("bytes({})", num),
+                    _ => "bytes()".into(),
+                }
+            } else if let Some(Value::Array(items)) = map.get("list") {
+                let inner = items.first().map(aci_type_to_sophia).unwrap_or("int".into());
+                format!("list({inner})")
+            } else if let Some(Value::Array(items)) = map.get("option") {
+                let inner = items.first().map(aci_type_to_sophia).unwrap_or("int".into());
+                format!("option({inner})")
+            } else if let Some(Value::Array(items)) = map.get("map") {
+                let key = items.first().map(aci_type_to_sophia).unwrap_or("int".into());
+                let val = items.get(1).map(aci_type_to_sophia).unwrap_or("int".into());
+                format!("map({key}, {val})")
+            } else if let Some(Value::Array(items)) = map.get("tuple") {
+                if items.is_empty() {
+                    "unit".into()
+                } else {
+                    let parts: Vec<String> = items.iter().map(aci_type_to_sophia).collect();
+                    parts.join(" * ")
+                }
+            } else if let Some(Value::Array(fields)) = map.get("record") {
+                let field_strs: Vec<String> = fields
+                    .iter()
+                    .map(|f| {
+                        let name = f["name"].as_str().unwrap_or("x");
+                        let ftype = aci_type_to_sophia(&f["type"]);
+                        format!("{name} : {ftype}")
+                    })
+                    .collect();
+                format!("{{ {} }}", field_strs.join(", "))
+            } else {
+                "int".into()
+            }
+        }
+        _ => "int".into(),
+    }
+}
+
+/// Generate a dummy default value for a given ACI type.
+fn aci_type_default(ty: &Value) -> String {
+    match ty {
+        Value::String(s) => match s.as_str() {
+            "int" => "0".into(),
+            "bool" => "false".into(),
+            "string" => "\"\"".into(),
+            "address" => "Contract.address".into(),
+            "unit" => "()".into(),
+            _ => "abort(\"stub\")".into(),
+        },
+        Value::Object(map) => {
+            if let Some(n) = map.get("bytes") {
+                match n {
+                    Value::Number(num) => {
+                        let size = num.as_u64().unwrap_or(1) as usize;
+                        format!("#{}", "00".repeat(size))
+                    }
+                    _ => "#".into(),
+                }
+            } else if map.contains_key("list") {
+                "[]".into()
+            } else if map.contains_key("option") {
+                "None".into()
+            } else if map.contains_key("map") {
+                "{}".into()
+            } else if let Some(Value::Array(items)) = map.get("tuple") {
+                if items.is_empty() {
+                    "()".into()
+                } else {
+                    let parts: Vec<String> = items.iter().map(aci_type_default).collect();
+                    format!("({})", parts.join(", "))
+                }
+            } else {
+                "abort(\"stub\")".into()
+            }
+        }
+        _ => "abort(\"stub\")".into(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_aci_type_to_sophia_primitives() {
+        assert_eq!(aci_type_to_sophia(&Value::String("int".into())), "int");
+        assert_eq!(aci_type_to_sophia(&Value::String("bool".into())), "bool");
+        assert_eq!(aci_type_to_sophia(&Value::String("address".into())), "address");
+    }
+
+    #[test]
+    fn test_aci_type_to_sophia_bytes() {
+        let ty: Value = serde_json::from_str(r#"{"bytes": 32}"#).unwrap();
+        assert_eq!(aci_type_to_sophia(&ty), "bytes(32)");
+
+        let ty_any: Value = serde_json::from_str(r#"{"bytes": "any"}"#).unwrap();
+        assert_eq!(aci_type_to_sophia(&ty_any), "bytes()");
+    }
+
+    #[test]
+    fn test_aci_type_to_sophia_list() {
+        let ty: Value = serde_json::from_str(r#"{"list": [{"bytes": 20}]}"#).unwrap();
+        assert_eq!(aci_type_to_sophia(&ty), "list(bytes(20))");
+    }
+
+    #[test]
+    fn test_aci_type_to_sophia_tuple() {
+        let ty: Value = serde_json::from_str(r#"{"tuple": ["int", "bool"]}"#).unwrap();
+        assert_eq!(aci_type_to_sophia(&ty), "int * bool");
+
+        let ty_empty: Value = serde_json::from_str(r#"{"tuple": []}"#).unwrap();
+        assert_eq!(aci_type_to_sophia(&ty_empty), "unit");
+    }
+
+    #[test]
+    fn test_aci_type_default_values() {
+        assert_eq!(aci_type_default(&Value::String("int".into())), "0");
+        assert_eq!(aci_type_default(&Value::String("bool".into())), "false");
+
+        let bytes32: Value = serde_json::from_str(r#"{"bytes": 32}"#).unwrap();
+        assert_eq!(aci_type_default(&bytes32), "#0000000000000000000000000000000000000000000000000000000000000000");
+
+        let list_ty: Value = serde_json::from_str(r#"{"list": ["int"]}"#).unwrap();
+        assert_eq!(aci_type_default(&list_ty), "[]");
+    }
+
+    #[test]
+    fn test_mailbox_aci_generates_valid_stub() {
+        let source = aci_to_sophia(MAILBOX_ACI);
+        assert!(source.contains("@compiler >= 6"));
+        assert!(source.contains("main contract MailboxStub"));
+        assert!(source.contains("entrypoint nonce("));
+        assert!(source.contains("entrypoint delivered("));
+        assert!(source.contains("entrypoint local_domain("));
+    }
+
+    #[test]
+    fn test_validator_announce_aci_generates_valid_stub() {
+        let source = aci_to_sophia(VALIDATOR_ANNOUNCE_ACI);
+        assert!(source.contains("main contract ValidatorAnnounceStub"));
+        assert!(source.contains("entrypoint announce("));
+        assert!(source.contains("entrypoint get_announced_storage_locations("));
+    }
+
+    #[test]
+    fn test_merkle_tree_hook_aci_generates_valid_stub() {
+        let source = aci_to_sophia(MERKLE_TREE_HOOK_ACI);
+        assert!(source.contains("main contract MerkleTreeHookStub"));
+        assert!(source.contains("entrypoint count("));
+        assert!(source.contains("entrypoint root("));
+        assert!(source.contains("entrypoint latest_checkpoint("));
+    }
+
+    #[test]
+    fn test_multisig_ism_aci_generates_valid_stub() {
+        let source = aci_to_sophia(MULTISIG_ISM_ACI);
+        assert!(source.contains("main contract MessageIdMultisigIsmStub"));
+        assert!(source.contains("entrypoint validators_and_threshold("));
+    }
+}

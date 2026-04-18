@@ -62,7 +62,7 @@ impl InterchainSecurityModule for AeMultisigIsm {
                 &self.contract_address,
                 "module_type",
                 &[],
-                contracts::MULTISIG_ISM_SOURCE,
+                &contracts::MULTISIG_ISM_SOURCE,
             )
             .await?;
 
@@ -96,7 +96,7 @@ impl MultisigIsm for AeMultisigIsm {
                 &self.contract_address,
                 "validators_and_threshold",
                 &[message_hex],
-                contracts::MULTISIG_ISM_SOURCE,
+                &contracts::MULTISIG_ISM_SOURCE,
             )
             .await?;
 

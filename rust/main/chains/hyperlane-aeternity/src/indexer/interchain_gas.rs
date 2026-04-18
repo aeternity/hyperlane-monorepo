@@ -129,7 +129,7 @@ impl SequenceAwareIndexer<InterchainGasPayment> for AeIgpIndexer {
                 &self.contract_address,
                 "sequence",
                 &[],
-                contracts::IGP_SOURCE,
+                &contracts::IGP_SOURCE,
             )
             .await?;
 

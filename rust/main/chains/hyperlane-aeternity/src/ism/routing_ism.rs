@@ -63,7 +63,7 @@ impl InterchainSecurityModule for AeRoutingIsm {
                 &self.contract_address,
                 "module_type",
                 &[],
-                contracts::ROUTING_ISM_SOURCE,
+                &contracts::ROUTING_ISM_SOURCE,
             )
             .await?;
 
@@ -93,7 +93,7 @@ impl RoutingIsm for AeRoutingIsm {
                 &self.contract_address,
                 "route",
                 &[message_hex],
-                contracts::ROUTING_ISM_SOURCE,
+                &contracts::ROUTING_ISM_SOURCE,
             )
             .await?;
 

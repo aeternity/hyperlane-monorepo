@@ -111,7 +111,7 @@ impl Mailbox for AeMailbox {
                 &self.contract_address,
                 "nonce",
                 &[],
-                contracts::MAILBOX_SOURCE,
+                &contracts::MAILBOX_SOURCE,
             )
             .await?;
 
@@ -135,7 +135,7 @@ impl Mailbox for AeMailbox {
                 &self.contract_address,
                 "delivered",
                 &[id_hex],
-                contracts::MAILBOX_SOURCE,
+                &contracts::MAILBOX_SOURCE,
             )
             .await?;
 
@@ -155,7 +155,7 @@ impl Mailbox for AeMailbox {
                 &self.contract_address,
                 "default_ism",
                 &[],
-                contracts::MAILBOX_SOURCE,
+                &contracts::MAILBOX_SOURCE,
             )
             .await?;
 
@@ -171,7 +171,7 @@ impl Mailbox for AeMailbox {
                 &self.contract_address,
                 "get_recipient_ism",
                 &[recipient_addr],
-                contracts::MAILBOX_SOURCE,
+                &contracts::MAILBOX_SOURCE,
             )
             .await;
 
@@ -196,7 +196,7 @@ impl Mailbox for AeMailbox {
                 &self.contract_address,
                 "process",
                 &[metadata_hex, message_hex],
-                contracts::MAILBOX_SOURCE,
+                &contracts::MAILBOX_SOURCE,
                 0,
                 0,
             )
@@ -218,7 +218,7 @@ impl Mailbox for AeMailbox {
                 &self.contract_address,
                 "process",
                 &[metadata_hex, message_hex],
-                contracts::MAILBOX_SOURCE,
+                &contracts::MAILBOX_SOURCE,
             )
             .await;
 

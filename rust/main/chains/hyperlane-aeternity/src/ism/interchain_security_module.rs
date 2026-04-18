@@ -84,7 +84,7 @@ impl InterchainSecurityModule for AeIsm {
                 &self.contract_address,
                 "module_type",
                 &[],
-                contracts::BASE_ISM_SOURCE,
+                &contracts::BASE_ISM_SOURCE,
             )
             .await?;
 

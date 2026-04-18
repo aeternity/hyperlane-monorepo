@@ -105,7 +105,7 @@ impl SequenceAwareIndexer<HyperlaneMessage> for AeDispatchIndexer {
                 &self.contract_address,
                 "nonce",
                 &[],
-                contracts::MAILBOX_SOURCE,
+                &contracts::MAILBOX_SOURCE,
             )
             .await?;
 

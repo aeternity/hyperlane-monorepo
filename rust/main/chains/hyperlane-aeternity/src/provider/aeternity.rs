@@ -4,8 +4,13 @@ use serde::{Deserialize, Serialize};
 use tracing::debug;
 
 use hyperlane_core::{
-    BlockInfo, ChainInfo, ChainResult, FixedPointNumber, HyperlaneChain, HyperlaneDomain,
-    HyperlaneProvider, LogMeta, ReorgPeriod, TxOutcome, TxnInfo, TxnReceiptInfo, H256, H512, U256,
+    BlockInfo, ChainInfo, ChainResult, ContractLocator, FixedPointNumber, HyperlaneChain,
+    HyperlaneDomain, HyperlaneProvider, LogMeta, ReorgPeriod, TxOutcome, TxnInfo, TxnReceiptInfo,
+    H256, H512, U256,
+};
+
+use hyperlane_metric::prometheus_metric::{
+    ChainInfo as MetricChainInfo, PrometheusClientMetrics,
 };
 
 use crate::{
@@ -84,32 +89,21 @@ pub struct AeternityProvider {
     node: AeNodeClient,
     mdw: AeMdwClient,
     compiler: AeCompilerClient,
-    signer: Option<AeSigner>,
+    signer: Option<crate::signer::AeSigner>,
     reorg_period: ReorgPeriod,
     #[allow(dead_code)]
     network_id: String,
 }
 
-/// Minimal signer placeholder for the Aeternity chain.
-///
-/// Full signing support will be implemented in a follow-up phase.
-#[derive(Debug, Clone)]
-pub struct AeSigner {
-    /// Ed25519 private key bytes
-    pub private_key: Vec<u8>,
-    /// Encoded `ak_...` address
-    pub encoded_address: String,
-    /// H256 representation of the address
-    pub address_h256: H256,
-}
-
 impl AeternityProvider {
     /// Create a new Aeternity provider.
     pub fn new(
-        domain: HyperlaneDomain,
         conf: &ConnectionConf,
+        locator: &ContractLocator,
         reorg_period: ReorgPeriod,
-        signer: Option<AeSigner>,
+        signer: Option<crate::signer::AeSigner>,
+        metrics: PrometheusClientMetrics,
+        chain: Option<MetricChainInfo>,
     ) -> ChainResult<Self> {
         let node_url = conf.node_urls.first().ok_or_else(|| {
             HyperlaneAeternityError::Other("no node URLs configured".into())
@@ -122,10 +116,10 @@ impl AeternityProvider {
         })?;
 
         Ok(Self {
-            domain,
-            node: AeNodeClient::new(node_url.clone()),
-            mdw: AeMdwClient::new(mdw_url.clone()),
-            compiler: AeCompilerClient::new(compiler_url.clone()),
+            domain: locator.domain.clone(),
+            node: AeNodeClient::new(node_url.clone(), metrics.clone(), chain.clone()),
+            mdw: AeMdwClient::new(mdw_url.clone(), metrics.clone(), chain.clone()),
+            compiler: AeCompilerClient::new(compiler_url.clone(), metrics, chain),
             signer,
             reorg_period,
             network_id: conf.network_id.clone(),
@@ -148,7 +142,7 @@ impl AeternityProvider {
     }
 
     /// Return the configured signer, or an error if none was set.
-    pub fn get_signer(&self) -> ChainResult<&AeSigner> {
+    pub fn get_signer(&self) -> ChainResult<&crate::signer::AeSigner> {
         self.signer
             .as_ref()
             .ok_or_else(|| HyperlaneAeternityError::SignerMissing.into())
@@ -178,6 +172,7 @@ impl AeternityProvider {
             .await?;
 
         let default_caller = "ak_11111111111111111111111111111111273Yts".to_string();
+        let nonce = self.node.get_next_nonce(&default_caller).await?;
 
         let request = DryRunRequest {
             top: None,
@@ -194,6 +189,7 @@ impl AeternityProvider {
                     abi_version: Some(3),
                     amount: None,
                     gas: Some(1_000_000),
+                    nonce: Some(nonce),
                 }),
             }],
         };
@@ -253,26 +249,20 @@ impl AeternityProvider {
             .encode_calldata(contract_source, function_name, args, None)
             .await?;
 
-        // Decode cb_<base64(payload ++ 4-byte checksum)> to raw FATE bytes
         let calldata_bytes = decode_cb(&calldata_str)?;
 
         let tx_builder = crate::tx::AeTxBuilder::new(
-            crate::signer::AeSigner::new(
-                signer.private_key.clone(),
-                self.network_id.clone(),
-            )?,
+            signer.clone(),
             self.network_id.clone(),
         );
 
-        // AE RLP id-encoding: 1-byte tag ++ 32-byte pubkey
-        let mut caller_bytes = vec![1u8]; // 1 = account tag
+        let mut caller_bytes = vec![1u8]; // account tag
         caller_bytes.extend_from_slice(signer.address_h256.as_bytes());
         let contract_h256 = ae_address_to_h256(contract_id)?;
         let mut contract_bytes = vec![5u8]; // 5 = contract tag
         contract_bytes.extend_from_slice(contract_h256.as_bytes());
 
-        let nonce_resp = self.node.get_account(&signer.encoded_address).await?;
-        let nonce = nonce_resp.nonce + 1;
+        let nonce = self.node.get_next_nonce(&signer.encoded_address).await?;
         let gas = 1_000_000u64;
         let gas_price = 1_000_000_000u64;
         let fee = 200_000_000_000_000u64; // 200T aettos — generous to cover any contract call

@@ -1,8 +1,13 @@
+use std::time::Instant;
+
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
 use hyperlane_core::ChainResult;
+use hyperlane_metric::prometheus_metric::{
+    ChainInfo, ClientConnectionType, PrometheusClientMetrics, PrometheusConfig,
+};
 
 use crate::HyperlaneAeternityError;
 
@@ -11,6 +16,8 @@ use crate::HyperlaneAeternityError;
 pub struct AeNodeClient {
     client: Client,
     base_url: Url,
+    metrics: PrometheusClientMetrics,
+    config: PrometheusConfig,
 }
 
 // ---------------------------------------------------------------------------
@@ -192,12 +199,15 @@ pub struct DryRunCallReq {
     /// ABI version (default 3 for FATE)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub abi_version: Option<u32>,
-    /// Gas amount
+    /// Transfer amount
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
     /// Gas limit
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gas: Option<u64>,
+    /// Caller nonce — must be >= next valid nonce for the caller account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nonce: Option<u64>,
 }
 
 /// Response from the `/v3/dry-run` endpoint.
@@ -219,6 +229,13 @@ pub struct DryRunResult {
     pub call_obj: Option<CallInfoResponse>,
     /// Reason string (present on failure)
     pub reason: Option<String>,
+}
+
+/// Response from the `/v3/accounts/{address}/next-nonce` endpoint.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NextNonceResponse {
+    /// The next valid nonce for this account
+    pub next_nonce: u64,
 }
 
 /// Node status information.
@@ -244,10 +261,17 @@ pub struct NodeStatusResponse {
 
 impl AeNodeClient {
     /// Create a new node client pointing at `base_url`.
-    pub fn new(base_url: Url) -> Self {
+    pub fn new(
+        base_url: Url,
+        metrics: PrometheusClientMetrics,
+        chain: Option<ChainInfo>,
+    ) -> Self {
+        let config = PrometheusConfig::from_url(&base_url, ClientConnectionType::Rpc, chain);
         Self {
             client: Client::new(),
             base_url,
+            metrics,
+            config,
         }
     }
 
@@ -260,193 +284,182 @@ impl AeNodeClient {
         )
     }
 
+    fn track(&self, method: &str, start: Instant, success: bool) {
+        self.metrics
+            .increment_metrics(&self.config, method, start, success);
+    }
+
     /// Fetch a key-block by its height.
     pub async fn get_key_block_by_height(&self, height: u64) -> ChainResult<KeyBlockResponse> {
+        let start = Instant::now();
         let url = self.url(&format!("/key-blocks/height/{height}"));
-        let resp = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "GET {url} => {status}: {body}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+            }
+            serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("get_key_block_by_height", start, res.is_ok());
+        res
     }
 
     /// Fetch the current (latest) key-block.
     pub async fn get_current_key_block(&self) -> ChainResult<KeyBlockResponse> {
+        let start = Instant::now();
         let url = self.url("/key-blocks/current");
-        let resp = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "GET {url} => {status}: {body}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+            }
+            serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("get_current_key_block", start, res.is_ok());
+        res
     }
 
     /// Fetch a full generation (key-block + micro-block hashes) by height.
-    pub async fn get_generation_by_height(
-        &self,
-        height: u64,
-    ) -> ChainResult<GenerationResponse> {
+    pub async fn get_generation_by_height(&self, height: u64) -> ChainResult<GenerationResponse> {
+        let start = Instant::now();
         let url = self.url(&format!("/generations/height/{height}"));
-        let resp = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "GET {url} => {status}: {body}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+            }
+            serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("get_generation_by_height", start, res.is_ok());
+        res
     }
 
     /// Fetch a transaction by its hash.
     pub async fn get_transaction(&self, hash: &str) -> ChainResult<TransactionResponse> {
+        let start = Instant::now();
         let url = self.url(&format!("/transactions/{hash}"));
-        let resp = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "GET {url} => {status}: {body}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+            }
+            serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("get_transaction", start, res.is_ok());
+        res
     }
 
     /// Fetch detailed info about a mined transaction.
-    pub async fn get_transaction_info(
-        &self,
-        hash: &str,
-    ) -> ChainResult<TransactionInfoResponse> {
+    pub async fn get_transaction_info(&self, hash: &str) -> ChainResult<TransactionInfoResponse> {
+        let start = Instant::now();
         let url = self.url(&format!("/transactions/{hash}/info"));
-        let resp = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "GET {url} => {status}: {body}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+            }
+            serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("get_transaction_info", start, res.is_ok());
+        res
     }
 
     /// Post a signed transaction to the node mempool.
     pub async fn post_transaction(&self, signed_tx: &str) -> ChainResult<serde_json::Value> {
+        let start = Instant::now();
         let url = self.url("/transactions");
         let body = serde_json::json!({ "tx": signed_tx });
-        let resp = self
-            .client
-            .post(&url)
-            .json(&body)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let text = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "POST {url} => {status}: {text}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&text).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.post(&url).json(&body).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let text = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("POST {url} => {status}: {text}")).into());
+            }
+            serde_json::from_str(&text).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("post_transaction", start, res.is_ok());
+        res
     }
 
     /// Fetch account information (balance, nonce, etc.).
     pub async fn get_account(&self, address: &str) -> ChainResult<AccountResponse> {
+        let start = Instant::now();
         let url = self.url(&format!("/accounts/{address}"));
-        let resp = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "GET {url} => {status}: {body}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+            }
+            serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("get_account", start, res.is_ok());
+        res
+    }
+
+    /// Fetch the next valid nonce for the given account.
+    pub async fn get_next_nonce(&self, address: &str) -> ChainResult<u64> {
+        let start = Instant::now();
+        let url = self.url(&format!("/accounts/{address}/next-nonce"));
+        let res: ChainResult<_> = async {
+            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Ok(1);
+            }
+            let parsed: NextNonceResponse =
+                serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e))?;
+            Ok(parsed.next_nonce)
+        }.await;
+        self.track("get_next_nonce", start, res.is_ok());
+        res
     }
 
     /// Execute a dry-run simulation against the node.
     pub async fn dry_run(&self, request: &DryRunRequest) -> ChainResult<DryRunResponse> {
+        let start = Instant::now();
         let url = self.url("/dry-run");
-        let resp = self
-            .client
-            .post(&url)
-            .json(request)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "POST {url} => {status}: {body}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.post(&url).json(request).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("POST {url} => {status}: {body}")).into());
+            }
+            serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("dry_run", start, res.is_ok());
+        res
     }
 
     /// Fetch node status (network id, top block height, etc.).
     pub async fn get_status(&self) -> ChainResult<NodeStatusResponse> {
+        let start = Instant::now();
         let url = self.url("/status");
-        let resp = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::NodeApiError(format!(
-                "GET {url} => {status}: {body}"
-            ))
-            .into());
-        }
-        serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        let res: ChainResult<_> = async {
+            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let status = resp.status();
+            let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+            if !status.is_success() {
+                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+            }
+            serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
+        }.await;
+        self.track("get_status", start, res.is_ok());
+        res
     }
 }
 

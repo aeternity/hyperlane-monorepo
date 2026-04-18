@@ -104,7 +104,7 @@ impl SequenceAwareIndexer<H256> for AeDeliveryIndexer {
                 &self.contract_address,
                 "nonce",
                 &[],
-                contracts::MAILBOX_SOURCE,
+                &contracts::MAILBOX_SOURCE,
             )
             .await?;
 

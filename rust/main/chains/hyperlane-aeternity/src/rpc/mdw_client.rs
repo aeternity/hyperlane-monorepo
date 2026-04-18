@@ -1,8 +1,13 @@
+use std::time::Instant;
+
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
 use hyperlane_core::ChainResult;
+use hyperlane_metric::prometheus_metric::{
+    ChainInfo, ClientConnectionType, PrometheusClientMetrics, PrometheusConfig,
+};
 
 use crate::HyperlaneAeternityError;
 
@@ -46,14 +51,23 @@ struct PaginatedResponse<T> {
 pub struct AeMdwClient {
     client: Client,
     base_url: Url,
+    metrics: PrometheusClientMetrics,
+    config: PrometheusConfig,
 }
 
 impl AeMdwClient {
     /// Create a new middleware client pointing at `base_url`.
-    pub fn new(base_url: Url) -> Self {
+    pub fn new(
+        base_url: Url,
+        metrics: PrometheusClientMetrics,
+        chain: Option<ChainInfo>,
+    ) -> Self {
+        let config = PrometheusConfig::from_url(&base_url, ClientConnectionType::Rpc, chain);
         Self {
             client: Client::new(),
             base_url,
+            metrics,
+            config,
         }
     }
 
@@ -66,6 +80,11 @@ impl AeMdwClient {
         )
     }
 
+    fn track(&self, method: &str, start: Instant, success: bool) {
+        self.metrics
+            .increment_metrics(&self.config, method, start, success);
+    }
+
     /// Fetch contract log entries for a specific contract within a height range.
     ///
     /// Automatically follows pagination cursors to collect all matching entries.
@@ -75,31 +94,73 @@ impl AeMdwClient {
         from_height: u64,
         to_height: u64,
     ) -> ChainResult<Vec<ContractLogEntry>> {
-        let mut all_entries = Vec::new();
-        let mut next_url: Option<String> = None;
+        let start = Instant::now();
+        let res: ChainResult<_> = async {
+            let mut all_entries = Vec::new();
+            let mut next_url: Option<String> = None;
 
-        loop {
-            let url = match &next_url {
-                Some(cursor) => format!(
-                    "{}/mdw/v3{}",
-                    self.base_url.as_str().trim_end_matches('/'),
-                    cursor
-                ),
-                None => {
-                    let path = format!(
-                        "/contracts/logs?contract_id={contract_id}&from={from_height}&to={to_height}&limit=100"
-                    );
-                    self.url(&path)
+            loop {
+                let url = match &next_url {
+                    Some(cursor) => format!(
+                        "{}/mdw/v3{}",
+                        self.base_url.as_str().trim_end_matches('/'),
+                        cursor
+                    ),
+                    None => {
+                        let path = format!(
+                            "/contracts/logs?contract_id={contract_id}&from={from_height}&to={to_height}&limit=100"
+                        );
+                        self.url(&path)
+                    }
+                };
+
+                let resp = self
+                    .client
+                    .get(&url)
+                    .send()
+                    .await
+                    .map_err(HyperlaneAeternityError::from)?;
+
+                let status = resp.status();
+                let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
+                if !status.is_success() {
+                    return Err(HyperlaneAeternityError::MiddlewareApiError(format!(
+                        "GET {url} => {status}: {body}"
+                    ))
+                    .into());
                 }
-            };
 
+                let page: PaginatedResponse<ContractLogEntry> =
+                    serde_json::from_str(&body).map_err(HyperlaneAeternityError::from)?;
+
+                all_entries.extend(page.data);
+
+                match page.next {
+                    Some(cursor) if !cursor.is_empty() => next_url = Some(cursor),
+                    _ => break,
+                }
+            }
+
+            Ok(all_entries)
+        }.await;
+        self.track("get_contract_logs", start, res.is_ok());
+        res
+    }
+
+    /// Fetch the current chain height from the middleware status endpoint.
+    pub async fn get_current_height(&self) -> ChainResult<u64> {
+        let start = Instant::now();
+        let res: ChainResult<_> = async {
+            let url = format!(
+                "{}/mdw/v3/status",
+                self.base_url.as_str().trim_end_matches('/')
+            );
             let resp = self
                 .client
                 .get(&url)
                 .send()
                 .await
                 .map_err(HyperlaneAeternityError::from)?;
-
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
@@ -109,55 +170,23 @@ impl AeMdwClient {
                 .into());
             }
 
-            let page: PaginatedResponse<ContractLogEntry> =
+            let value: serde_json::Value =
                 serde_json::from_str(&body).map_err(HyperlaneAeternityError::from)?;
 
-            all_entries.extend(page.data);
+            let height = value
+                .get("mdw_height")
+                .or_else(|| value.get("height"))
+                .and_then(|v| v.as_u64())
+                .ok_or_else(|| {
+                    HyperlaneAeternityError::MiddlewareApiError(
+                        "missing height in status response".into(),
+                    )
+                })?;
 
-            match page.next {
-                Some(cursor) if !cursor.is_empty() => next_url = Some(cursor),
-                _ => break,
-            }
-        }
-
-        Ok(all_entries)
-    }
-
-    /// Fetch the current chain height from the middleware status endpoint.
-    pub async fn get_current_height(&self) -> ChainResult<u64> {
-        let url = format!(
-            "{}/mdw/v3/status",
-            self.base_url.as_str().trim_end_matches('/')
-        );
-        let resp = self
-            .client
-            .get(&url)
-            .send()
-            .await
-            .map_err(HyperlaneAeternityError::from)?;
-        let status = resp.status();
-        let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
-        if !status.is_success() {
-            return Err(HyperlaneAeternityError::MiddlewareApiError(format!(
-                "GET {url} => {status}: {body}"
-            ))
-            .into());
-        }
-
-        let value: serde_json::Value =
-            serde_json::from_str(&body).map_err(HyperlaneAeternityError::from)?;
-
-        let height = value
-            .get("mdw_height")
-            .or_else(|| value.get("height"))
-            .and_then(|v| v.as_u64())
-            .ok_or_else(|| {
-                HyperlaneAeternityError::MiddlewareApiError(
-                    "missing height in status response".into(),
-                )
-            })?;
-
-        Ok(height)
+            Ok(height)
+        }.await;
+        self.track("get_current_height", start, res.is_ok());
+        res
     }
 }
 
