@@ -59,6 +59,17 @@ fn aci_to_sophia(aci_json: &str) -> String {
     let entries: Vec<Value> = serde_json::from_str(aci_json)
         .expect("invalid ACI JSON");
 
+    // Identify the main contract name so we can strip its prefix from
+    // qualified typedef references (e.g. "Mailbox.delivery" → "delivery").
+    let main_contract_name: Option<String> = entries.iter().find_map(|e| {
+        let c = e.get("contract")?;
+        if c.get("kind")?.as_str()? == "contract_main" {
+            c.get("name")?.as_str().map(String::from)
+        } else {
+            None
+        }
+    });
+
     let mut out = String::from("@compiler >= 6\n");
 
     // First pass: emit contract interfaces
@@ -91,7 +102,7 @@ fn aci_to_sophia(aci_json: &str) -> String {
             let kind = contract.get("kind").and_then(|k| k.as_str()).unwrap_or("");
             if kind == "contract_main" {
                 out.push('\n');
-                emit_main_contract(&mut out, contract);
+                emit_main_contract(&mut out, contract, main_contract_name.as_deref());
             }
         }
     }
@@ -110,10 +121,10 @@ fn emit_interface(out: &mut String, contract: &Value) {
             let returns = &func["returns"];
 
             let arg_types: Vec<String> = args
-                .map(|a| a.iter().map(|arg| aci_type_to_sophia(&arg["type"])).collect())
+                .map(|a| a.iter().map(|arg| aci_type_to_sophia(&arg["type"], None)).collect())
                 .unwrap_or_default();
 
-            let ret_type = aci_type_to_sophia(returns);
+            let ret_type = aci_type_to_sophia(returns, None);
             let arg_str = if arg_types.is_empty() {
                 "()".to_string()
             } else {
@@ -139,7 +150,7 @@ fn emit_namespace(out: &mut String, ns: &Value) {
                     .iter()
                     .map(|f| {
                         let fn_name = f["name"].as_str().unwrap_or("x");
-                        let fn_type = aci_type_to_sophia(&f["type"]);
+                        let fn_type = aci_type_to_sophia(&f["type"], None);
                         format!("{fn_name} : {fn_type}")
                     })
                     .collect();
@@ -150,7 +161,7 @@ fn emit_namespace(out: &mut String, ns: &Value) {
     }
 }
 
-fn emit_main_contract(out: &mut String, contract: &Value) {
+fn emit_main_contract(out: &mut String, contract: &Value, main_name: Option<&str>) {
     let name = contract["name"].as_str().unwrap_or("Unknown");
     out.push_str(&format!("main contract {name}Stub =\n"));
 
@@ -165,7 +176,7 @@ fn emit_main_contract(out: &mut String, contract: &Value) {
                     .iter()
                     .map(|f| {
                         let fn_name = f["name"].as_str().unwrap_or("x");
-                        let fn_type = aci_type_to_sophia(&f["type"]);
+                        let fn_type = aci_type_to_sophia(&f["type"], main_name);
                         format!("{fn_name} : {fn_type}")
                     })
                     .collect();
@@ -191,14 +202,14 @@ fn emit_main_contract(out: &mut String, contract: &Value) {
                     a.iter()
                         .map(|arg| {
                             let aname = arg["name"].as_str().unwrap_or("_");
-                            let atype = aci_type_to_sophia(&arg["type"]);
+                            let atype = aci_type_to_sophia(&arg["type"], main_name);
                             format!("{aname} : {atype}")
                         })
                         .collect()
                 })
                 .unwrap_or_default();
 
-            let ret_type = aci_type_to_sophia(returns);
+            let ret_type = aci_type_to_sophia(returns, main_name);
             let default = aci_type_default(returns);
 
             let prefix = if stateful { "stateful entrypoint" } else { "entrypoint" };
@@ -212,11 +223,23 @@ fn emit_main_contract(out: &mut String, contract: &Value) {
 }
 
 /// Convert an ACI type JSON value to its Sophia source representation.
-fn aci_type_to_sophia(ty: &Value) -> String {
+///
+/// `strip_prefix` is the main contract name whose qualified type
+/// references (e.g. `"Mailbox.delivery"`) must be turned into bare names
+/// because the stub renames the contract to `<Name>Stub`.  Namespace-
+/// qualified types (e.g. `"MerkleLib.merkle_tree"`) are left intact.
+fn aci_type_to_sophia(ty: &Value, strip_prefix: Option<&str>) -> String {
     match ty {
         Value::String(s) => match s.as_str() {
             "unit" => "unit".into(),
-            other => other.to_string(),
+            other => {
+                if let Some(prefix) = strip_prefix {
+                    if let Some(local) = other.strip_prefix(prefix).and_then(|r| r.strip_prefix('.')) {
+                        return local.to_string();
+                    }
+                }
+                other.to_string()
+            }
         },
         Value::Object(map) => {
             if let Some(n) = map.get("bytes") {
@@ -225,20 +248,20 @@ fn aci_type_to_sophia(ty: &Value) -> String {
                     _ => "bytes()".into(),
                 }
             } else if let Some(Value::Array(items)) = map.get("list") {
-                let inner = items.first().map(aci_type_to_sophia).unwrap_or("int".into());
+                let inner = items.first().map(|v| aci_type_to_sophia(v, strip_prefix)).unwrap_or("int".into());
                 format!("list({inner})")
             } else if let Some(Value::Array(items)) = map.get("option") {
-                let inner = items.first().map(aci_type_to_sophia).unwrap_or("int".into());
+                let inner = items.first().map(|v| aci_type_to_sophia(v, strip_prefix)).unwrap_or("int".into());
                 format!("option({inner})")
             } else if let Some(Value::Array(items)) = map.get("map") {
-                let key = items.first().map(aci_type_to_sophia).unwrap_or("int".into());
-                let val = items.get(1).map(aci_type_to_sophia).unwrap_or("int".into());
+                let key = items.first().map(|v| aci_type_to_sophia(v, strip_prefix)).unwrap_or("int".into());
+                let val = items.get(1).map(|v| aci_type_to_sophia(v, strip_prefix)).unwrap_or("int".into());
                 format!("map({key}, {val})")
             } else if let Some(Value::Array(items)) = map.get("tuple") {
                 if items.is_empty() {
                     "unit".into()
                 } else {
-                    let parts: Vec<String> = items.iter().map(aci_type_to_sophia).collect();
+                    let parts: Vec<String> = items.iter().map(|v| aci_type_to_sophia(v, strip_prefix)).collect();
                     parts.join(" * ")
                 }
             } else if let Some(Value::Array(fields)) = map.get("record") {
@@ -246,7 +269,7 @@ fn aci_type_to_sophia(ty: &Value) -> String {
                     .iter()
                     .map(|f| {
                         let name = f["name"].as_str().unwrap_or("x");
-                        let ftype = aci_type_to_sophia(&f["type"]);
+                        let ftype = aci_type_to_sophia(&f["type"], strip_prefix);
                         format!("{name} : {ftype}")
                     })
                     .collect();
@@ -306,33 +329,51 @@ mod tests {
 
     #[test]
     fn test_aci_type_to_sophia_primitives() {
-        assert_eq!(aci_type_to_sophia(&Value::String("int".into())), "int");
-        assert_eq!(aci_type_to_sophia(&Value::String("bool".into())), "bool");
-        assert_eq!(aci_type_to_sophia(&Value::String("address".into())), "address");
+        assert_eq!(aci_type_to_sophia(&Value::String("int".into()), None), "int");
+        assert_eq!(aci_type_to_sophia(&Value::String("bool".into()), None), "bool");
+        assert_eq!(aci_type_to_sophia(&Value::String("address".into()), None), "address");
     }
 
     #[test]
     fn test_aci_type_to_sophia_bytes() {
         let ty: Value = serde_json::from_str(r#"{"bytes": 32}"#).unwrap();
-        assert_eq!(aci_type_to_sophia(&ty), "bytes(32)");
+        assert_eq!(aci_type_to_sophia(&ty, None), "bytes(32)");
 
         let ty_any: Value = serde_json::from_str(r#"{"bytes": "any"}"#).unwrap();
-        assert_eq!(aci_type_to_sophia(&ty_any), "bytes()");
+        assert_eq!(aci_type_to_sophia(&ty_any, None), "bytes()");
     }
 
     #[test]
     fn test_aci_type_to_sophia_list() {
         let ty: Value = serde_json::from_str(r#"{"list": [{"bytes": 20}]}"#).unwrap();
-        assert_eq!(aci_type_to_sophia(&ty), "list(bytes(20))");
+        assert_eq!(aci_type_to_sophia(&ty, None), "list(bytes(20))");
     }
 
     #[test]
     fn test_aci_type_to_sophia_tuple() {
         let ty: Value = serde_json::from_str(r#"{"tuple": ["int", "bool"]}"#).unwrap();
-        assert_eq!(aci_type_to_sophia(&ty), "int * bool");
+        assert_eq!(aci_type_to_sophia(&ty, None), "int * bool");
 
         let ty_empty: Value = serde_json::from_str(r#"{"tuple": []}"#).unwrap();
-        assert_eq!(aci_type_to_sophia(&ty_empty), "unit");
+        assert_eq!(aci_type_to_sophia(&ty_empty, None), "unit");
+    }
+
+    #[test]
+    fn test_aci_type_strips_main_contract_prefix() {
+        assert_eq!(
+            aci_type_to_sophia(&Value::String("Mailbox.delivery".into()), Some("Mailbox")),
+            "delivery"
+        );
+        // Namespace-qualified types should NOT be stripped
+        assert_eq!(
+            aci_type_to_sophia(&Value::String("MerkleLib.merkle_tree".into()), Some("Mailbox")),
+            "MerkleLib.merkle_tree"
+        );
+        // Without strip_prefix, everything stays as-is
+        assert_eq!(
+            aci_type_to_sophia(&Value::String("Mailbox.delivery".into()), None),
+            "Mailbox.delivery"
+        );
     }
 
     #[test]

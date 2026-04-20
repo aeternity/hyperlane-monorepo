@@ -107,8 +107,9 @@ impl AeMdwClient {
                         cursor
                     ),
                     None => {
+                        let from = from_height.max(1);
                         let path = format!(
-                            "/contracts/logs?contract_id={contract_id}&from={from_height}&to={to_height}&limit=100"
+                            "/contracts/logs?contract_id={contract_id}&scope=gen:{from}-{to_height}&limit=100"
                         );
                         self.url(&path)
                     }

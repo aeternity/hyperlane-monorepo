@@ -123,6 +123,8 @@ impl Indexer<InterchainGasPayment> for AeIgpIndexer {
 #[async_trait]
 impl SequenceAwareIndexer<InterchainGasPayment> for AeIgpIndexer {
     async fn latest_sequence_count_and_tip(&self) -> ChainResult<(Option<u32>, u32)> {
+        let tip = self.provider.get_finalized_block_number().await? as u32;
+
         let count = self
             .provider
             .call_contract(
@@ -134,7 +136,6 @@ impl SequenceAwareIndexer<InterchainGasPayment> for AeIgpIndexer {
             .await?;
 
         let sequence = count.as_u64().map(|n| n as u32).unwrap_or(0);
-        let tip = self.provider.get_finalized_block_number().await? as u32;
         Ok((Some(sequence), tip))
     }
 }

@@ -76,6 +76,39 @@ pub fn encode_ae_hash(bytes: &[u8], prefix: &str) -> ChainResult<String> {
     Ok(format!("{}_{}", prefix, bs58::encode(buf).into_string()))
 }
 
+/// Decode a base32hex (RFC 4648 Extended Hex) string to raw bytes.
+///
+/// The AE middleware returns event hashes in this encoding, e.g.
+/// `"99CNLCQTA10PGTKPOEAGR47UL54LNETL81UPT4ND81JO1DV47PVG===="`.
+pub fn base32hex_to_bytes(input: &str) -> Option<Vec<u8>> {
+    let input = input.trim_end_matches('=');
+    let mut bits = 0u64;
+    let mut bit_count = 0u32;
+    let mut out = Vec::new();
+
+    for c in input.bytes() {
+        let val = match c {
+            b'0'..=b'9' => c - b'0',
+            b'A'..=b'V' => c - b'A' + 10,
+            b'a'..=b'v' => c - b'a' + 10,
+            _ => return None,
+        };
+        bits = (bits << 5) | val as u64;
+        bit_count += 5;
+        if bit_count >= 8 {
+            bit_count -= 8;
+            out.push((bits >> bit_count) as u8);
+            bits &= (1u64 << bit_count) - 1;
+        }
+    }
+    Some(out)
+}
+
+/// Decode a base32hex-encoded event hash to a hex string.
+pub fn base32hex_to_hex(input: &str) -> Option<String> {
+    base32hex_to_bytes(input).map(|b| hex::encode(b))
+}
+
 /// Convert an AE node timestamp (milliseconds since epoch) to seconds.
 pub fn ae_timestamp_to_seconds(timestamp_ms: u64) -> u64 {
     timestamp_ms / 1000

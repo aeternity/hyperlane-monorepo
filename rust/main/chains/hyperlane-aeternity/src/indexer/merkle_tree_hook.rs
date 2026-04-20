@@ -144,14 +144,37 @@ fn parse_tree_json(value: &serde_json::Value) -> IncrementalMerkle {
     let mut count = 0usize;
 
     if let Some(obj) = value.as_object() {
-        if let Some(branch_map) = obj.get("branch").and_then(|v| v.as_object()) {
-            for (key, val) in branch_map {
-                if let (Ok(idx), Some(hex_str)) = (key.parse::<usize>(), val.as_str()) {
-                    if idx < 32 {
-                        let hex_clean = hex_str.trim_start_matches('#');
-                        if let Ok(bytes) = hex::decode(hex_clean) {
-                            if bytes.len() == 32 {
-                                branch[idx] = H256::from_slice(&bytes);
+        if let Some(branch_val) = obj.get("branch") {
+            // The AE compiler returns maps as arrays of [key, value] pairs,
+            // e.g. [[0, "#abcd..."], [1, "#ef01..."]].
+            if let Some(arr) = branch_val.as_array() {
+                for pair in arr {
+                    if let Some(kv) = pair.as_array() {
+                        if kv.len() == 2 {
+                            if let (Some(idx), Some(hex_str)) =
+                                (kv[0].as_u64().map(|n| n as usize), kv[1].as_str())
+                            {
+                                if idx < 32 {
+                                    let hex_clean = hex_str.trim_start_matches('#');
+                                    if let Ok(bytes) = hex::decode(hex_clean) {
+                                        if bytes.len() == 32 {
+                                            branch[idx] = H256::from_slice(&bytes);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if let Some(branch_map) = branch_val.as_object() {
+                for (key, val) in branch_map {
+                    if let (Ok(idx), Some(hex_str)) = (key.parse::<usize>(), val.as_str()) {
+                        if idx < 32 {
+                            let hex_clean = hex_str.trim_start_matches('#');
+                            if let Ok(bytes) = hex::decode(hex_clean) {
+                                if bytes.len() == 32 {
+                                    branch[idx] = H256::from_slice(&bytes);
+                                }
                             }
                         }
                     }
@@ -255,6 +278,12 @@ impl Indexer<MerkleTreeInsertion> for AeMerkleTreeIndexer {
 #[async_trait]
 impl SequenceAwareIndexer<MerkleTreeInsertion> for AeMerkleTreeIndexer {
     async fn latest_sequence_count_and_tip(&self) -> ChainResult<(Option<u32>, u32)> {
+        // Get the tip FIRST, then the count. AE micro blocks can update
+        // contract state before the key block height advances, so fetching
+        // count first could yield a sequence that doesn't exist yet at the
+        // reported tip, causing the forward cursor to loop forever.
+        let tip = self.provider.get_finalized_block_number().await? as u32;
+
         let count = self
             .provider
             .call_contract(
@@ -266,7 +295,6 @@ impl SequenceAwareIndexer<MerkleTreeInsertion> for AeMerkleTreeIndexer {
             .await?;
 
         let sequence = count.as_u64().map(|n| n as u32).unwrap_or(0);
-        let tip = self.provider.get_finalized_block_number().await? as u32;
         Ok((Some(sequence), tip))
     }
 }

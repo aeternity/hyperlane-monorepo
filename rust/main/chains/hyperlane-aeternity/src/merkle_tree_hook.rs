@@ -51,14 +51,37 @@ impl AeMerkleTreeHook {
             .unwrap_or(0) as usize;
 
         let mut branch = [H256::zero(); TREE_DEPTH];
-        if let Some(branch_map) = obj.get("branch").and_then(|v| v.as_object()) {
-            for (key, val) in branch_map {
-                if let (Ok(idx), Some(hex_str)) = (key.parse::<usize>(), val.as_str()) {
-                    if idx < TREE_DEPTH {
-                        let hex_clean = hex_str.trim_start_matches('#');
-                        if let Ok(bytes) = hex::decode(hex_clean) {
-                            if bytes.len() == 32 {
-                                branch[idx] = H256::from_slice(&bytes);
+        if let Some(branch_val) = obj.get("branch") {
+            // The AE compiler returns maps as arrays of [key, value] pairs,
+            // e.g. [[0, "#abcd..."], [1, "#ef01..."]].
+            if let Some(arr) = branch_val.as_array() {
+                for pair in arr {
+                    if let Some(kv) = pair.as_array() {
+                        if kv.len() == 2 {
+                            if let (Some(idx), Some(hex_str)) =
+                                (kv[0].as_u64().map(|n| n as usize), kv[1].as_str())
+                            {
+                                if idx < TREE_DEPTH {
+                                    let hex_clean = hex_str.trim_start_matches('#');
+                                    if let Ok(bytes) = hex::decode(hex_clean) {
+                                        if bytes.len() == 32 {
+                                            branch[idx] = H256::from_slice(&bytes);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if let Some(branch_map) = branch_val.as_object() {
+                for (key, val) in branch_map {
+                    if let (Ok(idx), Some(hex_str)) = (key.parse::<usize>(), val.as_str()) {
+                        if idx < TREE_DEPTH {
+                            let hex_clean = hex_str.trim_start_matches('#');
+                            if let Ok(bytes) = hex::decode(hex_clean) {
+                                if bytes.len() == 32 {
+                                    branch[idx] = H256::from_slice(&bytes);
+                                }
                             }
                         }
                     }

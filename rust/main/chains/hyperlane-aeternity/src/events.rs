@@ -7,7 +7,7 @@ use hyperlane_core::{
     H512, U256,
 };
 
-use crate::utils::{blake2b_hex, decode_ae_hash};
+use crate::utils::{base32hex_to_hex, blake2b_hex, decode_ae_hash};
 use crate::types::contract_address_to_h256;
 
 /// Middleware log entry used internally by event parsers.
@@ -36,7 +36,15 @@ impl From<&crate::rpc::ContractLogEntry> for ContractLogEntry {
             height: mdw.height,
             micro_index: mdw.micro_index,
             log_idx: mdw.log_idx,
-            event_hash: mdw.event_hash.clone().unwrap_or_default(),
+            event_hash: mdw
+                .event_hash
+                .as_deref()
+                .map(|h| {
+                    // Middleware returns event hashes in base32hex encoding;
+                    // normalize to hex so comparisons with blake2b_hex() work.
+                    base32hex_to_hex(h).unwrap_or_else(|| h.to_string())
+                })
+                .unwrap_or_default(),
             args: mdw.args.clone(),
             data: mdw.data.clone(),
         }
@@ -97,37 +105,62 @@ pub fn build_log_meta(log: &ContractLogEntry) -> LogMeta {
 // Topic / data helpers
 // ---------------------------------------------------------------------------
 
-/// Parse a hex-encoded topic arg to 32 bytes (H256).
-/// AE topics are big-endian integer hex strings.
-fn parse_topic_h256(hex_str: &str) -> Result<H256, EventParseError> {
-    let stripped = hex_str.strip_prefix("0x").unwrap_or(hex_str);
-    let bytes = hex::decode(stripped)
-        .map_err(|e| EventParseError::InvalidData(format!("hex decode topic: {e}")))?;
-    if bytes.len() > 32 {
+/// Parse a topic arg to 32 bytes (H256).
+///
+/// The middleware returns topic args as decimal integer strings,
+/// while some test fixtures use 0x-prefixed hex. Handle both.
+fn parse_topic_h256(s: &str) -> Result<H256, EventParseError> {
+    if let Some(hex_part) = s.strip_prefix("0x") {
+        let bytes = hex::decode(hex_part)
+            .map_err(|e| EventParseError::InvalidData(format!("hex decode topic: {e}")))?;
+        if bytes.len() > 32 {
+            return Err(EventParseError::InvalidData(format!(
+                "topic too long: {} bytes",
+                bytes.len()
+            )));
+        }
+        let mut padded = [0u8; 32];
+        padded[32 - bytes.len()..].copy_from_slice(&bytes);
+        return Ok(H256::from(padded));
+    }
+    // Decimal integer string from middleware
+    let n = num_bigint::BigUint::parse_bytes(s.as_bytes(), 10)
+        .ok_or_else(|| EventParseError::InvalidData(format!("invalid decimal topic: {s}")))?;
+    let be_bytes = n.to_bytes_be();
+    if be_bytes.len() > 32 {
         return Err(EventParseError::InvalidData(format!(
             "topic too long: {} bytes",
-            bytes.len()
+            be_bytes.len()
         )));
     }
     let mut padded = [0u8; 32];
-    padded[32 - bytes.len()..].copy_from_slice(&bytes);
+    padded[32 - be_bytes.len()..].copy_from_slice(&be_bytes);
     Ok(H256::from(padded))
 }
 
-/// Parse a hex-encoded topic arg to a u32.
-fn parse_topic_u32(hex_str: &str) -> Result<u32, EventParseError> {
-    let stripped = hex_str.strip_prefix("0x").unwrap_or(hex_str);
-    u64::from_str_radix(stripped, 16)
+/// Parse a topic arg to a u32.
+fn parse_topic_u32(s: &str) -> Result<u32, EventParseError> {
+    if let Some(hex_part) = s.strip_prefix("0x") {
+        return u64::from_str_radix(hex_part, 16)
+            .map(|v| v as u32)
+            .map_err(|e| EventParseError::InvalidData(format!("parse u32 topic: {e}")));
+    }
+    s.parse::<u64>()
         .map(|v| v as u32)
         .map_err(|e| EventParseError::InvalidData(format!("parse u32 topic: {e}")))
 }
 
-/// Parse a hex-encoded topic arg to a U256.
-fn parse_topic_u256(hex_str: &str) -> Result<U256, EventParseError> {
-    let stripped = hex_str.strip_prefix("0x").unwrap_or(hex_str);
-    let bytes = hex::decode(stripped)
-        .map_err(|e| EventParseError::InvalidData(format!("hex decode U256: {e}")))?;
-    Ok(U256::from_big_endian(&bytes))
+/// Parse a topic arg to a U256.
+fn parse_topic_u256(s: &str) -> Result<U256, EventParseError> {
+    if let Some(hex_part) = s.strip_prefix("0x") {
+        let bytes = hex::decode(hex_part)
+            .map_err(|e| EventParseError::InvalidData(format!("hex decode U256: {e}")))?;
+        return Ok(U256::from_big_endian(&bytes));
+    }
+    let n = num_bigint::BigUint::parse_bytes(s.as_bytes(), 10)
+        .ok_or_else(|| EventParseError::InvalidData(format!("invalid decimal U256: {s}")))?;
+    let be_bytes = n.to_bytes_be();
+    Ok(U256::from_big_endian(&be_bytes))
 }
 
 /// Decode the non-indexed `data` field from an AE event.
@@ -135,14 +168,22 @@ fn parse_topic_u256(hex_str: &str) -> Result<U256, EventParseError> {
 /// The data is base64-encoded with a "cb_" prefix. Stripping the prefix
 /// and decoding gives the raw FATE-serialized bytes.
 fn decode_event_data(data: &str) -> Result<Vec<u8>, EventParseError> {
-    let b64 = data
-        .strip_prefix("cb_")
-        .ok_or_else(|| EventParseError::InvalidData("data missing cb_ prefix".into()))?;
+    // The AE middleware returns event data as plain base64.
+    // The AE compiler/node uses "cb_" prefixed base64 (with a 4-byte checksum).
+    // Handle both formats gracefully.
+    let b64 = data.strip_prefix("cb_").unwrap_or(data);
 
     use base64::{engine::general_purpose::STANDARD, Engine};
-    STANDARD
+    let decoded = STANDARD
         .decode(b64)
-        .map_err(|e| EventParseError::InvalidData(format!("base64 decode: {e}")))
+        .map_err(|e| EventParseError::InvalidData(format!("base64 decode: {e}")))?;
+
+    // If decoded from cb_ format, strip the 4-byte SHA-256 checksum suffix
+    if data.starts_with("cb_") && decoded.len() > 4 {
+        Ok(decoded[..decoded.len() - 4].to_vec())
+    } else {
+        Ok(decoded)
+    }
 }
 
 // ---------------------------------------------------------------------------
