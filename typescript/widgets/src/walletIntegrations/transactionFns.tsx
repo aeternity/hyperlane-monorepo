@@ -11,6 +11,7 @@ import { useSolanaTransactionFns } from './solana.js';
 import { useStarknetTransactionFns } from './starknet.js';
 import { type ChainTransactionFns } from './types.js';
 import { useTronTransactionFns } from './tron.js';
+import { useAeternityTransactionFns } from './aeternity.js';
 
 export function useTransactionFns(
   multiProvider: MultiProviderAdapter,
@@ -50,6 +51,11 @@ export function useTransactionFns(
     sendTransaction: onSendTronTx,
     sendMultiTransaction: onSendMultiTronTx,
   } = useTronTransactionFns(multiProvider);
+  const {
+    switchNetwork: onSwitchAeternityNetwork,
+    sendTransaction: onSendAeternityTx,
+    sendMultiTransaction: onSendMultiAeternityTx,
+  } = useAeternityTransactionFns(multiProvider);
 
   return useMemo(
     () => ({
@@ -93,6 +99,11 @@ export function useTransactionFns(
         sendMultiTransaction: onSendMultiTronTx,
         switchNetwork: onSwitchTronNetwork,
       },
+      [ProtocolType.Aeternity]: {
+        sendTransaction: onSendAeternityTx,
+        sendMultiTransaction: onSendMultiAeternityTx,
+        switchNetwork: onSwitchAeternityNetwork,
+      },
     }),
     [
       onSendEvmTx,
@@ -116,6 +127,9 @@ export function useTransactionFns(
       onSendTronTx,
       onSendMultiTronTx,
       onSwitchTronNetwork,
+      onSendAeternityTx,
+      onSendMultiAeternityTx,
+      onSwitchAeternityNetwork,
     ],
   );
 }

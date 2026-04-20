@@ -144,6 +144,8 @@
     "@cosmjs/proto-signing": "catalog:",
     "@cosmjs/stargate": "catalog:",
     "@cosmjs/tendermint-rpc": "catalog:",
+    "@aeternity/aepp-sdk": "^14.0.0",
+    "@hyperlane-xyz/aeternity-sdk": "workspace:*",
     "@hyperlane-xyz/aleo-sdk": "workspace:*",
     "@hyperlane-xyz/core": "workspace:*",
     "@hyperlane-xyz/cosmos-sdk": "workspace:*",

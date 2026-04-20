@@ -44,6 +44,12 @@ export async function loadProtocolProviders(
         registerProtocol(protocol, () => new StarknetProtocolProvider());
         break;
       }
+      case ProtocolType.Aeternity: {
+        const { AeternityProtocolProvider } =
+          await import('@hyperlane-xyz/aeternity-sdk');
+        registerProtocol(protocol, () => new AeternityProtocolProvider());
+        break;
+      }
     }
   }
 }

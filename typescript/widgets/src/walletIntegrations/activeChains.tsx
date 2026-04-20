@@ -11,6 +11,7 @@ import { useSolanaActiveChain } from './solanaWallet.js';
 import { useStarknetActiveChain } from './starknetWallet.js';
 import { type ActiveChainInfo } from './types.js';
 import { useTronActiveChain } from './tronWallet.js';
+import { useAeternityActiveChain } from './aeternityWallet.js';
 
 export function useActiveChains(multiProvider: MinimalProviderRegistry): {
   chains: Record<KnownProtocolType, ActiveChainInfo>;
@@ -23,6 +24,7 @@ export function useActiveChains(multiProvider: MinimalProviderRegistry): {
   const radixChain = useRadixActiveChain(multiProvider);
   const aleoChain = useAleoActiveChain(multiProvider);
   const tronChain = useTronActiveChain(multiProvider);
+  const aeternityChain = useAeternityActiveChain(multiProvider);
 
   const readyChains = useMemo(
     () =>
@@ -34,6 +36,7 @@ export function useActiveChains(multiProvider: MinimalProviderRegistry): {
         radixChain,
         aleoChain,
         tronChain,
+        aeternityChain,
       ].filter((c) => !!c.chainDisplayName),
     [
       evmChain,
@@ -43,6 +46,7 @@ export function useActiveChains(multiProvider: MinimalProviderRegistry): {
       radixChain,
       aleoChain,
       tronChain,
+      aeternityChain,
     ],
   );
 
@@ -57,6 +61,7 @@ export function useActiveChains(multiProvider: MinimalProviderRegistry): {
         [ProtocolType.Radix]: radixChain,
         [ProtocolType.Aleo]: aleoChain,
         [ProtocolType.Tron]: tronChain,
+        [ProtocolType.Aeternity]: aeternityChain,
       },
       readyChains,
     }),
@@ -69,6 +74,7 @@ export function useActiveChains(multiProvider: MinimalProviderRegistry): {
       radixChain,
       aleoChain,
       tronChain,
+      aeternityChain,
     ],
   );
 }

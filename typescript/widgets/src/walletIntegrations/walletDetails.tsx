@@ -10,6 +10,7 @@ import { useSolanaWalletDetails } from './solanaWallet.js';
 import { useStarknetWalletDetails } from './starknetWallet.js';
 import { type WalletDetails } from './types.js';
 import { useTronWalletDetails } from './tronWallet.js';
+import { useAeternityWalletDetails } from './aeternityWallet.js';
 
 export function useWalletDetails(): Record<KnownProtocolType, WalletDetails> {
   const evmWallet = useEthereumWalletDetails();
@@ -19,6 +20,7 @@ export function useWalletDetails(): Record<KnownProtocolType, WalletDetails> {
   const radixWallet = useRadixWalletDetails();
   const aleoWallet = useAleoWalletDetails();
   const tronWallet = useTronWalletDetails();
+  const aeternityWallet = useAeternityWalletDetails();
 
   return useMemo(
     () => ({
@@ -30,6 +32,7 @@ export function useWalletDetails(): Record<KnownProtocolType, WalletDetails> {
       [ProtocolType.Radix]: radixWallet,
       [ProtocolType.Aleo]: aleoWallet,
       [ProtocolType.Tron]: tronWallet,
+      [ProtocolType.Aeternity]: aeternityWallet,
     }),
     [
       evmWallet,
@@ -39,6 +42,7 @@ export function useWalletDetails(): Record<KnownProtocolType, WalletDetails> {
       radixWallet,
       aleoWallet,
       tronWallet,
+      aeternityWallet,
     ],
   );
 }

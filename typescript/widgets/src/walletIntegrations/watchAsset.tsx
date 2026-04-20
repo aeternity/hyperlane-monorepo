@@ -11,6 +11,7 @@ import { useSolanaWatchAsset } from './solana.js';
 import { useStarknetWatchAsset } from './starknet.js';
 import { type WatchAssetFns } from './types.js';
 import { useTronWatchAsset } from './tron.js';
+import { useAeternityWatchAsset } from './aeternity.js';
 
 export function useWatchAsset(
   multiProvider: MultiProviderAdapter,
@@ -22,6 +23,7 @@ export function useWatchAsset(
   const { addAsset: radixAddAsset } = useRadixWatchAsset(multiProvider);
   const { addAsset: aleoAddAsset } = useAleoWatchAsset(multiProvider);
   const { addAsset: tronAddAsset } = useTronWatchAsset(multiProvider);
+  const { addAsset: aeternityAddAsset } = useAeternityWatchAsset(multiProvider);
 
   return useMemo(
     () => ({
@@ -49,6 +51,9 @@ export function useWatchAsset(
       [ProtocolType.Tron]: {
         addAsset: tronAddAsset,
       },
+      [ProtocolType.Aeternity]: {
+        addAsset: aeternityAddAsset,
+      },
     }),
     [
       evmAddAsset,
@@ -58,6 +63,7 @@ export function useWatchAsset(
       radixAddAsset,
       aleoAddAsset,
       tronAddAsset,
+      aeternityAddAsset,
     ],
   );
 }

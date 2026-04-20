@@ -75,6 +75,7 @@
     "@cosmjs/stargate": "catalog:",
     "@cosmos-kit/react": "^2.18.0",
     "@headlessui/react": "^2.1.8",
+    "@hyperlane-xyz/aeternity-sdk": "workspace:*",
     "@hyperlane-xyz/aleo-sdk": "workspace:*",
     "@hyperlane-xyz/cosmos-sdk": "workspace:*",
     "@hyperlane-xyz/provider-sdk": "workspace:*",
