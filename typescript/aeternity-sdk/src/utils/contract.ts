@@ -14,9 +14,10 @@ export async function callStatic(
     nodes: [{ name: 'node', instance: node }],
   });
 
+  const aciArr = Array.isArray(aci) ? aci : [aci];
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci,
+    aci: aciArr,
     address: contractAddress as `ct_${string}`,
   });
 
@@ -29,9 +30,10 @@ export async function initContract(
   aci: any,
   contractAddress: string,
 ): Promise<any> {
+  const aciArr = Array.isArray(aci) ? aci : [aci];
   return Contract.initialize({
     ...sdk.getContext(),
-    aci,
+    aci: aciArr,
     address: contractAddress as `ct_${string}`,
   });
 }

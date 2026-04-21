@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 
 import type { MinimalProviderRegistry } from '@hyperlane-xyz/sdk/providers/MinimalProviderRegistry';
 import { ProtocolType } from '@hyperlane-xyz/utils';
@@ -12,6 +12,19 @@ import type {
 
 let aeternityAddress: string | undefined;
 let aeternityConnected = false;
+let stateVersion = 0;
+const listeners = new Set<() => void>();
+
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getSnapshot(): number {
+  return stateVersion;
+}
 
 export function setAeternityWalletState(
   address: string | undefined,
@@ -19,11 +32,15 @@ export function setAeternityWalletState(
 ): void {
   aeternityAddress = address;
   aeternityConnected = connected;
+  stateVersion++;
+  listeners.forEach((l) => l());
 }
 
 export function useAeternityAccount(
   _multiProvider: MinimalProviderRegistry,
 ): AccountInfo {
+  const version = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+
   return useMemo(() => {
     const addresses: Array<ChainAddress> = [];
     if (aeternityAddress) addresses.push({ address: aeternityAddress });
@@ -34,7 +51,7 @@ export function useAeternityAccount(
       publicKey: undefined,
       isReady: aeternityConnected && !!aeternityAddress,
     };
-  }, []);
+  }, [version]);
 }
 
 export function useAeternityWalletDetails(): WalletDetails {

@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { Contract } from '@aeternity/aepp-sdk';
 
 import {
   getIsmType,

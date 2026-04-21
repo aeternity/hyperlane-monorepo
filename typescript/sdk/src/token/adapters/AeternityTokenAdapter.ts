@@ -4,9 +4,7 @@ import { Address } from '@hyperlane-xyz/utils';
 
 import type { MultiProviderAdapter } from '../../providers/MultiProviderAdapter.js';
 import type { ChainName } from '../../types.js';
-import { TokenMetadata as TokenMeta } from '../TokenMetadata.js';
-
-import type { ITokenAdapter, TransferParams, TransferRemoteParams } from './ITokenAdapter.js';
+import type { ITokenAdapter, TransferParams } from './ITokenAdapter.js';
 
 const AEX9_ACI = {
   contract: {
@@ -127,7 +125,7 @@ export class AeternityAEX9TokenAdapter implements ITokenAdapter<AeternityTransac
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     try {
@@ -144,7 +142,7 @@ export class AeternityAEX9TokenAdapter implements ITokenAdapter<AeternityTransac
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     const result = await contract.total_supply();
@@ -157,7 +155,7 @@ export class AeternityAEX9TokenAdapter implements ITokenAdapter<AeternityTransac
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     const [nameRes, symbolRes, decimalsRes, supplyRes] = await Promise.all([

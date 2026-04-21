@@ -23,6 +23,19 @@ export {
   setAeternityWalletState,
 } from './aeternityWallet.js';
 
+export type AeternityTxHandler = (params: {
+  tx: WarpTypedTransaction;
+  chainName: ChainName;
+}) => Promise<{ hash: string; confirm: () => Promise<TypedTransactionReceipt> }>;
+
+let registeredTxHandler: AeternityTxHandler | undefined;
+
+export function registerAeternityTxHandler(
+  handler: AeternityTxHandler | undefined,
+): void {
+  registeredTxHandler = handler;
+}
+
 export function useAeternitySwitchNetwork(
   _multiProvider: MultiProviderAdapter,
 ): SwitchNetworkFns {
@@ -63,14 +76,14 @@ export function useAeternityTransactionFns(
       chainName: ChainName;
       activeChainName?: ChainName;
     }) => {
-      // Aeternity transactions are dispatched via the Superhero wallet
-      // connection established at the application level. The wallet handles
-      // signing and broadcasting through AeSdkAepp.
-      throw new Error(
-        'Aeternity transactions should be sent through the Superhero wallet context',
-      );
+      if (!registeredTxHandler) {
+        throw new Error(
+          'Aeternity wallet context not initialized. Ensure AeternityWalletContext is in the provider tree.',
+        );
+      }
+      return registeredTxHandler({ tx, chainName });
     },
-    [multiProvider],
+    [],
   );
 
   const onMultiSendTx = useCallback(async () => {

@@ -3,9 +3,28 @@ import { AeSdk, Node, MemoryAccount, Contract } from '@aeternity/aepp-sdk';
 import { AltVM } from '@hyperlane-xyz/provider-sdk';
 import { assert } from '@hyperlane-xyz/utils';
 
+import {
+  MAILBOX_ACI,
+  MERKLE_TREE_HOOK_ACI,
+  MULTISIG_ISM_ACI,
+  VALIDATOR_ANNOUNCE_ACI,
+  NOOP_HOOK_ACI,
+  AEX9_ACI,
+  WARP_ROUTER_ACI,
+} from '../aci/index.js';
 import { AeternityTransaction, AeternityReceipt } from '../utils/types.js';
 
 import { AeternityProvider } from './provider.js';
+
+const ALL_FUNCTIONS_ACI = [
+  MAILBOX_ACI,
+  MERKLE_TREE_HOOK_ACI,
+  MULTISIG_ISM_ACI,
+  VALIDATOR_ANNOUNCE_ACI,
+  NOOP_HOOK_ACI,
+  AEX9_ACI,
+  WARP_ROUTER_ACI,
+];
 
 export class AeternitySigner
   extends AeternityProvider
@@ -21,7 +40,7 @@ export class AeternitySigner
     assert(rpcUrls.length > 0, 'got no rpcUrls');
 
     const node = new Node(rpcUrls[0]);
-    const account = new MemoryAccount(privateKey as `${string}`);
+    const account = new MemoryAccount(privateKey as `sk_${string}`);
     const sdk = new AeSdk({
       nodes: [{ name: 'node', instance: node }],
       accounts: [account],
@@ -64,11 +83,12 @@ export class AeternitySigner
   async sendAndConfirmTransaction(
     transaction: AeternityTransaction,
   ): Promise<AeternityReceipt> {
+    const matchingAci = ALL_FUNCTIONS_ACI.find((a) =>
+      a.contract.functions.some((f: any) => f.name === transaction.entrypoint),
+    );
     const contract = await Contract.initialize({
       ...this.sdk.getContext(),
-      aci: transaction.args[transaction.args.length]
-        ? undefined
-        : undefined,
+      aci: matchingAci ? [matchingAci] : ALL_FUNCTIONS_ACI,
       address: transaction.contractId as `ct_${string}`,
     });
 
@@ -87,11 +107,11 @@ export class AeternitySigner
 
     return {
       hash: result.hash,
-      blockHeight: result.blockHeight ?? 0,
-      blockHash: result.blockHash ?? '',
+      blockHeight: Number((result as any).blockHeight ?? (result.result as any)?.blockHeight ?? 0),
+      blockHash: String((result as any).blockHash ?? (result.result as any)?.blockHash ?? ''),
       returnValue: result.decodedResult,
       gasUsed: Number(result.result?.gasUsed ?? 0),
-      log: result.result?.log ?? [],
+      log: (result.result as any)?.log ?? [],
     };
   }
 

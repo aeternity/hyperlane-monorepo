@@ -8,7 +8,7 @@ export async function getAnnouncedValidators(
 ): Promise<string[]> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: VALIDATOR_ANNOUNCE_ACI,
+    aci: [VALIDATOR_ANNOUNCE_ACI],
     address: validatorAnnounceAddress as `ct_${string}`,
   });
 
@@ -23,7 +23,7 @@ export async function getAnnouncedStorageLocations(
 ): Promise<string[][]> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: VALIDATOR_ANNOUNCE_ACI,
+    aci: [VALIDATOR_ANNOUNCE_ACI],
     address: validatorAnnounceAddress as `ct_${string}`,
   });
 

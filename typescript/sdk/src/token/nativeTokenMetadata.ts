@@ -54,4 +54,9 @@ export const PROTOCOL_TO_DEFAULT_NATIVE_TOKEN: Record<
     name: 'Tron',
     symbol: 'TRX',
   },
+  [ProtocolType.Aeternity]: {
+    decimals: 18,
+    name: 'Aeternity',
+    symbol: 'AE',
+  },
 };

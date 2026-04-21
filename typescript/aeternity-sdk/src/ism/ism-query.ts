@@ -8,7 +8,7 @@ export async function getIsmType(
 ): Promise<number> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: MULTISIG_ISM_ACI,
+    aci: [MULTISIG_ISM_ACI],
     address: ismAddress as `ct_${string}`,
   });
 
@@ -26,7 +26,7 @@ export async function getMultisigIsmConfig(
 }> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: MULTISIG_ISM_ACI,
+    aci: [MULTISIG_ISM_ACI],
     address: ismAddress as `ct_${string}`,
   });
 
@@ -49,7 +49,7 @@ export async function verifyIsm(
 ): Promise<boolean> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: MULTISIG_ISM_ACI,
+    aci: [MULTISIG_ISM_ACI],
     address: ismAddress as `ct_${string}`,
   });
 

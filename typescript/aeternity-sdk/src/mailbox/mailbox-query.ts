@@ -17,7 +17,7 @@ export async function getMailboxState(
 }> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: MAILBOX_ACI,
+    aci: [MAILBOX_ACI],
     address: mailboxAddress as `ct_${string}`,
   });
 
@@ -60,7 +60,7 @@ export async function isMessageDelivered(
 ): Promise<boolean> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: MAILBOX_ACI,
+    aci: [MAILBOX_ACI],
     address: mailboxAddress as `ct_${string}`,
   });
 
@@ -77,7 +77,7 @@ export async function quoteDispatch(
 ): Promise<bigint> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: MAILBOX_ACI,
+    aci: [MAILBOX_ACI],
     address: mailboxAddress as `ct_${string}`,
   });
 

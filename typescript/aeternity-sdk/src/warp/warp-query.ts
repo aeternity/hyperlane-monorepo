@@ -11,7 +11,7 @@ export async function getWarpRouterConfig(
 }> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: WARP_ROUTER_ACI,
+    aci: [WARP_ROUTER_ACI],
     address: routerAddress as `ct_${string}`,
   });
 
@@ -38,7 +38,7 @@ export async function quoteTransferRemote(
 ): Promise<bigint> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: WARP_ROUTER_ACI,
+    aci: [WARP_ROUTER_ACI],
     address: routerAddress as `ct_${string}`,
   });
 
@@ -61,7 +61,7 @@ export async function getAex9TokenMetadata(
 }> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: AEX9_ACI,
+    aci: [AEX9_ACI],
     address: tokenAddress as `ct_${string}`,
   });
 

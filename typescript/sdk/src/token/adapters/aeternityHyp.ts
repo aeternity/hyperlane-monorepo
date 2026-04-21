@@ -8,8 +8,9 @@ import { TokenStandard } from '../TokenStandard.js';
 
 import type {
   IHypTokenAdapter,
+  InterchainGasQuote,
+  QuoteTransferRemoteParams,
   TransferRemoteParams,
-  ITokenAdapter,
   TransferParams,
 } from './ITokenAdapter.js';
 
@@ -151,7 +152,7 @@ abstract class BaseAeternityHypAdapter
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     return Contract.initialize({
       ...sdk.getContext(),
-      aci: WARP_ROUTER_ACI,
+      aci: [WARP_ROUTER_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
   }
@@ -190,18 +191,19 @@ abstract class BaseAeternityHypAdapter
     }
   }
 
-  async getRouterAddress(domain: number): Promise<string> {
+  async getRouterAddress(domain: number): Promise<Buffer> {
     const contract = await this.getContract();
     const result = await contract.get_remote_router(domain);
-    return result.decodedResult?.toString() ?? '';
+    const addr = result.decodedResult?.toString() ?? '';
+    return Buffer.from(addr, 'hex');
   }
 
-  async getAllRouters(): Promise<Map<number, string>> {
+  async getAllRouters(): Promise<Array<{ domain: number; address: Buffer }>> {
     const domains = await this.getDomains();
-    const result = new Map<number, string>();
+    const result: Array<{ domain: number; address: Buffer }> = [];
     for (const domain of domains) {
       const router = await this.getRouterAddress(domain);
-      result.set(domain, router);
+      result.push({ domain, address: router });
     }
     return result;
   }
@@ -211,26 +213,27 @@ abstract class BaseAeternityHypAdapter
   }
 
   async quoteTransferRemoteGas(
-    destination: number,
-  ): Promise<bigint> {
+    params: QuoteTransferRemoteParams,
+  ): Promise<InterchainGasQuote> {
     const contract = await this.getContract();
     try {
       const result = await contract.quote_transfer_remote(
-        destination,
+        params.destination,
         '0x' + '00'.repeat(32),
         0n,
       );
-      return BigInt(result.decodedResult ?? 0);
+      const amount = BigInt(result.decodedResult ?? 0);
+      return { igpQuote: { amount, addressOrDenom: this.tokenAddress } };
     } catch {
-      return 0n;
+      return { igpQuote: { amount: 0n, addressOrDenom: this.tokenAddress } };
     }
   }
 
   async populateTransferRemoteTx(
     params: TransferRemoteParams,
   ): Promise<AeternityTransaction> {
-    const fee = await this.quoteTransferRemoteGas(params.destination);
-    const totalAmount = BigInt(params.weiAmountOrId) + fee;
+    const quote = await this.quoteTransferRemoteGas({ destination: params.destination });
+    const totalAmount = BigInt(params.weiAmountOrId) + quote.igpQuote.amount;
 
     return {
       contractId: this.tokenAddress,
@@ -282,7 +285,7 @@ export class AeternityHypCollateralAdapter extends BaseAeternityHypAdapter {
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     try {
@@ -299,7 +302,7 @@ export class AeternityHypCollateralAdapter extends BaseAeternityHypAdapter {
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     const result = await contract.total_supply();
@@ -312,7 +315,7 @@ export class AeternityHypCollateralAdapter extends BaseAeternityHypAdapter {
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     const [n, s, d, ts] = await Promise.all([
@@ -334,7 +337,7 @@ export class AeternityHypSyntheticAdapter extends BaseAeternityHypAdapter {
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     try {
@@ -351,7 +354,7 @@ export class AeternityHypSyntheticAdapter extends BaseAeternityHypAdapter {
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     const result = await contract.total_supply();
@@ -364,7 +367,7 @@ export class AeternityHypSyntheticAdapter extends BaseAeternityHypAdapter {
     const sdk = new AeSdk({ nodes: [{ name: 'node', instance: node }] });
     const contract = await Contract.initialize({
       ...sdk.getContext(),
-      aci: AEX9_ACI,
+      aci: [AEX9_ACI],
       address: this.tokenAddress as `ct_${string}`,
     });
     const [n, s, d, ts] = await Promise.all([

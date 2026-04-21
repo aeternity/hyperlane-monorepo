@@ -38,6 +38,7 @@ export const defaultProviderBuilderMap: ProviderBuilderMap = {
   [ProviderType.Radix]: defaultRadixProviderBuilder,
   [ProviderType.Aleo]: defaultAleoProviderBuilder,
   [ProviderType.Tron]: defaultTronProviderBuilder,
+  [ProviderType.Aeternity]: defaultEthersV5ProviderBuilder,
 };
 
 export const protocolToDefaultProviderBuilder: Record<
@@ -52,4 +53,5 @@ export const protocolToDefaultProviderBuilder: Record<
   [ProtocolType.Radix]: defaultRadixProviderBuilder,
   [ProtocolType.Aleo]: defaultAleoProviderBuilder,
   [ProtocolType.Tron]: defaultTronProviderBuilder,
+  [ProtocolType.Aeternity]: defaultEthersV5ProviderBuilder,
 };

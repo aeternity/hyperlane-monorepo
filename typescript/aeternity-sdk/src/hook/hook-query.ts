@@ -8,7 +8,7 @@ export async function getHookType(
 ): Promise<number> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: MERKLE_TREE_HOOK_ACI,
+    aci: [MERKLE_TREE_HOOK_ACI],
     address: hookAddress as `ct_${string}`,
   });
 
@@ -27,7 +27,7 @@ export async function getMerkleTreeHookConfig(
 }> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: MERKLE_TREE_HOOK_ACI,
+    aci: [MERKLE_TREE_HOOK_ACI],
     address: hookAddress as `ct_${string}`,
   });
 
@@ -58,7 +58,7 @@ export async function getHookQuoteDispatch(
 ): Promise<bigint> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: NOOP_HOOK_ACI,
+    aci: [NOOP_HOOK_ACI],
     address: hookAddress as `ct_${string}`,
   });
 

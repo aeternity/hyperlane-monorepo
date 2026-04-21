@@ -1,12 +1,10 @@
-import { AeSdk, Node, Contract, MemoryAccount } from '@aeternity/aepp-sdk';
+import { AeSdk, Node, Contract } from '@aeternity/aepp-sdk';
 
 import { AltVM } from '@hyperlane-xyz/provider-sdk';
-import { assert, sleep } from '@hyperlane-xyz/utils';
+import { assert } from '@hyperlane-xyz/utils';
 
-import { AeternityTransaction, AeternityReceipt } from '../utils/types.js';
+import { AeternityTransaction } from '../utils/types.js';
 import { MAILBOX_ACI, AEX9_ACI, WARP_ROUTER_ACI } from '../aci/index.js';
-
-const AE_EMPTY_ADDRESS = 'ct_11111111111111111111111111111111273Yts';
 
 export class AeternityProvider implements AltVM.IProvider<AeternityTransaction> {
   protected readonly rpcUrls: string[];
@@ -37,9 +35,10 @@ export class AeternityProvider implements AltVM.IProvider<AeternityTransaction> 
   }
 
   protected async initContract(aci: any, address: string): Promise<any> {
+    const aciArr = Array.isArray(aci) ? aci : [aci];
     return Contract.initialize({
       ...this.sdk.getContext(),
-      aci,
+      aci: aciArr,
       address: address as `ct_${string}`,
     });
   }
@@ -58,8 +57,8 @@ export class AeternityProvider implements AltVM.IProvider<AeternityTransaction> 
   }
 
   async getHeight(): Promise<number> {
-    const height = await this.node.getCurrentKeyBlockHeight();
-    return height;
+    const resp = await this.node.getCurrentKeyBlockHeight();
+    return typeof resp === 'number' ? resp : Number((resp as any).height ?? resp);
   }
 
   async getBalance(req: AltVM.ReqGetBalance): Promise<bigint> {
@@ -101,18 +100,12 @@ export class AeternityProvider implements AltVM.IProvider<AeternityTransaction> 
   }
 
   async getToken(req: AltVM.ReqGetToken): Promise<AltVM.ResGetToken> {
-    const contract = await this.initContract(WARP_ROUTER_ACI, req.tokenAddress);
-
     let ismAddress = '';
     let hookAddress = '';
     let denom = '';
     let tokenType = AltVM.TokenType.native;
 
     try {
-      const mailboxResult = await contract.get_mailbox
-        ? contract.get_mailbox()
-        : { decodedResult: '' };
-
       const routerContract = await this.initContract(WARP_ROUTER_ACI, req.tokenAddress);
 
       ismAddress = '';
