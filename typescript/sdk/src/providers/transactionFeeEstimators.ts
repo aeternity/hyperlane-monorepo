@@ -22,6 +22,8 @@ import {
 import { ChainMetadata } from '../metadata/chainMetadataTypes.js';
 
 import {
+  AeternityTypedProvider,
+  AeternityTypedTransaction,
   AleoProvider,
   AleoTransaction,
   CosmJsNativeProvider,
@@ -300,6 +302,18 @@ export async function estimateTransactionFeeAleo({
   });
 }
 
+export async function estimateTransactionFeeAeternity({
+  transaction,
+  provider,
+}: {
+  transaction: AeternityTypedTransaction;
+  provider: AeternityTypedProvider;
+}): Promise<TransactionFeeEstimate> {
+  return provider.provider.estimateTransactionFee({
+    transaction: transaction.transaction,
+  });
+}
+
 export function estimateTransactionFee({
   transaction,
   provider,
@@ -408,6 +422,14 @@ export function estimateTransactionFee({
       transaction: transaction.transaction,
       provider: provider.provider,
       sender,
+    });
+  } else if (
+    transaction.type === ProviderType.Aeternity &&
+    provider.type === ProviderType.Aeternity
+  ) {
+    return estimateTransactionFeeAeternity({
+      transaction,
+      provider,
     });
   } else {
     throw new Error(

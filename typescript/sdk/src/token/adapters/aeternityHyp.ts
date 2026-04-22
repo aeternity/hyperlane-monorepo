@@ -43,10 +43,10 @@ const WARP_ROUTER_ACI = {
         name: 'transfer_remote',
         arguments: [
           { name: 'destination', type: 'int' },
-          { name: 'recipient', type: 'bytes(32)' },
+          { name: 'recipient', type: { bytes: 32 } },
           { name: 'amount', type: 'int' },
         ],
-        returns: 'bytes(32)',
+        returns: { bytes: 32 },
         stateful: true,
         payable: true,
       },
@@ -54,7 +54,7 @@ const WARP_ROUTER_ACI = {
         name: 'quote_transfer_remote',
         arguments: [
           { name: 'destination', type: 'int' },
-          { name: 'recipient', type: 'bytes(32)' },
+          { name: 'recipient', type: { bytes: 32 } },
           { name: 'amount', type: 'int' },
         ],
         returns: 'int',
@@ -64,7 +64,7 @@ const WARP_ROUTER_ACI = {
       {
         name: 'get_remote_router',
         arguments: [{ name: 'domain', type: 'int' }],
-        returns: { option: ['bytes(32)'] },
+        returns: { option: [{ bytes: 32 }] },
         stateful: false,
         payable: false,
       },
@@ -86,10 +86,34 @@ const AEX9_ACI = {
     payable: false,
     typedefs: [],
     functions: [
-      { name: 'name', arguments: [], returns: 'string', stateful: false, payable: false },
-      { name: 'symbol', arguments: [], returns: 'string', stateful: false, payable: false },
-      { name: 'decimals', arguments: [], returns: 'int', stateful: false, payable: false },
-      { name: 'total_supply', arguments: [], returns: 'int', stateful: false, payable: false },
+      {
+        name: 'name',
+        arguments: [],
+        returns: 'string',
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'symbol',
+        arguments: [],
+        returns: 'string',
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'decimals',
+        arguments: [],
+        returns: 'int',
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'total_supply',
+        arguments: [],
+        returns: 'int',
+        stateful: false,
+        payable: false,
+      },
       {
         name: 'balance',
         arguments: [{ name: 'owner', type: 'address' }],
@@ -126,9 +150,7 @@ export function createAeternityHypAdapter(
   }
 }
 
-abstract class BaseAeternityHypAdapter
-  implements IHypTokenAdapter<AeternityTransaction>
-{
+abstract class BaseAeternityHypAdapter implements IHypTokenAdapter<AeternityTransaction> {
   protected tokenAddress: string;
 
   constructor(
@@ -142,7 +164,8 @@ abstract class BaseAeternityHypAdapter
   protected getRpcUrl(): string {
     const metadata = this.multiProvider.tryGetChainMetadata(this.chainName);
     const rpcUrls = metadata?.rpcUrls;
-    if (!rpcUrls || rpcUrls.length === 0) throw new Error(`No RPC URL for ${this.chainName}`);
+    if (!rpcUrls || rpcUrls.length === 0)
+      throw new Error(`No RPC URL for ${this.chainName}`);
     return typeof rpcUrls[0] === 'string' ? rpcUrls[0] : rpcUrls[0].http;
   }
 
@@ -159,7 +182,12 @@ abstract class BaseAeternityHypAdapter
 
   abstract getBalance(address: Address): Promise<bigint>;
   abstract getTotalSupply(): Promise<bigint | undefined>;
-  abstract getMetadata(): Promise<{ decimals: number; symbol: string; name: string; totalSupply: string }>;
+  abstract getMetadata(): Promise<{
+    decimals: number;
+    symbol: string;
+    name: string;
+    totalSupply: string;
+  }>;
 
   async getMinimumTransferAmount(): Promise<bigint> {
     return 0n;
@@ -177,7 +205,9 @@ abstract class BaseAeternityHypAdapter
     throw new Error('No approval needed');
   }
 
-  async populateTransferTx(params: TransferParams): Promise<AeternityTransaction> {
+  async populateTransferTx(
+    params: TransferParams,
+  ): Promise<AeternityTransaction> {
     throw new Error('Use populateTransferRemoteTx for hyp tokens');
   }
 
@@ -232,13 +262,20 @@ abstract class BaseAeternityHypAdapter
   async populateTransferRemoteTx(
     params: TransferRemoteParams,
   ): Promise<AeternityTransaction> {
-    const quote = await this.quoteTransferRemoteGas({ destination: params.destination });
+    const quote = await this.quoteTransferRemoteGas({
+      destination: params.destination,
+    });
     const totalAmount = BigInt(params.weiAmountOrId) + quote.igpQuote.amount;
+
+    // Left-pad recipient to 32 bytes (Hyperlane bytes32 format)
+    const recipientHex = params.recipient.replace(/^0x/i, '').toLowerCase();
+    const padded = recipientHex.padStart(64, '0');
+    const recipient = '0x' + padded;
 
     return {
       contractId: this.tokenAddress,
       entrypoint: 'transfer_remote',
-      args: [params.destination, params.recipient, BigInt(params.weiAmountOrId)],
+      args: [params.destination, recipient, BigInt(params.weiAmountOrId)],
       options: {
         amount: totalAmount,
       },
@@ -319,7 +356,10 @@ export class AeternityHypCollateralAdapter extends BaseAeternityHypAdapter {
       address: this.tokenAddress as `ct_${string}`,
     });
     const [n, s, d, ts] = await Promise.all([
-      contract.name(), contract.symbol(), contract.decimals(), contract.total_supply(),
+      contract.name(),
+      contract.symbol(),
+      contract.decimals(),
+      contract.total_supply(),
     ]);
     return {
       name: n.decodedResult,
@@ -371,7 +411,10 @@ export class AeternityHypSyntheticAdapter extends BaseAeternityHypAdapter {
       address: this.tokenAddress as `ct_${string}`,
     });
     const [n, s, d, ts] = await Promise.all([
-      contract.name(), contract.symbol(), contract.decimals(), contract.total_supply(),
+      contract.name(),
+      contract.symbol(),
+      contract.decimals(),
+      contract.total_supply(),
     ]);
     return {
       name: n.decodedResult,
