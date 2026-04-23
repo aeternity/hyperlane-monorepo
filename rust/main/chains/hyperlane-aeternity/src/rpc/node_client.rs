@@ -119,14 +119,18 @@ pub struct CallInfoResponse {
 }
 
 /// A single log entry emitted during a contract call.
+///
+/// The AE node returns event topics as raw FATE integers (which can be
+/// 256-bit values), so `topics` and `data` use `serde_json::Value` to
+/// avoid deserialization failures on very large numbers.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CallLogEntry {
     /// Contract address that emitted the event
     pub address: String,
-    /// Event topics (hashed event name + indexed args)
-    pub topics: Vec<String>,
-    /// Non-indexed event data
-    pub data: String,
+    /// Event topics (hashed event name + indexed args, returned as large ints)
+    pub topics: Vec<serde_json::Value>,
+    /// Non-indexed event data (FATE-encoded)
+    pub data: serde_json::Value,
 }
 
 /// An account as returned by the node.
@@ -261,11 +265,7 @@ pub struct NodeStatusResponse {
 
 impl AeNodeClient {
     /// Create a new node client pointing at `base_url`.
-    pub fn new(
-        base_url: Url,
-        metrics: PrometheusClientMetrics,
-        chain: Option<ChainInfo>,
-    ) -> Self {
+    pub fn new(base_url: Url, metrics: PrometheusClientMetrics, chain: Option<ChainInfo>) -> Self {
         let config = PrometheusConfig::from_url(&base_url, ClientConnectionType::Rpc, chain);
         Self {
             client: Client::new(),
@@ -294,14 +294,23 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url(&format!("/key-blocks/height/{height}"));
         let res: ChainResult<_> = async {
-            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "GET {url} => {status}: {body}"
+                ))
+                .into());
             }
             serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("get_key_block_by_height", start, res.is_ok());
         res
     }
@@ -311,14 +320,23 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url("/key-blocks/current");
         let res: ChainResult<_> = async {
-            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "GET {url} => {status}: {body}"
+                ))
+                .into());
             }
             serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("get_current_key_block", start, res.is_ok());
         res
     }
@@ -328,14 +346,23 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url(&format!("/generations/height/{height}"));
         let res: ChainResult<_> = async {
-            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "GET {url} => {status}: {body}"
+                ))
+                .into());
             }
             serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("get_generation_by_height", start, res.is_ok());
         res
     }
@@ -345,14 +372,23 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url(&format!("/transactions/{hash}"));
         let res: ChainResult<_> = async {
-            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "GET {url} => {status}: {body}"
+                ))
+                .into());
             }
             serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("get_transaction", start, res.is_ok());
         res
     }
@@ -362,14 +398,23 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url(&format!("/transactions/{hash}/info"));
         let res: ChainResult<_> = async {
-            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "GET {url} => {status}: {body}"
+                ))
+                .into());
             }
             serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("get_transaction_info", start, res.is_ok());
         res
     }
@@ -380,14 +425,24 @@ impl AeNodeClient {
         let url = self.url("/transactions");
         let body = serde_json::json!({ "tx": signed_tx });
         let res: ChainResult<_> = async {
-            let resp = self.client.post(&url).json(&body).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .post(&url)
+                .json(&body)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let text = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("POST {url} => {status}: {text}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "POST {url} => {status}: {text}"
+                ))
+                .into());
             }
             serde_json::from_str(&text).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("post_transaction", start, res.is_ok());
         res
     }
@@ -397,15 +452,43 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url(&format!("/accounts/{address}"));
         let res: ChainResult<_> = async {
-            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "GET {url} => {status}: {body}"
+                ))
+                .into());
             }
             serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("get_account", start, res.is_ok());
+        res
+    }
+
+    /// Check whether a `ct_`-prefixed address actually refers to a deployed contract.
+    /// Uses `/v3/contracts/{address}` which returns 200 for contracts and 404 otherwise.
+    pub async fn contract_exists(&self, ct_address: &str) -> ChainResult<bool> {
+        let start = Instant::now();
+        let url = self.url(&format!("/contracts/{ct_address}"));
+        let res: ChainResult<bool> = async {
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
+            Ok(resp.status().is_success())
+        }
+        .await;
+        self.track("contract_exists", start, res.is_ok());
         res
     }
 
@@ -414,7 +497,12 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url(&format!("/accounts/{address}/next-nonce"));
         let res: ChainResult<_> = async {
-            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
@@ -423,7 +511,8 @@ impl AeNodeClient {
             let parsed: NextNonceResponse =
                 serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e))?;
             Ok(parsed.next_nonce)
-        }.await;
+        }
+        .await;
         self.track("get_next_nonce", start, res.is_ok());
         res
     }
@@ -433,14 +522,24 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url("/dry-run");
         let res: ChainResult<_> = async {
-            let resp = self.client.post(&url).json(request).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .post(&url)
+                .json(request)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("POST {url} => {status}: {body}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "POST {url} => {status}: {body}"
+                ))
+                .into());
             }
             serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("dry_run", start, res.is_ok());
         res
     }
@@ -450,14 +549,23 @@ impl AeNodeClient {
         let start = Instant::now();
         let url = self.url("/status");
         let res: ChainResult<_> = async {
-            let resp = self.client.get(&url).send().await.map_err(HyperlaneAeternityError::from)?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(HyperlaneAeternityError::from)?;
             let status = resp.status();
             let body = resp.text().await.map_err(HyperlaneAeternityError::from)?;
             if !status.is_success() {
-                return Err(HyperlaneAeternityError::NodeApiError(format!("GET {url} => {status}: {body}")).into());
+                return Err(HyperlaneAeternityError::NodeApiError(format!(
+                    "GET {url} => {status}: {body}"
+                ))
+                .into());
             }
             serde_json::from_str(&body).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("get_status", start, res.is_ok());
         res
     }

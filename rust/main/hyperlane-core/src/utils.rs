@@ -35,9 +35,7 @@ pub fn hex_or_base58_or_bech32_to_h256(string: &str) -> Result<H256> {
         match payload.len() {
             32 => H256::from_slice(payload),
             64 => H256::from_slice(&payload[..32]),
-            n => eyre::bail!(
-                "expected 32 or 64-byte AE payload, got {n} bytes"
-            ),
+            n => eyre::bail!("expected 32 or 64-byte AE payload, got {n} bytes"),
         }
     } else {
         let bytes = bech32::decode(string);

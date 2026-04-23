@@ -85,7 +85,7 @@ impl RoutingIsm for AeRoutingIsm {
     ///
     /// Calls Sophia entrypoint: `route(message: bytes()) : IInterchainSecurityModule`
     async fn route(&self, message: &HyperlaneMessage) -> ChainResult<H256> {
-        let message_hex = format!("#{}", hex::encode(message.to_vec()));
+        let message_hex = format!("Bytes.to_any_size(#{})", hex::encode(message.to_vec()));
 
         let result = self
             .provider

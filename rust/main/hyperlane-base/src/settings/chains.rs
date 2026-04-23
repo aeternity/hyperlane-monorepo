@@ -19,6 +19,7 @@ use hyperlane_core::{
 use hyperlane_metric::prometheus_metric::ChainInfo;
 use hyperlane_operation_verifier::ApplicationOperationVerifier;
 
+use hyperlane_aeternity as h_aeternity;
 #[cfg(feature = "aleo")]
 use hyperlane_aleo::{self as h_aleo, AleoProvider};
 use hyperlane_cosmos::{
@@ -35,7 +36,6 @@ use hyperlane_sealevel::{
 };
 use hyperlane_starknet::{self as h_starknet, StarknetProvider};
 use hyperlane_tron::{self as h_tron, TronProvider};
-use hyperlane_aeternity as h_aeternity;
 
 use crate::{
     metrics::AgentMetricsConf,

@@ -124,7 +124,10 @@ impl MerkleTreeHook for AeMerkleTreeIndexer {
             )
             .await?;
 
-        let mailbox_domain = domain_data.as_u64().map(|n| n as u32).unwrap_or(self.domain.id());
+        let mailbox_domain = domain_data
+            .as_u64()
+            .map(|n| n as u32)
+            .unwrap_or(self.domain.id());
 
         Ok(CheckpointAtBlock {
             checkpoint: Checkpoint {

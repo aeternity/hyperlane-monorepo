@@ -7,8 +7,8 @@ use hyperlane_core::{
     H512, U256,
 };
 
-use crate::utils::{base32hex_to_hex, blake2b_hex, decode_ae_hash};
 use crate::types::contract_address_to_h256;
+use crate::utils::{base32hex_to_hex, blake2b_hex, decode_ae_hash};
 
 /// Middleware log entry used internally by event parsers.
 ///
@@ -218,10 +218,7 @@ pub fn parse_dispatch_event(
     let sequence = message.nonce;
     let meta = build_log_meta(log);
 
-    Ok(Some((
-        Indexed::new(message).with_sequence(sequence),
-        meta,
-    )))
+    Ok(Some((Indexed::new(message).with_sequence(sequence), meta)))
 }
 
 /// Parse a ProcessId (delivery) event from a middleware log entry.

@@ -1,13 +1,11 @@
 use async_trait::async_trait;
 
 use hyperlane_core::{
-    Announcement, ChainResult, ContractLocator, HyperlaneChain, HyperlaneContract,
-    HyperlaneDomain, HyperlaneProvider, SignedType, TxOutcome, ValidatorAnnounce, H256, U256,
+    Announcement, ChainResult, ContractLocator, HyperlaneChain, HyperlaneContract, HyperlaneDomain,
+    HyperlaneProvider, SignedType, TxOutcome, ValidatorAnnounce, H256, U256,
 };
 
-use crate::{
-    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
-};
+use crate::{contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError};
 
 /// Aeternity Validator Announce
 ///

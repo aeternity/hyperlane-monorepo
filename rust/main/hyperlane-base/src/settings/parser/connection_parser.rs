@@ -883,7 +883,8 @@ pub fn build_connection_conf(
 pub fn is_protocol_supported(protocol: HyperlaneDomainProtocol) -> bool {
     use HyperlaneDomainProtocol::*;
     match protocol {
-        Ethereum | Fuel | Sealevel | Cosmos | CosmosNative | Starknet | Radix | Tron | Aeternity => true,
+        Ethereum | Fuel | Sealevel | Cosmos | CosmosNative | Starknet | Radix | Tron
+        | Aeternity => true,
         // Aleo is feature-gated - only supported when the "aleo" feature is enabled
         Aleo => cfg!(feature = "aleo"),
     }

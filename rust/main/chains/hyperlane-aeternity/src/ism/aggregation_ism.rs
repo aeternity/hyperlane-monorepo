@@ -89,7 +89,7 @@ impl AggregationIsm for AeAggregationIsm {
         &self,
         message: &HyperlaneMessage,
     ) -> ChainResult<(Vec<H256>, u8)> {
-        let message_hex = format!("#{}", hex::encode(message.to_vec()));
+        let message_hex = format!("Bytes.to_any_size(#{})", hex::encode(message.to_vec()));
 
         let result = self
             .provider

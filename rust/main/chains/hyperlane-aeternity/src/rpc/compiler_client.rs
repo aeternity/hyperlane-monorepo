@@ -59,11 +59,7 @@ struct EncodeCalldataResponse {
 
 impl AeCompilerClient {
     /// Create a new compiler client pointing at `base_url`.
-    pub fn new(
-        base_url: Url,
-        metrics: PrometheusClientMetrics,
-        chain: Option<ChainInfo>,
-    ) -> Self {
+    pub fn new(base_url: Url, metrics: PrometheusClientMetrics, chain: Option<ChainInfo>) -> Self {
         let config = PrometheusConfig::from_url(&base_url, ClientConnectionType::Rpc, chain);
         Self {
             client: Client::new(),
@@ -129,7 +125,8 @@ impl AeCompilerClient {
             let parsed: EncodeCalldataResponse =
                 serde_json::from_str(&text).map_err(HyperlaneAeternityError::from)?;
             Ok(parsed.calldata)
-        }.await;
+        }
+        .await;
         self.track("encode_calldata", start, res.is_ok());
         res
     }
@@ -185,7 +182,8 @@ impl AeCompilerClient {
             }
 
             serde_json::from_str(&text).map_err(|e| HyperlaneAeternityError::from(e).into())
-        }.await;
+        }
+        .await;
         self.track("decode_call_result", start, res.is_ok());
         res
     }
@@ -226,7 +224,10 @@ mod tests {
     #[test]
     fn test_encode_calldata_request_with_filesystem() {
         let mut fs = HashMap::new();
-        fs.insert("IFoo.aes".to_string(), "contract interface IFoo = entrypoint bar : () => int".to_string());
+        fs.insert(
+            "IFoo.aes".to_string(),
+            "contract interface IFoo = entrypoint bar : () => int".to_string(),
+        );
 
         let body = EncodeCalldataRequest {
             source: "include \"IFoo.aes\"\ncontract C = entrypoint f() = 1".to_string(),

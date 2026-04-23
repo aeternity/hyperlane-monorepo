@@ -36,9 +36,7 @@ pub fn decode_ae_hash(hash: &str) -> ChainResult<H256> {
         .map_err(|e| HyperlaneAeternityError::AddressError(format!("base58 decode: {e}")))?;
 
     if decoded.len() < 4 {
-        return Err(
-            HyperlaneAeternityError::AddressError("decoded hash too short".into()).into(),
-        );
+        return Err(HyperlaneAeternityError::AddressError("decoded hash too short".into()).into());
     }
 
     let (payload, checksum) = decoded.split_at(decoded.len() - 4);

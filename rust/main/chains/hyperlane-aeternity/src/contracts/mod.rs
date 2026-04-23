@@ -21,9 +21,11 @@ const ROUTING_ISM_ACI: &str = include_str!("../../abis/DomainRoutingIsm.aci.json
 /// Mailbox contract stub generated from ACI.
 pub static MAILBOX_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(MAILBOX_ACI));
 /// MerkleTreeHook contract stub generated from ACI.
-pub static MERKLE_TREE_HOOK_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(MERKLE_TREE_HOOK_ACI));
+pub static MERKLE_TREE_HOOK_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(MERKLE_TREE_HOOK_ACI));
 /// ValidatorAnnounce contract stub generated from ACI.
-pub static VALIDATOR_ANNOUNCE_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(VALIDATOR_ANNOUNCE_ACI));
+pub static VALIDATOR_ANNOUNCE_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(VALIDATOR_ANNOUNCE_ACI));
 /// InterchainGasPaymaster contract stub generated from ACI.
 pub static IGP_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(IGP_ACI));
 /// MessageIdMultisigIsm contract stub generated from ACI.
@@ -56,8 +58,7 @@ pub static AGGREGATION_ISM_SOURCE: Lazy<String> = Lazy::new(|| {
 /// The generated source satisfies the Sophia compiler for calldata
 /// encoding/decoding — function bodies are dummy implementations.
 fn aci_to_sophia(aci_json: &str) -> String {
-    let entries: Vec<Value> = serde_json::from_str(aci_json)
-        .expect("invalid ACI JSON");
+    let entries: Vec<Value> = serde_json::from_str(aci_json).expect("invalid ACI JSON");
 
     // Identify the main contract name so we can strip its prefix from
     // qualified typedef references (e.g. "Mailbox.delivery" → "delivery").
@@ -121,7 +122,11 @@ fn emit_interface(out: &mut String, contract: &Value) {
             let returns = &func["returns"];
 
             let arg_types: Vec<String> = args
-                .map(|a| a.iter().map(|arg| aci_type_to_sophia(&arg["type"], None)).collect())
+                .map(|a| {
+                    a.iter()
+                        .map(|arg| aci_type_to_sophia(&arg["type"], None))
+                        .collect()
+                })
                 .unwrap_or_default();
 
             let ret_type = aci_type_to_sophia(returns, None);
@@ -131,7 +136,9 @@ fn emit_interface(out: &mut String, contract: &Value) {
                 format!("({})", arg_types.join(", "))
             };
 
-            out.push_str(&format!("    entrypoint {fname} : {arg_str} => {ret_type}\n"));
+            out.push_str(&format!(
+                "    entrypoint {fname} : {arg_str} => {ret_type}\n"
+            ));
         }
     }
 }
@@ -193,7 +200,10 @@ fn emit_main_contract(out: &mut String, contract: &Value, main_name: Option<&str
                 continue;
             }
 
-            let stateful = func.get("stateful").and_then(|s| s.as_bool()).unwrap_or(false);
+            let stateful = func
+                .get("stateful")
+                .and_then(|s| s.as_bool())
+                .unwrap_or(false);
             let args = func.get("arguments").and_then(|a| a.as_array());
             let returns = &func["returns"];
 
@@ -212,7 +222,11 @@ fn emit_main_contract(out: &mut String, contract: &Value, main_name: Option<&str
             let ret_type = aci_type_to_sophia(returns, main_name);
             let default = aci_type_default(returns);
 
-            let prefix = if stateful { "stateful entrypoint" } else { "entrypoint" };
+            let prefix = if stateful {
+                "stateful entrypoint"
+            } else {
+                "entrypoint"
+            };
             let args_str = arg_strs.join(", ");
 
             out.push_str(&format!(
@@ -234,7 +248,9 @@ fn aci_type_to_sophia(ty: &Value, strip_prefix: Option<&str>) -> String {
             "unit" => "unit".into(),
             other => {
                 if let Some(prefix) = strip_prefix {
-                    if let Some(local) = other.strip_prefix(prefix).and_then(|r| r.strip_prefix('.')) {
+                    if let Some(local) =
+                        other.strip_prefix(prefix).and_then(|r| r.strip_prefix('.'))
+                    {
                         return local.to_string();
                     }
                 }
@@ -248,20 +264,35 @@ fn aci_type_to_sophia(ty: &Value, strip_prefix: Option<&str>) -> String {
                     _ => "bytes()".into(),
                 }
             } else if let Some(Value::Array(items)) = map.get("list") {
-                let inner = items.first().map(|v| aci_type_to_sophia(v, strip_prefix)).unwrap_or("int".into());
+                let inner = items
+                    .first()
+                    .map(|v| aci_type_to_sophia(v, strip_prefix))
+                    .unwrap_or("int".into());
                 format!("list({inner})")
             } else if let Some(Value::Array(items)) = map.get("option") {
-                let inner = items.first().map(|v| aci_type_to_sophia(v, strip_prefix)).unwrap_or("int".into());
+                let inner = items
+                    .first()
+                    .map(|v| aci_type_to_sophia(v, strip_prefix))
+                    .unwrap_or("int".into());
                 format!("option({inner})")
             } else if let Some(Value::Array(items)) = map.get("map") {
-                let key = items.first().map(|v| aci_type_to_sophia(v, strip_prefix)).unwrap_or("int".into());
-                let val = items.get(1).map(|v| aci_type_to_sophia(v, strip_prefix)).unwrap_or("int".into());
+                let key = items
+                    .first()
+                    .map(|v| aci_type_to_sophia(v, strip_prefix))
+                    .unwrap_or("int".into());
+                let val = items
+                    .get(1)
+                    .map(|v| aci_type_to_sophia(v, strip_prefix))
+                    .unwrap_or("int".into());
                 format!("map({key}, {val})")
             } else if let Some(Value::Array(items)) = map.get("tuple") {
                 if items.is_empty() {
                     "unit".into()
                 } else {
-                    let parts: Vec<String> = items.iter().map(|v| aci_type_to_sophia(v, strip_prefix)).collect();
+                    let parts: Vec<String> = items
+                        .iter()
+                        .map(|v| aci_type_to_sophia(v, strip_prefix))
+                        .collect();
                     parts.join(" * ")
                 }
             } else if let Some(Value::Array(fields)) = map.get("record") {
@@ -329,9 +360,18 @@ mod tests {
 
     #[test]
     fn test_aci_type_to_sophia_primitives() {
-        assert_eq!(aci_type_to_sophia(&Value::String("int".into()), None), "int");
-        assert_eq!(aci_type_to_sophia(&Value::String("bool".into()), None), "bool");
-        assert_eq!(aci_type_to_sophia(&Value::String("address".into()), None), "address");
+        assert_eq!(
+            aci_type_to_sophia(&Value::String("int".into()), None),
+            "int"
+        );
+        assert_eq!(
+            aci_type_to_sophia(&Value::String("bool".into()), None),
+            "bool"
+        );
+        assert_eq!(
+            aci_type_to_sophia(&Value::String("address".into()), None),
+            "address"
+        );
     }
 
     #[test]
@@ -366,7 +406,10 @@ mod tests {
         );
         // Namespace-qualified types should NOT be stripped
         assert_eq!(
-            aci_type_to_sophia(&Value::String("MerkleLib.merkle_tree".into()), Some("Mailbox")),
+            aci_type_to_sophia(
+                &Value::String("MerkleLib.merkle_tree".into()),
+                Some("Mailbox")
+            ),
             "MerkleLib.merkle_tree"
         );
         // Without strip_prefix, everything stays as-is
@@ -382,7 +425,10 @@ mod tests {
         assert_eq!(aci_type_default(&Value::String("bool".into())), "false");
 
         let bytes32: Value = serde_json::from_str(r#"{"bytes": 32}"#).unwrap();
-        assert_eq!(aci_type_default(&bytes32), "#0000000000000000000000000000000000000000000000000000000000000000");
+        assert_eq!(
+            aci_type_default(&bytes32),
+            "#0000000000000000000000000000000000000000000000000000000000000000"
+        );
 
         let list_ty: Value = serde_json::from_str(r#"{"list": ["int"]}"#).unwrap();
         assert_eq!(aci_type_default(&list_ty), "[]");

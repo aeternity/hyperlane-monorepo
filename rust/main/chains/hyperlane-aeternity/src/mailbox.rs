@@ -1,5 +1,6 @@
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
+use tracing::{info, warn};
 
 use hyperlane_core::{
     ChainCommunicationError, ChainResult, ContractLocator, Encode, FixedPointNumber,
@@ -8,7 +9,8 @@ use hyperlane_core::{
 };
 
 use crate::{
-    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
+    contracts, h256_to_account_address, h256_to_contract_address, AeternityProvider,
+    HyperlaneAeternityError,
 };
 
 /// Data required to send a contract call on Aeternity.
@@ -46,7 +48,7 @@ impl AeMailbox {
         })
     }
 
-    /// Build the calldata for a `process(metadata, message)` call.
+    /// Build the calldata for a `process(metadata, message, recipient_addr, body_recipient_addr)` call.
     fn build_process_calldata(
         contract_address: &str,
         message: &HyperlaneMessage,
@@ -54,9 +56,16 @@ impl AeMailbox {
     ) -> ChainResult<Vec<u8>> {
         let message_bytes = message.to_vec();
         let metadata_bytes = metadata.to_vec();
+        let recipient_addr = h256_to_account_address(message.recipient);
+        let body_recipient_addr = body_recipient_from_message(message)?;
 
-        let args = serde_json::to_vec(&(&metadata_bytes, &message_bytes))
-            .map_err(ChainCommunicationError::from_other)?;
+        let args = serde_json::to_vec(&(
+            &metadata_bytes,
+            &message_bytes,
+            &recipient_addr,
+            &body_recipient_addr,
+        ))
+        .map_err(ChainCommunicationError::from_other)?;
 
         let data = AeTxCalldata {
             contract_address: contract_address.to_string(),
@@ -72,8 +81,7 @@ impl AeMailbox {
         message_id: H256,
     ) -> ChainResult<Option<Vec<u8>>> {
         let id_bytes = message_id.as_bytes().to_vec();
-        let args = serde_json::to_vec(&id_bytes)
-            .map_err(ChainCommunicationError::from_other)?;
+        let args = serde_json::to_vec(&id_bytes).map_err(ChainCommunicationError::from_other)?;
 
         let data = AeTxCalldata {
             contract_address: contract_address.to_string(),
@@ -157,9 +165,18 @@ impl Mailbox for AeMailbox {
                 &[],
                 &contracts::MAILBOX_SOURCE,
             )
-            .await?;
+            .await;
 
-        parse_option_contract_address(&result)
+        match result {
+            Ok(val) => {
+                info!(decoded = %val, "default_ism() raw decoded value");
+                parse_option_contract_address(&val)
+            }
+            Err(e) => {
+                warn!(error = %e, "default_ism() call_contract failed");
+                Err(e)
+            }
+        }
     }
 
     /// Get the ISM address for a specific recipient.
@@ -170,32 +187,62 @@ impl Mailbox for AeMailbox {
             .call_contract(
                 &self.contract_address,
                 "get_recipient_ism",
-                &[recipient_addr],
+                &[recipient_addr.clone()],
                 &contracts::MAILBOX_SOURCE,
             )
             .await;
 
+        match &result {
+            Ok(val) => {
+                info!(recipient = %recipient_addr, decoded = %val, "get_recipient_ism raw decoded")
+            }
+            Err(e) => {
+                warn!(recipient = %recipient_addr, error = %e, "get_recipient_ism call failed")
+            }
+        }
+
         match result {
-            Ok(val) => parse_option_contract_address(&val),
-            Err(_) => self.default_ism().await,
+            Ok(val) => match parse_option_contract_address(&val) {
+                Ok(h) => Ok(h),
+                Err(_) => {
+                    info!("get_recipient_ism returned None, falling back to default_ism");
+                    self.default_ism().await
+                }
+            },
+            Err(_) => {
+                info!("get_recipient_ism errored, falling back to default_ism");
+                self.default_ism().await
+            }
         }
     }
 
     /// Process (deliver) a message on the destination chain.
+    ///
+    /// The Sophia Mailbox.process takes four args:
+    ///   process(metadata, message, recipient_addr, body_recipient_addr)
+    /// because the FATE VM has no Bytes.to_address conversion.
     async fn process(
         &self,
         message: &HyperlaneMessage,
         metadata: &Metadata,
         _tx_gas_limit: Option<U256>,
     ) -> ChainResult<TxOutcome> {
-        let message_hex = format!("#{}", hex::encode(message.to_vec()));
-        let metadata_hex = format!("#{}", hex::encode(metadata.to_vec()));
+        let message_hex = format!("Bytes.to_any_size(#{})", hex::encode(message.to_vec()));
+        let fate_metadata = convert_metadata_sigs_to_vrs(metadata);
+        let metadata_hex = format!("Bytes.to_any_size(#{})", hex::encode(&fate_metadata));
+        let recipient_addr = h256_to_account_address(message.recipient);
+        let body_recipient_addr = body_recipient_from_message(message)?;
 
         self.provider
             .send_contract_call(
                 &self.contract_address,
                 "process",
-                &[metadata_hex, message_hex],
+                &[
+                    metadata_hex,
+                    message_hex,
+                    recipient_addr,
+                    body_recipient_addr,
+                ],
                 &contracts::MAILBOX_SOURCE,
                 0,
                 0,
@@ -209,15 +256,23 @@ impl Mailbox for AeMailbox {
         message: &HyperlaneMessage,
         metadata: &Metadata,
     ) -> ChainResult<TxCostEstimate> {
-        let message_hex = format!("#{}", hex::encode(message.to_vec()));
-        let metadata_hex = format!("#{}", hex::encode(metadata.to_vec()));
+        let message_hex = format!("Bytes.to_any_size(#{})", hex::encode(message.to_vec()));
+        let fate_metadata = convert_metadata_sigs_to_vrs(metadata);
+        let metadata_hex = format!("Bytes.to_any_size(#{})", hex::encode(&fate_metadata));
+        let recipient_addr = h256_to_account_address(message.recipient);
+        let body_recipient_addr = body_recipient_from_message(message)?;
 
         let result = self
             .provider
             .call_contract(
                 &self.contract_address,
                 "process",
-                &[metadata_hex, message_hex],
+                &[
+                    metadata_hex,
+                    message_hex,
+                    recipient_addr,
+                    body_recipient_addr,
+                ],
                 &contracts::MAILBOX_SOURCE,
             )
             .await;
@@ -247,13 +302,62 @@ impl Mailbox for AeMailbox {
     }
 }
 
+/// Size of the metadata header before signatures begin.
+/// [0:32] merkleTreeHook, [32:64] Merkle root, [64:68] tree index.
+const METADATA_SIGS_OFFSET: usize = 68;
+
+/// Convert ECDSA signatures in Hyperlane metadata from Ethereum byte order
+/// (R‖S‖V, each 65 bytes) to the byte order expected by the FATE VM
+/// (V‖R‖S).  The first 68 bytes (hook address, root, index) are unchanged.
+fn convert_metadata_sigs_to_vrs(metadata: &[u8]) -> Vec<u8> {
+    if metadata.len() <= METADATA_SIGS_OFFSET {
+        return metadata.to_vec();
+    }
+
+    let mut out = metadata[..METADATA_SIGS_OFFSET].to_vec();
+    let sigs = &metadata[METADATA_SIGS_OFFSET..];
+
+    for chunk in sigs.chunks(65) {
+        if chunk.len() == 65 {
+            // Ethereum: R(32) || S(32) || V(1)  →  FATE: V(1) || R(32) || S(32)
+            out.push(chunk[64]); // V
+            out.extend_from_slice(&chunk[..32]); // R
+            out.extend_from_slice(&chunk[32..64]); // S
+        } else {
+            out.extend_from_slice(chunk);
+        }
+    }
+
+    out
+}
+
+/// Extract the body recipient address from a Hyperlane token transfer message.
+///
+/// The token message body is `recipient (32 bytes) || amount (32 bytes)`.
+/// Returns the first 32 bytes as an `ak_...` account address.
+fn body_recipient_from_message(message: &HyperlaneMessage) -> ChainResult<String> {
+    if message.body.len() < 32 {
+        return Err(HyperlaneAeternityError::ContractCallError(format!(
+            "message body too short ({} bytes) to extract recipient, need >= 32",
+            message.body.len()
+        ))
+        .into());
+    }
+    let mut buf = [0u8; 32];
+    buf.copy_from_slice(&message.body[..32]);
+    Ok(h256_to_account_address(H256::from(buf)))
+}
+
 /// Parse `option(contract_ref)` decoded by the compiler.
 ///
 /// The compiler decodes `Some(ct_...)` as `{"Some": ["ct_..."]}` and `None` as `"None"`.
 fn parse_option_contract_address(value: &serde_json::Value) -> ChainResult<H256> {
     if let Some(map) = value.as_object() {
         if let Some(args) = map.get("Some") {
-            if let Some(addr_str) = args.as_array().and_then(|a| a.first()).and_then(|v| v.as_str())
+            if let Some(addr_str) = args
+                .as_array()
+                .and_then(|a| a.first())
+                .and_then(|v| v.as_str())
             {
                 return crate::ae_address_to_h256(addr_str);
             }
@@ -275,22 +379,80 @@ mod tests {
 
     #[test]
     fn test_process_calldata() {
-        let message = HyperlaneMessage::default();
+        let body_recipient = H256::repeat_byte(0xAB);
+        let amount_bytes = [0u8; 32];
+        let mut body = Vec::with_capacity(64);
+        body.extend_from_slice(body_recipient.as_bytes());
+        body.extend_from_slice(&amount_bytes);
+
+        let message = HyperlaneMessage {
+            body,
+            ..Default::default()
+        };
         let metadata = vec![20, 30, 40, 50];
         let calldata = AeMailbox::build_process_calldata(MAILBOX_ADDRESS, &message, &metadata)
             .expect("Failed to build process calldata");
 
-        let actual: AeTxCalldata =
-            serde_json::from_slice(&calldata).expect("Failed to parse json");
+        let actual: AeTxCalldata = serde_json::from_slice(&calldata).expect("Failed to parse json");
 
         assert_eq!(actual.contract_address, MAILBOX_ADDRESS);
         assert_eq!(actual.function_name, "process");
         assert!(!actual.args.is_empty());
 
-        let (decoded_metadata, decoded_message): (Vec<u8>, Vec<u8>) =
-            serde_json::from_slice(&actual.args).expect("Failed to decode args");
+        let (decoded_metadata, decoded_message, recipient_addr, body_recipient_addr): (
+            Vec<u8>,
+            Vec<u8>,
+            String,
+            String,
+        ) = serde_json::from_slice(&actual.args).expect("Failed to decode args");
         assert_eq!(decoded_metadata, metadata);
         assert_eq!(decoded_message, message.to_vec());
+        assert!(recipient_addr.starts_with("ak_"));
+        assert!(body_recipient_addr.starts_with("ak_"));
+    }
+
+    #[test]
+    fn test_convert_metadata_sigs_to_vrs() {
+        use super::convert_metadata_sigs_to_vrs;
+
+        // 68-byte header + one 65-byte sig in R(32)||S(32)||V(1) format
+        let mut metadata = vec![0xAAu8; 68]; // header
+        let r = [0x11u8; 32];
+        let s = [0x22u8; 32];
+        let v = 0x1Bu8; // 27
+        metadata.extend_from_slice(&r);
+        metadata.extend_from_slice(&s);
+        metadata.push(v);
+        assert_eq!(metadata.len(), 68 + 65);
+
+        let converted = convert_metadata_sigs_to_vrs(&metadata);
+        assert_eq!(converted.len(), metadata.len());
+        assert_eq!(&converted[..68], &metadata[..68]); // header unchanged
+        assert_eq!(converted[68], v); // V first
+        assert_eq!(&converted[69..101], &r); // then R
+        assert_eq!(&converted[101..133], &s); // then S
+    }
+
+    #[test]
+    fn test_convert_metadata_sigs_two_sigs() {
+        use super::convert_metadata_sigs_to_vrs;
+
+        let mut metadata = vec![0u8; 68];
+        for i in 0..2u8 {
+            metadata.extend_from_slice(&[i + 1; 32]); // R
+            metadata.extend_from_slice(&[i + 3; 32]); // S
+            metadata.push(27 + i); // V
+        }
+
+        let converted = convert_metadata_sigs_to_vrs(&metadata);
+        // First sig
+        assert_eq!(converted[68], 27);
+        assert_eq!(&converted[69..101], &[1u8; 32]);
+        assert_eq!(&converted[101..133], &[3u8; 32]);
+        // Second sig
+        assert_eq!(converted[133], 28);
+        assert_eq!(&converted[134..166], &[2u8; 32]);
+        assert_eq!(&converted[166..198], &[4u8; 32]);
     }
 
     #[test]
@@ -300,8 +462,7 @@ mod tests {
             .expect("Failed to build delivered calldata")
             .expect("Delivered calldata is empty");
 
-        let actual: AeTxCalldata =
-            serde_json::from_slice(&calldata).expect("Failed to parse json");
+        let actual: AeTxCalldata = serde_json::from_slice(&calldata).expect("Failed to parse json");
 
         assert_eq!(actual.contract_address, MAILBOX_ADDRESS);
         assert_eq!(actual.function_name, "delivered");

@@ -6,9 +6,7 @@ use hyperlane_core::{
     U256,
 };
 
-use crate::{
-    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
-};
+use crate::{contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError};
 
 /// Aeternity Interchain Security Module
 ///
@@ -52,10 +50,9 @@ pub(crate) fn json_to_module_type(value: &serde_json::Value) -> ChainResult<Modu
         5 => Ok(ModuleType::MessageIdMultisig),
         6 => Ok(ModuleType::Null),
         7 => Ok(ModuleType::CcipRead),
-        n => Err(HyperlaneAeternityError::ContractCallError(format!(
-            "unknown module type: {n}"
-        ))
-        .into()),
+        n => Err(
+            HyperlaneAeternityError::ContractCallError(format!("unknown module type: {n}")).into(),
+        ),
     }
 }
 

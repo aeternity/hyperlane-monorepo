@@ -6,9 +6,7 @@ use hyperlane_core::{
     IncrementalMerkleAtBlock, MerkleTreeHook, ReorgPeriod, H256,
 };
 
-use crate::{
-    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
-};
+use crate::{contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError};
 
 /// Number of branch nodes in the incremental Merkle tree (depth = 32).
 const TREE_DEPTH: usize = 32;
@@ -45,10 +43,7 @@ impl AeMerkleTreeHook {
             ))
         })?;
 
-        let count = obj
-            .get("count")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0) as usize;
+        let count = obj.get("count").and_then(|v| v.as_u64()).unwrap_or(0) as usize;
 
         let mut branch = [H256::zero(); TREE_DEPTH];
         if let Some(branch_val) = obj.get("branch") {
@@ -233,10 +228,7 @@ impl MerkleTreeHook for AeMerkleTreeHook {
     }
 
     /// Get the latest checkpoint at a specific block height.
-    async fn latest_checkpoint_at_block(
-        &self,
-        _height: u64,
-    ) -> ChainResult<CheckpointAtBlock> {
+    async fn latest_checkpoint_at_block(&self, _height: u64) -> ChainResult<CheckpointAtBlock> {
         let result = self
             .provider
             .call_contract(

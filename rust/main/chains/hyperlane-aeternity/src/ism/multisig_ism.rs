@@ -6,9 +6,7 @@ use hyperlane_core::{
     MultisigIsm, H256, U256,
 };
 
-use crate::{
-    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
-};
+use crate::{contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError};
 
 use super::interchain_security_module::json_to_module_type;
 
@@ -88,7 +86,7 @@ impl MultisigIsm for AeMultisigIsm {
         &self,
         message: &HyperlaneMessage,
     ) -> ChainResult<(Vec<H256>, u8)> {
-        let message_hex = format!("#{}", hex::encode(message.to_vec()));
+        let message_hex = format!("Bytes.to_any_size(#{})", hex::encode(message.to_vec()));
 
         let result = self
             .provider

@@ -69,7 +69,9 @@ impl AdapterFactory {
                 let adapter = TronAdapter::from_conf(conf, core_metrics, &connection_conf).await?;
                 Arc::new(adapter)
             }
-            ChainConnectionConf::Aeternity(_) => todo!("Aeternity lander adapter not yet implemented"),
+            ChainConnectionConf::Aeternity(_) => {
+                todo!("Aeternity lander adapter not yet implemented")
+            }
         };
         Ok(adapter)
     }

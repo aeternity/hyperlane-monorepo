@@ -57,11 +57,7 @@ pub struct AeMdwClient {
 
 impl AeMdwClient {
     /// Create a new middleware client pointing at `base_url`.
-    pub fn new(
-        base_url: Url,
-        metrics: PrometheusClientMetrics,
-        chain: Option<ChainInfo>,
-    ) -> Self {
+    pub fn new(base_url: Url, metrics: PrometheusClientMetrics, chain: Option<ChainInfo>) -> Self {
         let config = PrometheusConfig::from_url(&base_url, ClientConnectionType::Rpc, chain);
         Self {
             client: Client::new(),
@@ -185,7 +181,8 @@ impl AeMdwClient {
                 })?;
 
             Ok(height)
-        }.await;
+        }
+        .await;
         self.track("get_current_height", start, res.is_ok());
         res
     }

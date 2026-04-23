@@ -1,7 +1,6 @@
 use async_trait::async_trait;
 use num_bigint::BigUint;
 use serde::{Deserialize, Serialize};
-use tracing::debug;
 
 use hyperlane_core::{
     BlockInfo, ChainInfo, ChainResult, ContractLocator, FixedPointNumber, HyperlaneChain,
@@ -9,9 +8,7 @@ use hyperlane_core::{
     H256, H512, U256,
 };
 
-use hyperlane_metric::prometheus_metric::{
-    ChainInfo as MetricChainInfo, PrometheusClientMetrics,
-};
+use hyperlane_metric::prometheus_metric::{ChainInfo as MetricChainInfo, PrometheusClientMetrics};
 
 use crate::{
     ae_address_to_h256, ae_timestamp_to_seconds, decode_ae_hash, encode_ae_hash,
@@ -105,15 +102,17 @@ impl AeternityProvider {
         metrics: PrometheusClientMetrics,
         chain: Option<MetricChainInfo>,
     ) -> ChainResult<Self> {
-        let node_url = conf.node_urls.first().ok_or_else(|| {
-            HyperlaneAeternityError::Other("no node URLs configured".into())
-        })?;
+        let node_url = conf
+            .node_urls
+            .first()
+            .ok_or_else(|| HyperlaneAeternityError::Other("no node URLs configured".into()))?;
         let mdw_url = conf.mdw_urls.first().ok_or_else(|| {
             HyperlaneAeternityError::Other("no middleware URLs configured".into())
         })?;
-        let compiler_url = conf.compiler_urls.first().ok_or_else(|| {
-            HyperlaneAeternityError::Other("no compiler URLs configured".into())
-        })?;
+        let compiler_url = conf
+            .compiler_urls
+            .first()
+            .ok_or_else(|| HyperlaneAeternityError::Other("no compiler URLs configured".into()))?;
 
         Ok(Self {
             domain: locator.domain.clone(),
@@ -202,8 +201,7 @@ impl AeternityProvider {
         if result.result != "ok" {
             return Err(HyperlaneAeternityError::ContractCallError(format!(
                 "dry-run failed ({}): {:?}",
-                result.result,
-                result.reason
+                result.result, result.reason
             ))
             .into());
         }
@@ -213,9 +211,27 @@ impl AeternityProvider {
         })?;
 
         if call_obj.return_type != "ok" {
+            let reason = if let Some(ref rv) = call_obj.return_value {
+                match self
+                    .compiler
+                    .decode_call_result(
+                        contract_source,
+                        function_name,
+                        &call_obj.return_type,
+                        rv,
+                        None,
+                    )
+                    .await
+                {
+                    Ok(decoded) => format!(" (reason: {decoded})"),
+                    Err(_) => format!(" (raw: {rv})"),
+                }
+            } else {
+                String::new()
+            };
             return Err(HyperlaneAeternityError::ContractCallError(format!(
-                "contract call returned: {}",
-                call_obj.return_type
+                "contract call returned: {}{}",
+                call_obj.return_type, reason
             ))
             .into());
         }
@@ -251,10 +267,7 @@ impl AeternityProvider {
 
         let calldata_bytes = decode_cb(&calldata_str)?;
 
-        let tx_builder = crate::tx::AeTxBuilder::new(
-            signer.clone(),
-            self.network_id.clone(),
-        );
+        let tx_builder = crate::tx::AeTxBuilder::new(signer.clone(), self.network_id.clone());
 
         let mut caller_bytes = vec![1u8]; // account tag
         caller_bytes.extend_from_slice(signer.address_h256.as_bytes());
@@ -283,9 +296,7 @@ impl AeternityProvider {
             .get("tx_hash")
             .and_then(|v| v.as_str())
             .ok_or_else(|| {
-                HyperlaneAeternityError::TransactionError(
-                    "missing tx_hash in post response".into(),
-                )
+                HyperlaneAeternityError::TransactionError("missing tx_hash in post response".into())
             })?;
 
         let h256 = decode_ae_hash(hash_str)?;
@@ -296,8 +307,7 @@ impl AeternityProvider {
             transaction_id: H512::from(h512_bytes),
             executed: true,
             gas_used: U256::from(gas),
-            gas_price: FixedPointNumber::try_from(U256::from(gas_price))
-                .unwrap_or_default(),
+            gas_price: FixedPointNumber::try_from(U256::from(gas_price)).unwrap_or_default(),
         })
     }
 
@@ -388,22 +398,11 @@ impl HyperlaneProvider for AeternityProvider {
             .and_then(|v| v.as_str());
         let recipient = recipient_str.and_then(|r| ae_address_to_h256(r).ok());
 
-        let nonce = tx
-            .tx
-            .get("nonce")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0);
+        let nonce = tx.tx.get("nonce").and_then(|v| v.as_u64()).unwrap_or(0);
 
-        let gas_limit_val = tx
-            .tx
-            .get("gas")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0);
+        let gas_limit_val = tx.tx.get("gas").and_then(|v| v.as_u64()).unwrap_or(0);
 
-        let gas_price_val = tx
-            .tx
-            .get("gas_price")
-            .and_then(|v| v.as_u64());
+        let gas_price_val = tx.tx.get("gas_price").and_then(|v| v.as_u64());
 
         let receipt = match self.node.get_transaction_info(&hash_str).await {
             Ok(info) => {
@@ -434,13 +433,7 @@ impl HyperlaneProvider for AeternityProvider {
 
     async fn is_contract(&self, address: &H256) -> ChainResult<bool> {
         let ct_addr = h256_to_contract_address(*address);
-        match self.node.get_account(&ct_addr).await {
-            Ok(account) => Ok(account.kind.as_deref() == Some("contract")),
-            Err(_) => {
-                debug!(address = %ct_addr, "address not found or not a contract");
-                Ok(false)
-            }
-        }
+        self.node.contract_exists(&ct_addr).await
     }
 
     async fn get_balance(&self, address: String) -> ChainResult<U256> {

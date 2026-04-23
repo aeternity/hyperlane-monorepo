@@ -5,9 +5,7 @@ use hyperlane_core::{
     HyperlaneProvider, InterchainGasPaymaster, TxOutcome, H256, U256,
 };
 
-use crate::{
-    contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError,
-};
+use crate::{contracts, h256_to_contract_address, AeternityProvider, HyperlaneAeternityError};
 
 /// Aeternity Interchain Gas Paymaster
 #[derive(Debug)]
