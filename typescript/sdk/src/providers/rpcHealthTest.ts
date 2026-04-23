@@ -5,6 +5,7 @@ import { ChainMetadata } from '../metadata/chainMetadataTypes.js';
 
 import {
   AleoProvider,
+  AeternityTypedProvider,
   CosmJsNativeProvider,
   CosmJsProvider,
   CosmJsWasmProvider,
@@ -15,7 +16,6 @@ import {
   SolanaWeb3Provider,
   StarknetJsProvider,
 } from './ProviderType.js';
-import type { RpcUrl } from '../metadata/chainMetadataTypes.js';
 import { protocolToDefaultProviderBuilder } from './defaultProviderBuilderMaps.js';
 
 export async function isRpcHealthy(
@@ -48,7 +48,7 @@ export async function isRpcHealthy(
   else if (provider.type === ProviderType.Tron)
     return isEthersV5ProviderHealthy(provider.provider, metadata);
   else if (provider.type === ProviderType.Aeternity)
-    return isAeternityProviderHealthy(rpc, metadata);
+    return isAeternityProviderHealthy(provider.provider, metadata);
   else
     throw new Error(
       `Unsupported provider type ${provider.type}, new health check required`,
@@ -157,25 +157,15 @@ export async function isAleoProviderHealthy(
 }
 
 export async function isAeternityProviderHealthy(
-  rpc: RpcUrl,
+  provider: AeternityTypedProvider['provider'],
   metadata: ChainMetadata,
 ): Promise<boolean> {
   try {
-    const url = rpc.http.replace(/\/+$/, '') + '/v3/status';
-    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) return false;
-    const data = await res.json();
-    if (
-      data &&
-      typeof data.top_block_height === 'number' &&
-      data.top_block_height > 0
-    ) {
-      rootLogger.debug(
-        `Block height is okay for ${metadata.name}: ${data.top_block_height}`,
-      );
-      return true;
+    const healthy = await provider.isHealthy();
+    if (healthy) {
+      rootLogger.debug(`Node is healthy for ${metadata.name}`);
     }
-    return false;
+    return healthy;
   } catch (err) {
     rootLogger.warn(
       `Aeternity health check threw for ${metadata.name}`,
