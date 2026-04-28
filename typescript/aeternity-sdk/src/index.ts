@@ -1,14 +1,8 @@
 export * from './runtime.js';
 
-export {
-  AeternityIsmTypes,
-  AeternityHookTypes,
-} from './utils/types.js';
+export { AeternityIsmTypes, AeternityHookTypes } from './utils/types.js';
 
-export {
-  callStatic,
-  initContract,
-} from './utils/contract.js';
+export { callStatic, initContract } from './utils/contract.js';
 
 export {
   getHookType,
@@ -16,10 +10,7 @@ export {
   getHookQuoteDispatch,
 } from './hook/hook-query.js';
 
-export {
-  buildSetHookTx,
-  buildSetRequiredHookTx,
-} from './hook/hook-tx.js';
+export { buildSetHookTx, buildSetRequiredHookTx } from './hook/hook-tx.js';
 
 export {
   getIsmType,
@@ -27,9 +18,20 @@ export {
   verifyIsm,
 } from './ism/ism-query.js';
 
+export { buildSetValidatorsAndThresholdTx } from './ism/ism-tx.js';
+
 export {
-  buildSetValidatorsAndThresholdTx,
-} from './ism/ism-tx.js';
+  getIgpConfig,
+  quoteGasPayment,
+  getDestinationGasOverhead,
+} from './igp/igp-query.js';
+
+export {
+  buildPayForGasTx,
+  buildSetDestinationGasOverheadTx,
+  buildSetBeneficiaryTx,
+  buildClaimTx,
+} from './igp/igp-tx.js';
 
 export {
   getMailboxState,
@@ -52,7 +54,9 @@ export {
   MAILBOX_ACI,
   MERKLE_TREE_HOOK_ACI,
   MULTISIG_ISM_ACI,
+  DOMAIN_ROUTING_ISM_ACI,
   VALIDATOR_ANNOUNCE_ACI,
+  IGP_ACI,
   NOOP_HOOK_ACI,
   AEX9_ACI,
   WARP_ROUTER_ACI,

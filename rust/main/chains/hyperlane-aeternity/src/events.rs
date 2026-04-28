@@ -186,6 +186,37 @@ fn decode_event_data(data: &str) -> Result<Vec<u8>, EventParseError> {
     }
 }
 
+/// Parse a non-indexed event `data` field containing a decimal integer string
+/// into a U256.
+///
+/// The AE middleware returns `string` event fields as plain text (e.g. `"200000"`),
+/// while the node API uses base64 with an optional `cb_` prefix.  We try plain
+/// decimal first and fall back to base64 decoding.
+fn parse_data_string_as_u256(data: &str) -> Result<U256, EventParseError> {
+    if data.is_empty() {
+        return Err(EventParseError::MissingField(
+            "event data is empty, expected gas_amount string".into(),
+        ));
+    }
+
+    let trimmed = data.trim();
+
+    // Fast path: middleware returns the string value as plain decimal text
+    if let Some(n) = num_bigint::BigUint::parse_bytes(trimmed.as_bytes(), 10) {
+        return Ok(U256::from_big_endian(&n.to_bytes_be()));
+    }
+
+    // Slow path: base64-encoded (node API / cb_ format)
+    let raw = decode_event_data(data)?;
+    let s = String::from_utf8(raw)
+        .map_err(|e| EventParseError::InvalidData(format!("data not valid UTF-8: {e}")))?;
+    let s_trimmed = s.trim();
+    let n = num_bigint::BigUint::parse_bytes(s_trimmed.as_bytes(), 10).ok_or_else(|| {
+        EventParseError::InvalidData(format!("invalid decimal in event data: {s_trimmed}"))
+    })?;
+    Ok(U256::from_big_endian(&n.to_bytes_be()))
+}
+
 // ---------------------------------------------------------------------------
 // Parse functions
 // ---------------------------------------------------------------------------
@@ -286,7 +317,11 @@ pub fn parse_merkle_insertion(
 /// Parse a GasPayment event from a middleware log entry.
 ///
 /// Sophia event layout:
-///   indexed: message_id (bytes(32)), destination (int), gas_amount (int), payment (int)
+///   indexed: message_id (bytes(32)), destination (int), payment (int)
+///   data:    gas_amount as decimal string (non-indexed)
+///
+/// `gas_amount` is emitted as a `string` (via `Int.to_str`) to stay within
+/// Sophia's 3-indexed-field limit.  The raw UTF-8 decimal lives in `log.data`.
 pub fn parse_gas_payment(
     log: &ContractLogEntry,
 ) -> Result<Option<(Indexed<InterchainGasPayment>, LogMeta)>, EventParseError> {
@@ -294,19 +329,19 @@ pub fn parse_gas_payment(
         return Ok(None);
     }
 
-    if log.args.len() < 4 {
+    if log.args.len() < 3 {
         return Err(EventParseError::MissingField(
-            "GasPayment requires at least 4 topic args".into(),
+            "GasPayment requires at least 3 topic args".into(),
         ));
     }
 
     let message_id = parse_topic_h256(&log.args[0])?;
     let destination = parse_topic_u32(&log.args[1])?;
-    let gas_amount = parse_topic_u256(&log.args[2])?;
-    let payment = parse_topic_u256(&log.args[3])?;
+    let payment = parse_topic_u256(&log.args[2])?;
+    let gas_amount = parse_data_string_as_u256(&log.data)?;
 
-    let sequence = if log.args.len() > 4 {
-        parse_topic_u32(&log.args[4]).unwrap_or(0)
+    let sequence = if log.args.len() > 3 {
+        parse_topic_u32(&log.args[3]).unwrap_or(0)
     } else {
         0
     };
@@ -436,21 +471,138 @@ mod tests {
         assert_eq!(indexed.sequence, Some(3));
     }
 
+    /// Base64-encode a plain string for use as event data in test fixtures.
+    fn encode_test_data(s: &str) -> String {
+        use base64::{engine::general_purpose::STANDARD, Engine};
+        STANDARD.encode(s.as_bytes())
+    }
+
     #[test]
     fn test_parse_gas_payment_success() {
         let msg_id = "0x".to_owned() + &"ee".repeat(32);
         let dest = "0x01";
-        let gas = "0x64";
         let payment = "0xc8";
         let seq = "0x07";
+        let gas_data = encode_test_data("100");
         let log = make_log(
             &GAS_PAYMENT_HASH,
-            vec![&msg_id, dest, gas, payment, seq],
-            "",
+            vec![&msg_id, dest, payment, seq],
+            &gas_data,
         );
         let result = parse_gas_payment(&log).unwrap();
         assert!(result.is_some());
         let (indexed, _meta) = result.unwrap();
+        assert_eq!(indexed.inner().gas_amount, U256::from(100));
+        assert_eq!(indexed.inner().payment, U256::from(200));
         assert_eq!(indexed.sequence, Some(7));
+    }
+
+    #[test]
+    fn test_parse_gas_payment_no_data() {
+        let msg_id = "0x".to_owned() + &"ee".repeat(32);
+        let dest = "0x01";
+        let payment = "0xc8";
+        let log = make_log(&GAS_PAYMENT_HASH, vec![&msg_id, dest, payment], "");
+        let result = parse_gas_payment(&log);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_parse_gas_payment_large_gas_amount() {
+        let msg_id = "0x".to_owned() + &"aa".repeat(32);
+        let dest = "0x01";
+        let payment = "0x01";
+        let gas_data = encode_test_data("1000000000000000000");
+        let log = make_log(&GAS_PAYMENT_HASH, vec![&msg_id, dest, payment], &gas_data);
+        let result = parse_gas_payment(&log).unwrap();
+        assert!(result.is_some());
+        let (indexed, _meta) = result.unwrap();
+        assert_eq!(
+            indexed.inner().gas_amount,
+            U256::from(1_000_000_000_000_000_000u64)
+        );
+    }
+
+    #[test]
+    fn test_parse_gas_payment_zero_gas() {
+        let msg_id = "0x".to_owned() + &"bb".repeat(32);
+        let dest = "0x01";
+        let payment = "0x01";
+        let gas_data = encode_test_data("0");
+        let log = make_log(&GAS_PAYMENT_HASH, vec![&msg_id, dest, payment], &gas_data);
+        let result = parse_gas_payment(&log).unwrap();
+        assert!(result.is_some());
+        let (indexed, _meta) = result.unwrap();
+        assert_eq!(indexed.inner().gas_amount, U256::zero());
+    }
+
+    #[test]
+    fn test_parse_data_string_as_u256_plain_decimal() {
+        assert_eq!(
+            parse_data_string_as_u256("200000").unwrap(),
+            U256::from(200_000)
+        );
+    }
+
+    #[test]
+    fn test_parse_data_string_as_u256_plain_base64() {
+        let data = encode_test_data("42");
+        assert_eq!(parse_data_string_as_u256(&data).unwrap(), U256::from(42));
+    }
+
+    #[test]
+    fn test_parse_data_string_as_u256_cb_prefix() {
+        use base64::{engine::general_purpose::STANDARD, Engine};
+        use sha2::{Digest, Sha256};
+        let payload = b"12345";
+        let mut buf = payload.to_vec();
+        let hash = Sha256::digest(&buf);
+        buf.extend_from_slice(&hash[..4]);
+        let data = format!("cb_{}", STANDARD.encode(&buf));
+        assert_eq!(parse_data_string_as_u256(&data).unwrap(), U256::from(12345));
+    }
+
+    #[test]
+    fn test_parse_data_string_as_u256_empty() {
+        assert!(parse_data_string_as_u256("").is_err());
+    }
+
+    #[test]
+    fn test_parse_data_string_as_u256_non_numeric() {
+        let data = encode_test_data("not_a_number");
+        assert!(parse_data_string_as_u256(&data).is_err());
+    }
+
+    #[test]
+    fn test_parse_gas_payment_plain_decimal_data() {
+        let msg_id = "0x".to_owned() + &"ee".repeat(32);
+        let dest = "11155111";
+        let payment = "2857551541958855915";
+        let log = make_log(&GAS_PAYMENT_HASH, vec![&msg_id, dest, payment], "200000");
+        let result = parse_gas_payment(&log).unwrap();
+        assert!(result.is_some());
+        let (indexed, _meta) = result.unwrap();
+        assert_eq!(indexed.inner().gas_amount, U256::from(200_000));
+        assert_eq!(
+            indexed.inner().payment,
+            U256::from(2_857_551_541_958_855_915u64)
+        );
+        assert_eq!(indexed.inner().destination, 11_155_111);
+    }
+
+    #[test]
+    fn test_parse_gas_payment_without_sequence() {
+        let msg_id = "0x".to_owned() + &"cc".repeat(32);
+        let dest = "0x05";
+        let payment = "0x0a";
+        let gas_data = encode_test_data("500");
+        let log = make_log(&GAS_PAYMENT_HASH, vec![&msg_id, dest, payment], &gas_data);
+        let result = parse_gas_payment(&log).unwrap();
+        assert!(result.is_some());
+        let (indexed, _meta) = result.unwrap();
+        assert_eq!(indexed.inner().gas_amount, U256::from(500));
+        assert_eq!(indexed.inner().payment, U256::from(10));
+        assert_eq!(indexed.inner().destination, 5);
+        assert_eq!(indexed.sequence, Some(0));
     }
 }

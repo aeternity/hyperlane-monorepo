@@ -1,6 +1,8 @@
 import { AeSdk, Contract } from '@aeternity/aepp-sdk';
 
-import { MERKLE_TREE_HOOK_ACI, NOOP_HOOK_ACI } from '../aci/index.js';
+import { IGP_ACI, MERKLE_TREE_HOOK_ACI, NOOP_HOOK_ACI } from '../aci/index.js';
+
+const HOOK_TYPE_IGP = 6;
 
 export async function getHookType(
   sdk: AeSdk,
@@ -55,16 +57,20 @@ export async function getMerkleTreeHookConfig(
 export async function getHookQuoteDispatch(
   sdk: AeSdk,
   hookAddress: string,
+  metadata?: Uint8Array,
+  message?: Uint8Array,
 ): Promise<bigint> {
+  const hookType = await getHookType(sdk, hookAddress);
+  const aci = hookType === HOOK_TYPE_IGP ? IGP_ACI : NOOP_HOOK_ACI;
   const contract = await Contract.initialize({
     ...sdk.getContext(),
-    aci: [NOOP_HOOK_ACI],
+    aci: [aci],
     address: hookAddress as `ct_${string}`,
   });
 
   const result = await contract.quote_dispatch(
-    new Uint8Array(0),
-    new Uint8Array(0),
+    metadata ?? new Uint8Array(0),
+    message ?? new Uint8Array(0),
   );
   return BigInt(result.decodedResult);
 }

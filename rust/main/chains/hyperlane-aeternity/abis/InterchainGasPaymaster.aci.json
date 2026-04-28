@@ -103,6 +103,7 @@
                 "bytes": 32
               },
               "int",
+              "string",
               "int"
             ]
           },

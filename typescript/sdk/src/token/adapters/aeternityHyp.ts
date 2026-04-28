@@ -247,27 +247,37 @@ abstract class BaseAeternityHypAdapter implements IHypTokenAdapter<AeternityTran
   ): Promise<InterchainGasQuote> {
     const contract = await this.getContract();
     try {
+      const recipientHex = params.recipient
+        ? '0x' +
+          params.recipient.replace(/^0x/i, '').toLowerCase().padStart(64, '0')
+        : '0x' + '00'.repeat(32);
+      const amount = params.amount ?? 0n;
       const result = await contract.quote_transfer_remote(
         params.destination,
-        '0x' + '00'.repeat(32),
-        0n,
+        recipientHex,
+        amount,
       );
-      const amount = BigInt(result.decodedResult ?? 0);
-      return { igpQuote: { amount, addressOrDenom: this.tokenAddress } };
+      const fee = BigInt(result.decodedResult ?? 0);
+      return { igpQuote: { amount: fee } };
     } catch {
-      return { igpQuote: { amount: 0n, addressOrDenom: this.tokenAddress } };
+      return { igpQuote: { amount: 0n } };
     }
   }
 
   async populateTransferRemoteTx(
     params: TransferRemoteParams,
   ): Promise<AeternityTransaction> {
-    const quote = await this.quoteTransferRemoteGas({
-      destination: params.destination,
-    });
-    const totalAmount = BigInt(params.weiAmountOrId) + quote.igpQuote.amount;
+    let interchainGas = params.interchainGas;
+    if (!interchainGas) {
+      interchainGas = await this.quoteTransferRemoteGas({
+        destination: params.destination,
+        recipient: params.recipient,
+        amount: BigInt(params.weiAmountOrId),
+      });
+    }
+    const igpFee = interchainGas.igpQuote.amount;
+    const totalAmount = BigInt(params.weiAmountOrId) + igpFee;
 
-    // Left-pad recipient to 32 bytes (Hyperlane bytes32 format)
     const recipientHex = params.recipient.replace(/^0x/i, '').toLowerCase();
     const padded = recipientHex.padStart(64, '0');
     const recipient = '0x' + padded;
