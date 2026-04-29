@@ -203,6 +203,10 @@
             {
               "name": "gas_limit",
               "type": "int"
+            },
+            {
+              "name": "refund_address",
+              "type": "address"
             }
           ],
           "name": "pay_for_gas",
@@ -238,6 +242,24 @@
             }
           ],
           "name": "set_destination_gas_overhead",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "configs",
+              "type": {
+                "list": [
+                  "InterchainGasPaymaster.gas_overhead_config"
+                ]
+              }
+            }
+          ],
+          "name": "set_destination_gas_overheads",
           "payable": false,
           "returns": {
             "tuple": []
@@ -322,7 +344,24 @@
           }
         ]
       },
-      "typedefs": []
+      "typedefs": [
+        {
+          "name": "gas_overhead_config",
+          "typedef": {
+            "record": [
+              {
+                "name": "domain",
+                "type": "int"
+              },
+              {
+                "name": "overhead",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
     }
   }
 ]

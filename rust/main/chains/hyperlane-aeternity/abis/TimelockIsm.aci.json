@@ -1,42 +1,5 @@
 [
   {
-    "contract": {
-      "functions": [
-        {
-          "arguments": [],
-          "name": "module_type",
-          "payable": false,
-          "returns": "int",
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "_1",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "_2",
-              "type": {
-                "bytes": "any"
-              }
-            }
-          ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
-        }
-      ],
-      "kind": "contract_interface",
-      "name": "IInterchainSecurityModule",
-      "payable": false,
-      "typedefs": []
-    }
-  },
-  {
     "namespace": {
       "name": "Option",
       "typedefs": []
@@ -102,18 +65,18 @@
       "event": {
         "variant": [
           {
-            "IsmSet": [
+            "MessageQueued": [
+              {
+                "bytes": 32
+              },
               "int"
             ]
           },
           {
-            "IsmRemoved": [
-              "int"
-            ]
-          },
-          {
-            "DefaultIsmSet": [
-              "address"
+            "MessageCancelled": [
+              {
+                "bytes": 32
+              }
             ]
           },
           {
@@ -136,11 +99,19 @@
             {
               "name": "owner",
               "type": "address"
+            },
+            {
+              "name": "preverifier",
+              "type": "address"
+            },
+            {
+              "name": "timelock_window",
+              "type": "int"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "DomainRoutingIsm.state",
+          "returns": "TimelockIsm.state",
           "stateful": true
         },
         {
@@ -153,33 +124,13 @@
         {
           "arguments": [
             {
-              "name": "domain",
-              "type": "int"
-            },
-            {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ],
-          "name": "set_ism",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "configs",
+              "name": "message_id",
               "type": {
-                "list": [
-                  "DomainRoutingIsm.ism_config"
-                ]
+                "bytes": 32
               }
             }
           ],
-          "name": "set_isms",
+          "name": "queue_message",
           "payable": false,
           "returns": {
             "tuple": []
@@ -189,11 +140,13 @@
         {
           "arguments": [
             {
-              "name": "domain",
-              "type": "int"
+              "name": "message_id",
+              "type": {
+                "bytes": 32
+              }
             }
           ],
-          "name": "remove_ism",
+          "name": "cancel_message",
           "payable": false,
           "returns": {
             "tuple": []
@@ -203,32 +156,7 @@
         {
           "arguments": [
             {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ],
-          "name": "set_default_ism",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_domains",
-          "payable": false,
-          "returns": {
-            "list": [
-              "int"
-            ]
-          },
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "metadata",
+              "name": "_metadata",
               "type": {
                 "bytes": "any"
               }
@@ -248,16 +176,55 @@
         {
           "arguments": [
             {
-              "name": "message",
+              "name": "message_id",
               "type": {
-                "bytes": "any"
+                "bytes": 32
               }
             }
           ],
-          "name": "route",
+          "name": "get_ready_at",
           "payable": false,
-          "returns": "IInterchainSecurityModule",
+          "returns": {
+            "option": [
+              "int"
+            ]
+          },
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "message_id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "is_cancelled",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_timelock_window",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_preverifier",
+              "type": "address"
+            }
+          ],
+          "name": "set_preverifier",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         },
         {
           "arguments": [
@@ -291,7 +258,7 @@
         }
       ],
       "kind": "contract_main",
-      "name": "DomainRoutingIsm",
+      "name": "TimelockIsm",
       "payable": false,
       "state": {
         "record": [
@@ -308,50 +275,38 @@
             }
           },
           {
-            "name": "isms",
-            "type": {
-              "map": [
-                "int",
-                "IInterchainSecurityModule"
-              ]
-            }
+            "name": "preverifier",
+            "type": "address"
           },
           {
-            "name": "domains",
+            "name": "timelock_window",
+            "type": "int"
+          },
+          {
+            "name": "ready_at",
             "type": {
-              "list": [
+              "map": [
+                {
+                  "bytes": 32
+                },
                 "int"
               ]
             }
           },
           {
-            "name": "default_ism",
+            "name": "cancelled",
             "type": {
-              "option": [
-                "IInterchainSecurityModule"
+              "map": [
+                {
+                  "bytes": 32
+                },
+                "bool"
               ]
             }
           }
         ]
       },
-      "typedefs": [
-        {
-          "name": "ism_config",
-          "typedef": {
-            "record": [
-              {
-                "name": "domain",
-                "type": "int"
-              },
-              {
-                "name": "ism",
-                "type": "IInterchainSecurityModule"
-              }
-            ]
-          },
-          "vars": []
-        }
-      ]
+      "typedefs": []
     }
   }
 ]

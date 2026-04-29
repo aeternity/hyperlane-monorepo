@@ -1,38 +1,13 @@
 [
   {
-    "contract": {
-      "functions": [
-        {
-          "arguments": [],
-          "name": "module_type",
-          "payable": false,
-          "returns": "int",
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "_1",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "_2",
-              "type": {
-                "bytes": "any"
-              }
-            }
-          ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
-        }
-      ],
-      "kind": "contract_interface",
-      "name": "IInterchainSecurityModule",
-      "payable": false,
+    "namespace": {
+      "name": "ListInternal",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "List",
       "typedefs": []
     }
   },
@@ -45,6 +20,12 @@
   {
     "namespace": {
       "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "CheckpointLib",
       "typedefs": []
     }
   },
@@ -98,22 +79,43 @@
     }
   },
   {
+    "namespace": {
+      "name": "MerkleLib",
+      "typedefs": [
+        {
+          "name": "merkle_tree",
+          "typedef": {
+            "record": [
+              {
+                "name": "branch",
+                "type": {
+                  "map": [
+                    "int",
+                    {
+                      "bytes": 32
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "count",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [
           {
-            "IsmSet": [
+            "ValidatorsAndThresholdSet": [
+              "int",
               "int"
-            ]
-          },
-          {
-            "IsmRemoved": [
-              "int"
-            ]
-          },
-          {
-            "DefaultIsmSet": [
-              "address"
             ]
           },
           {
@@ -136,11 +138,25 @@
             {
               "name": "owner",
               "type": "address"
+            },
+            {
+              "name": "vals",
+              "type": {
+                "list": [
+                  {
+                    "bytes": 20
+                  }
+                ]
+              }
+            },
+            {
+              "name": "threshold",
+              "type": "int"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "DomainRoutingIsm.state",
+          "returns": "MerkleRootMultisigIsm.state",
           "stateful": true
         },
         {
@@ -153,61 +169,21 @@
         {
           "arguments": [
             {
-              "name": "domain",
-              "type": "int"
-            },
-            {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ],
-          "name": "set_ism",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "configs",
+              "name": "vals",
               "type": {
                 "list": [
-                  "DomainRoutingIsm.ism_config"
+                  {
+                    "bytes": 20
+                  }
                 ]
               }
-            }
-          ],
-          "name": "set_isms",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
+            },
             {
-              "name": "domain",
+              "name": "threshold",
               "type": "int"
             }
           ],
-          "name": "remove_ism",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ],
-          "name": "set_default_ism",
+          "name": "set_validators_and_threshold",
           "payable": false,
           "returns": {
             "tuple": []
@@ -216,47 +192,47 @@
         },
         {
           "arguments": [],
-          "name": "get_domains",
+          "name": "get_validators",
           "payable": false,
           "returns": {
             "list": [
-              "int"
+              {
+                "bytes": 20
+              }
             ]
           },
           "stateful": false
         },
         {
-          "arguments": [
-            {
-              "name": "metadata",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "message",
-              "type": {
-                "bytes": "any"
-              }
-            }
-          ],
-          "name": "verify",
+          "arguments": [],
+          "name": "get_threshold",
           "payable": false,
-          "returns": "bool",
+          "returns": "int",
           "stateful": false
         },
         {
           "arguments": [
             {
-              "name": "message",
+              "name": "_message",
               "type": {
                 "bytes": "any"
               }
             }
           ],
-          "name": "route",
+          "name": "validators_and_threshold",
           "payable": false,
-          "returns": "IInterchainSecurityModule",
+          "returns": {
+            "tuple": [
+              {
+                "list": [
+                  {
+                    "bytes": 20
+                  }
+                ]
+              },
+              "int"
+            ]
+          },
           "stateful": false
         },
         {
@@ -288,10 +264,30 @@
           "payable": false,
           "returns": "address",
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "DomainRoutingIsm",
+      "name": "MerkleRootMultisigIsm",
       "payable": false,
       "state": {
         "record": [
@@ -308,50 +304,22 @@
             }
           },
           {
-            "name": "isms",
-            "type": {
-              "map": [
-                "int",
-                "IInterchainSecurityModule"
-              ]
-            }
-          },
-          {
-            "name": "domains",
+            "name": "validators",
             "type": {
               "list": [
-                "int"
+                {
+                  "bytes": 20
+                }
               ]
             }
           },
           {
-            "name": "default_ism",
-            "type": {
-              "option": [
-                "IInterchainSecurityModule"
-              ]
-            }
+            "name": "threshold",
+            "type": "int"
           }
         ]
       },
-      "typedefs": [
-        {
-          "name": "ism_config",
-          "typedef": {
-            "record": [
-              {
-                "name": "domain",
-                "type": "int"
-              },
-              {
-                "name": "ism",
-                "type": "IInterchainSecurityModule"
-              }
-            ]
-          },
-          "vars": []
-        }
-      ]
+      "typedefs": []
     }
   }
 ]

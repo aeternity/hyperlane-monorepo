@@ -18,64 +18,40 @@
     }
   },
   {
-    "namespace": {
-      "name": "TypeCasts",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
-      "name": "CheckpointLib",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
-      "name": "MessageLib",
-      "typedefs": [
+    "contract": {
+      "functions": [
         {
-          "name": "message",
-          "typedef": {
-            "record": [
-              {
-                "name": "version",
-                "type": "int"
-              },
-              {
-                "name": "nonce",
-                "type": "int"
-              },
-              {
-                "name": "origin",
-                "type": "int"
-              },
-              {
-                "name": "sender",
-                "type": {
-                  "bytes": 32
-                }
-              },
-              {
-                "name": "destination",
-                "type": "int"
-              },
-              {
-                "name": "recipient",
-                "type": {
-                  "bytes": 32
-                }
-              },
-              {
-                "name": "body",
-                "type": {
-                  "bytes": "any"
-                }
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
               }
-            ]
-          },
-          "vars": []
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
         }
-      ]
+      ],
+      "kind": "contract_interface",
+      "name": "IInterchainSecurityModule",
+      "payable": false,
+      "typedefs": []
     }
   },
   {
@@ -83,7 +59,7 @@
       "event": {
         "variant": [
           {
-            "ValidatorsAndThresholdSet": [
+            "ModulesAndThresholdSet": [
               "int",
               "int"
             ]
@@ -108,25 +84,11 @@
             {
               "name": "owner",
               "type": "address"
-            },
-            {
-              "name": "vals",
-              "type": {
-                "list": [
-                  {
-                    "bytes": 20
-                  }
-                ]
-              }
-            },
-            {
-              "name": "threshold",
-              "type": "int"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "MessageIdMultisigIsm.state",
+          "returns": "AggregationIsm.state",
           "stateful": true
         },
         {
@@ -139,12 +101,10 @@
         {
           "arguments": [
             {
-              "name": "vals",
+              "name": "mods",
               "type": {
                 "list": [
-                  {
-                    "bytes": 20
-                  }
+                  "IInterchainSecurityModule"
                 ]
               }
             },
@@ -153,7 +113,7 @@
               "type": "int"
             }
           ],
-          "name": "set_validators_and_threshold",
+          "name": "set_modules_and_threshold",
           "payable": false,
           "returns": {
             "tuple": []
@@ -162,13 +122,11 @@
         },
         {
           "arguments": [],
-          "name": "get_validators",
+          "name": "get_modules",
           "payable": false,
           "returns": {
             "list": [
-              {
-                "bytes": 20
-              }
+              "IInterchainSecurityModule"
             ]
           },
           "stateful": false
@@ -183,26 +141,21 @@
         {
           "arguments": [
             {
-              "name": "_message",
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
               "type": {
                 "bytes": "any"
               }
             }
           ],
-          "name": "validators_and_threshold",
+          "name": "verify",
           "payable": false,
-          "returns": {
-            "tuple": [
-              {
-                "list": [
-                  {
-                    "bytes": 20
-                  }
-                ]
-              },
-              "int"
-            ]
-          },
+          "returns": "bool",
           "stateful": false
         },
         {
@@ -234,30 +187,10 @@
           "payable": false,
           "returns": "address",
           "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "metadata",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "message",
-              "type": {
-                "bytes": "any"
-              }
-            }
-          ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "MessageIdMultisigIsm",
+      "name": "AggregationIsm",
       "payable": false,
       "state": {
         "record": [
@@ -274,12 +207,10 @@
             }
           },
           {
-            "name": "validators",
+            "name": "modules",
             "type": {
               "list": [
-                {
-                  "bytes": 20
-                }
+                "IInterchainSecurityModule"
               ]
             }
           },

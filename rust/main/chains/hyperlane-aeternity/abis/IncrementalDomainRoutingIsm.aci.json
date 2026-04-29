@@ -107,11 +107,6 @@
             ]
           },
           {
-            "IsmRemoved": [
-              "int"
-            ]
-          },
-          {
             "DefaultIsmSet": [
               "address"
             ]
@@ -140,7 +135,7 @@
           ],
           "name": "init",
           "payable": false,
-          "returns": "DomainRoutingIsm.state",
+          "returns": "IncrementalDomainRoutingIsm.state",
           "stateful": true
         },
         {
@@ -174,26 +169,12 @@
               "name": "configs",
               "type": {
                 "list": [
-                  "DomainRoutingIsm.ism_config"
+                  "IncrementalDomainRoutingIsm.ism_config"
                 ]
               }
             }
           ],
           "name": "set_isms",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "domain",
-              "type": "int"
-            }
-          ],
-          "name": "remove_ism",
           "payable": false,
           "returns": {
             "tuple": []
@@ -213,17 +194,6 @@
             "tuple": []
           },
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_domains",
-          "payable": false,
-          "returns": {
-            "list": [
-              "int"
-            ]
-          },
-          "stateful": false
         },
         {
           "arguments": [
@@ -260,6 +230,17 @@
           "stateful": false
         },
         {
+          "arguments": [],
+          "name": "get_domains",
+          "payable": false,
+          "returns": {
+            "list": [
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
           "arguments": [
             {
               "name": "new_owner",
@@ -291,7 +272,7 @@
         }
       ],
       "kind": "contract_main",
-      "name": "DomainRoutingIsm",
+      "name": "IncrementalDomainRoutingIsm",
       "payable": false,
       "state": {
         "record": [

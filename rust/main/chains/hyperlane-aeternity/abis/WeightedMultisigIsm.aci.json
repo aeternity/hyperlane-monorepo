@@ -1,38 +1,13 @@
 [
   {
-    "contract": {
-      "functions": [
-        {
-          "arguments": [],
-          "name": "module_type",
-          "payable": false,
-          "returns": "int",
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "_1",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "_2",
-              "type": {
-                "bytes": "any"
-              }
-            }
-          ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
-        }
-      ],
-      "kind": "contract_interface",
-      "name": "IInterchainSecurityModule",
-      "payable": false,
+    "namespace": {
+      "name": "ListInternal",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "List",
       "typedefs": []
     }
   },
@@ -45,6 +20,12 @@
   {
     "namespace": {
       "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "CheckpointLib",
       "typedefs": []
     }
   },
@@ -102,18 +83,9 @@
       "event": {
         "variant": [
           {
-            "IsmSet": [
+            "ValidatorsAndWeightSet": [
+              "int",
               "int"
-            ]
-          },
-          {
-            "IsmRemoved": [
-              "int"
-            ]
-          },
-          {
-            "DefaultIsmSet": [
-              "address"
             ]
           },
           {
@@ -136,11 +108,23 @@
             {
               "name": "owner",
               "type": "address"
+            },
+            {
+              "name": "vals",
+              "type": {
+                "list": [
+                  "WeightedMultisigIsm.validator_info"
+                ]
+              }
+            },
+            {
+              "name": "threshold_weight",
+              "type": "int"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "DomainRoutingIsm.state",
+          "returns": "WeightedMultisigIsm.state",
           "stateful": true
         },
         {
@@ -153,61 +137,19 @@
         {
           "arguments": [
             {
-              "name": "domain",
-              "type": "int"
-            },
-            {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ],
-          "name": "set_ism",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "configs",
+              "name": "vals",
               "type": {
                 "list": [
-                  "DomainRoutingIsm.ism_config"
+                  "WeightedMultisigIsm.validator_info"
                 ]
               }
-            }
-          ],
-          "name": "set_isms",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
+            },
             {
-              "name": "domain",
+              "name": "threshold_weight",
               "type": "int"
             }
           ],
-          "name": "remove_ism",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ],
-          "name": "set_default_ism",
+          "name": "set_validators_and_threshold_weight",
           "payable": false,
           "returns": {
             "tuple": []
@@ -216,13 +158,20 @@
         },
         {
           "arguments": [],
-          "name": "get_domains",
+          "name": "get_validators",
           "payable": false,
           "returns": {
             "list": [
-              "int"
+              "WeightedMultisigIsm.validator_info"
             ]
           },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_threshold_weight",
+          "payable": false,
+          "returns": "int",
           "stateful": false
         },
         {
@@ -243,20 +192,6 @@
           "name": "verify",
           "payable": false,
           "returns": "bool",
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "message",
-              "type": {
-                "bytes": "any"
-              }
-            }
-          ],
-          "name": "route",
-          "payable": false,
-          "returns": "IInterchainSecurityModule",
           "stateful": false
         },
         {
@@ -291,7 +226,7 @@
         }
       ],
       "kind": "contract_main",
-      "name": "DomainRoutingIsm",
+      "name": "WeightedMultisigIsm",
       "payable": false,
       "state": {
         "record": [
@@ -308,44 +243,33 @@
             }
           },
           {
-            "name": "isms",
-            "type": {
-              "map": [
-                "int",
-                "IInterchainSecurityModule"
-              ]
-            }
-          },
-          {
-            "name": "domains",
+            "name": "validators",
             "type": {
               "list": [
-                "int"
+                "WeightedMultisigIsm.validator_info"
               ]
             }
           },
           {
-            "name": "default_ism",
-            "type": {
-              "option": [
-                "IInterchainSecurityModule"
-              ]
-            }
+            "name": "threshold_weight",
+            "type": "int"
           }
         ]
       },
       "typedefs": [
         {
-          "name": "ism_config",
+          "name": "validator_info",
           "typedef": {
             "record": [
               {
-                "name": "domain",
-                "type": "int"
+                "name": "signing_address",
+                "type": {
+                  "bytes": 20
+                }
               },
               {
-                "name": "ism",
-                "type": "IInterchainSecurityModule"
+                "name": "weight",
+                "type": "int"
               }
             ]
           },

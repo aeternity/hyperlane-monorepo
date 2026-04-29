@@ -1,0 +1,81 @@
+[
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "mailbox",
+              "type": "address"
+            },
+            {
+              "name": "trusted_relayer",
+              "type": "address"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "TrustedRelayerIsm.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_trusted_relayer",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_mailbox",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "TrustedRelayerIsm",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "mailbox",
+            "type": "address"
+          },
+          {
+            "name": "trusted_relayer",
+            "type": "address"
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

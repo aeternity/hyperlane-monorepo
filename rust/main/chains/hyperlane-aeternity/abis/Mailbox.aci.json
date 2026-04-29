@@ -274,6 +274,13 @@
         },
         {
           "arguments": [],
+          "name": "package_version",
+          "payable": false,
+          "returns": "string",
+          "stateful": false
+        },
+        {
+          "arguments": [],
           "name": "local_domain",
           "payable": false,
           "returns": "int",
@@ -404,6 +411,28 @@
         {
           "arguments": [
             {
+              "name": "default_ism",
+              "type": "IInterchainSecurityModule"
+            },
+            {
+              "name": "default_hook",
+              "type": "IPostDispatchHook"
+            },
+            {
+              "name": "required_hook",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "initialize",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
               "name": "ism",
               "type": "IInterchainSecurityModule"
             }
@@ -467,6 +496,15 @@
           "stateful": true
         },
         {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
           "arguments": [
             {
               "name": "recipient",
@@ -478,6 +516,20 @@
             }
           ],
           "name": "set_recipient_ism",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "ism",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_own_ism",
           "payable": false,
           "returns": {
             "tuple": []
@@ -679,6 +731,10 @@
           {
             "name": "deployed_block",
             "type": "int"
+          },
+          {
+            "name": "initialized",
+            "type": "bool"
           }
         ]
       },

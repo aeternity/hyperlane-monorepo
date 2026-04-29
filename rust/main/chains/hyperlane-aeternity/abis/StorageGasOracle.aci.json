@@ -1,0 +1,191 @@
+[
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "RemoteGasDataSet": [
+              "int",
+              "int",
+              "int"
+            ]
+          },
+          {
+            "RemoteGasDataRemoved": [
+              "int"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "StorageGasOracle.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            },
+            {
+              "name": "exchange_rate",
+              "type": "int"
+            },
+            {
+              "name": "gas_price",
+              "type": "int"
+            }
+          ],
+          "name": "set_remote_gas_data",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "configs",
+              "type": {
+                "list": [
+                  "StorageGasOracle.gas_config"
+                ]
+              }
+            }
+          ],
+          "name": "set_remote_gas_data_batch",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "remove_remote_gas_data",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "get_exchange_rate_and_gas_price",
+          "payable": false,
+          "returns": {
+            "tuple": [
+              "int",
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_domains",
+          "payable": false,
+          "returns": {
+            "list": [
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "StorageGasOracle",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "remote_gas_data",
+            "type": {
+              "map": [
+                "int",
+                "StorageGasOracle.remote_gas_data"
+              ]
+            }
+          },
+          {
+            "name": "domains",
+            "type": {
+              "list": [
+                "int"
+              ]
+            }
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "remote_gas_data",
+          "typedef": {
+            "record": [
+              {
+                "name": "token_exchange_rate",
+                "type": "int"
+              },
+              {
+                "name": "gas_price",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "gas_config",
+          "typedef": {
+            "record": [
+              {
+                "name": "domain",
+                "type": "int"
+              },
+              {
+                "name": "exchange_rate",
+                "type": "int"
+              },
+              {
+                "name": "gas_price",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]
