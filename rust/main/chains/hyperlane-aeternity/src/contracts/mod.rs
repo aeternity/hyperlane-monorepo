@@ -17,6 +17,9 @@ const VALIDATOR_ANNOUNCE_ACI: &str = include_str!("../../abis/ValidatorAnnounce.
 const IGP_ACI: &str = include_str!("../../abis/InterchainGasPaymaster.aci.json");
 const MULTISIG_ISM_ACI: &str = include_str!("../../abis/MessageIdMultisigIsm.aci.json");
 const ROUTING_ISM_ACI: &str = include_str!("../../abis/DomainRoutingIsm.aci.json");
+const AGGREGATION_ISM_ACI_JSON: &str = include_str!("../../abis/AggregationIsm.aci.json");
+const MERKLE_ROOT_MULTISIG_ISM_ACI: &str =
+    include_str!("../../abis/MerkleRootMultisigIsm.aci.json");
 
 /// Mailbox contract stub generated from ACI.
 pub static MAILBOX_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(MAILBOX_ACI));
@@ -32,20 +35,16 @@ pub static IGP_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(IGP_ACI));
 pub static MULTISIG_ISM_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(MULTISIG_ISM_ACI));
 /// DomainRoutingIsm contract stub generated from ACI.
 pub static ROUTING_ISM_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(ROUTING_ISM_ACI));
+/// AggregationIsm contract stub generated from ACI.
+pub static AGGREGATION_ISM_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(AGGREGATION_ISM_ACI_JSON));
+/// MerkleRootMultisigIsm contract stub generated from ACI.
+pub static MERKLE_ROOT_MULTISIG_ISM_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(MERKLE_ROOT_MULTISIG_ISM_ACI));
 
 /// Generic ISM stub for contracts where only `module_type` is called.
 pub static BASE_ISM_SOURCE: Lazy<String> = Lazy::new(|| {
     "@compiler >= 6\n\nmain contract IsmStub =\n    entrypoint module_type() : int = 0\n"
-        .to_string()
-});
-
-/// Aggregation ISM stub for contracts where `module_type` and
-/// `modules_and_threshold` are called.
-pub static AGGREGATION_ISM_SOURCE: Lazy<String> = Lazy::new(|| {
-    "@compiler >= 6\n\n\
-     main contract AggregationIsmStub =\n\
-     \x20   entrypoint module_type() : int = 0\n\
-     \x20   entrypoint modules_and_threshold(message : bytes()) : list(address) * int = ([], 0)\n"
         .to_string()
 });
 
@@ -465,6 +464,22 @@ mod tests {
     fn test_multisig_ism_aci_generates_valid_stub() {
         let source = aci_to_sophia(MULTISIG_ISM_ACI);
         assert!(source.contains("main contract MessageIdMultisigIsmStub"));
+        assert!(source.contains("entrypoint validators_and_threshold("));
+    }
+
+    #[test]
+    fn test_aggregation_ism_aci_generates_valid_stub() {
+        let source = aci_to_sophia(AGGREGATION_ISM_ACI_JSON);
+        assert!(source.contains("main contract AggregationIsmStub"));
+        assert!(source.contains("entrypoint get_modules("));
+        assert!(source.contains("entrypoint get_threshold("));
+        assert!(source.contains("entrypoint module_type("));
+    }
+
+    #[test]
+    fn test_merkle_root_multisig_ism_aci_generates_valid_stub() {
+        let source = aci_to_sophia(MERKLE_ROOT_MULTISIG_ISM_ACI);
+        assert!(source.contains("main contract MerkleRootMultisigIsmStub"));
         assert!(source.contains("entrypoint validators_and_threshold("));
     }
 }

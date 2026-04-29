@@ -437,7 +437,8 @@ mod tests {
     #[test]
     fn test_parse_topic_u32() {
         assert_eq!(parse_topic_u32("0x2a").unwrap(), 42);
-        assert_eq!(parse_topic_u32("ff").unwrap(), 255);
+        assert_eq!(parse_topic_u32("0xff").unwrap(), 255);
+        assert_eq!(parse_topic_u32("255").unwrap(), 255);
     }
 
     #[test]

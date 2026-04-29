@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 
 use hyperlane_core::{
-    AggregationIsm, ChainResult, ContractLocator, Encode, HyperlaneChain, HyperlaneContract,
+    AggregationIsm, ChainResult, ContractLocator, HyperlaneChain, HyperlaneContract,
     HyperlaneDomain, HyperlaneMessage, HyperlaneProvider, InterchainSecurityModule, Metadata,
     ModuleType, H256, U256,
 };
@@ -81,44 +81,28 @@ impl InterchainSecurityModule for AeAggregationIsm {
 
 #[async_trait]
 impl AggregationIsm for AeAggregationIsm {
-    /// Returns the `m` sub-ISMs and `n` threshold needed for n-of-m verification.
+    /// Returns the sub-ISMs and threshold needed for n-of-m verification.
     ///
-    /// Calls Sophia entrypoint:
-    ///   `modules_and_threshold(message: bytes()) : list(address) * int`
+    /// Calls Sophia entrypoints:
+    ///   `get_modules() : list(IInterchainSecurityModule)`
+    ///   `get_threshold() : int`
     async fn modules_and_threshold(
         &self,
-        message: &HyperlaneMessage,
+        _message: &HyperlaneMessage,
     ) -> ChainResult<(Vec<H256>, u8)> {
-        let message_hex = format!("Bytes.to_any_size(#{})", hex::encode(message.to_vec()));
-
-        let result = self
+        let modules_result = self
             .provider
             .call_contract(
                 &self.contract_address,
-                "modules_and_threshold",
-                &[message_hex],
+                "get_modules",
+                &[],
                 &contracts::AGGREGATION_ISM_SOURCE,
             )
             .await?;
 
-        let arr = result.as_array().ok_or_else(|| {
+        let modules_arr = modules_result.as_array().ok_or_else(|| {
             HyperlaneAeternityError::ContractCallError(format!(
-                "expected tuple array from modules_and_threshold(), got {result}"
-            ))
-        })?;
-
-        if arr.len() != 2 {
-            return Err(HyperlaneAeternityError::ContractCallError(format!(
-                "expected 2-element tuple, got {} elements",
-                arr.len()
-            ))
-            .into());
-        }
-
-        let modules_arr = arr[0].as_array().ok_or_else(|| {
-            HyperlaneAeternityError::ContractCallError(format!(
-                "expected list for modules, got {}",
-                arr[0]
+                "expected list from get_modules(), got {modules_result}"
             ))
         })?;
 
@@ -132,10 +116,19 @@ impl AggregationIsm for AeAggregationIsm {
             modules.push(ae_address_to_h256(addr_str)?);
         }
 
-        let threshold = arr[1].as_u64().ok_or_else(|| {
+        let threshold_result = self
+            .provider
+            .call_contract(
+                &self.contract_address,
+                "get_threshold",
+                &[],
+                &contracts::AGGREGATION_ISM_SOURCE,
+            )
+            .await?;
+
+        let threshold = threshold_result.as_u64().ok_or_else(|| {
             HyperlaneAeternityError::ContractCallError(format!(
-                "expected integer for threshold, got {}",
-                arr[1]
+                "expected integer from get_threshold(), got {threshold_result}"
             ))
         })? as u8;
 
