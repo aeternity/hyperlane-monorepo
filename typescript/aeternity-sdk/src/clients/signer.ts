@@ -9,6 +9,8 @@ import {
   MULTISIG_ISM_ACI,
   VALIDATOR_ANNOUNCE_ACI,
   NOOP_HOOK_ACI,
+  IGP_ACI,
+  DOMAIN_ROUTING_ISM_ACI,
   AEX9_ACI,
   WARP_ROUTER_ACI,
 } from '../aci/index.js';
@@ -22,6 +24,8 @@ const ALL_FUNCTIONS_ACI = [
   MULTISIG_ISM_ACI,
   VALIDATOR_ANNOUNCE_ACI,
   NOOP_HOOK_ACI,
+  IGP_ACI,
+  DOMAIN_ROUTING_ISM_ACI,
   AEX9_ACI,
   WARP_ROUTER_ACI,
 ];
@@ -107,8 +111,12 @@ export class AeternitySigner
 
     return {
       hash: result.hash,
-      blockHeight: Number((result as any).blockHeight ?? (result.result as any)?.blockHeight ?? 0),
-      blockHash: String((result as any).blockHash ?? (result.result as any)?.blockHash ?? ''),
+      blockHeight: Number(
+        (result as any).blockHeight ?? (result.result as any)?.blockHeight ?? 0,
+      ),
+      blockHash: String(
+        (result as any).blockHash ?? (result.result as any)?.blockHash ?? '',
+      ),
       returnValue: result.decodedResult,
       gasUsed: Number(result.result?.gasUsed ?? 0),
       log: (result.result as any)?.log ?? [],

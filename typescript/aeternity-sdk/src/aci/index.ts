@@ -3,6 +3,25 @@
 
 export const DOMAIN_ROUTING_ISM_ACI = {
   contract: {
+    event: {
+      variant: [
+        {
+          IsmSet: ['int'],
+        },
+        {
+          IsmRemoved: ['int'],
+        },
+        {
+          DefaultIsmSet: ['address'],
+        },
+        {
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
+    },
     functions: [
       {
         arguments: [
@@ -44,6 +63,36 @@ export const DOMAIN_ROUTING_ISM_ACI = {
       {
         arguments: [
           {
+            name: 'configs',
+            type: {
+              list: ['DomainRoutingIsm.ism_config'],
+            },
+          },
+        ],
+        name: 'set_isms',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'domain',
+            type: 'int',
+          },
+        ],
+        name: 'remove_ism',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
             name: 'ism',
             type: 'IInterchainSecurityModule',
           },
@@ -54,6 +103,15 @@ export const DOMAIN_ROUTING_ISM_ACI = {
           tuple: [],
         },
         stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
+        },
+        stateful: false,
       },
       {
         arguments: [
@@ -89,6 +147,36 @@ export const DOMAIN_ROUTING_ISM_ACI = {
         returns: 'IInterchainSecurityModule',
         stateful: false,
       },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
     kind: 'contract_main',
     name: 'DomainRoutingIsm',
@@ -100,9 +188,21 @@ export const DOMAIN_ROUTING_ISM_ACI = {
           type: 'address',
         },
         {
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
+        },
+        {
           name: 'isms',
           type: {
             map: ['int', 'IInterchainSecurityModule'],
+          },
+        },
+        {
+          name: 'domains',
+          type: {
+            list: ['int'],
           },
         },
         {
@@ -113,7 +213,24 @@ export const DOMAIN_ROUTING_ISM_ACI = {
         },
       ],
     },
-    typedefs: [],
+    typedefs: [
+      {
+        name: 'ism_config',
+        typedef: {
+          record: [
+            {
+              name: 'domain',
+              type: 'int',
+            },
+            {
+              name: 'ism',
+              type: 'IInterchainSecurityModule',
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
   },
 };
 
@@ -223,6 +340,10 @@ export const IGP_ACI = {
             name: 'gas_limit',
             type: 'int',
           },
+          {
+            name: 'refund_address',
+            type: 'address',
+          },
         ],
         name: 'pay_for_gas',
         payable: true,
@@ -257,6 +378,22 @@ export const IGP_ACI = {
           },
         ],
         name: 'set_destination_gas_overhead',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'configs',
+            type: {
+              list: ['InterchainGasPaymaster.gas_overhead_config'],
+            },
+          },
+        ],
+        name: 'set_destination_gas_overheads',
         payable: false,
         returns: {
           tuple: [],
@@ -338,7 +475,24 @@ export const IGP_ACI = {
         },
       ],
     },
-    typedefs: [],
+    typedefs: [
+      {
+        name: 'gas_overhead_config',
+        typedef: {
+          record: [
+            {
+              name: 'domain',
+              type: 'int',
+            },
+            {
+              name: 'overhead',
+              type: 'int',
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
   },
 };
 
@@ -414,6 +568,13 @@ export const MAILBOX_ACI = {
         name: 'version',
         payable: false,
         returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'package_version',
+        payable: false,
+        returns: 'string',
         stateful: false,
       },
       {
@@ -536,6 +697,28 @@ export const MAILBOX_ACI = {
       {
         arguments: [
           {
+            name: 'default_ism',
+            type: 'IInterchainSecurityModule',
+          },
+          {
+            name: 'default_hook',
+            type: 'IPostDispatchHook',
+          },
+          {
+            name: 'required_hook',
+            type: 'IPostDispatchHook',
+          },
+        ],
+        name: 'initialize',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
             name: 'ism',
             type: 'IInterchainSecurityModule',
           },
@@ -599,6 +782,15 @@ export const MAILBOX_ACI = {
         stateful: true,
       },
       {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
         arguments: [
           {
             name: 'recipient',
@@ -610,6 +802,20 @@ export const MAILBOX_ACI = {
           },
         ],
         name: 'set_recipient_ism',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
+        ],
+        name: 'set_own_ism',
         payable: false,
         returns: {
           tuple: [],
@@ -797,6 +1003,10 @@ export const MAILBOX_ACI = {
           name: 'deployed_block',
           type: 'int',
         },
+        {
+          name: 'initialized',
+          type: 'bool',
+        },
       ],
     },
     typedefs: [
@@ -960,12 +1170,39 @@ export const MERKLE_TREE_HOOK_ACI = {
 
 export const MULTISIG_ISM_ACI = {
   contract: {
+    event: {
+      variant: [
+        {
+          ValidatorsAndThresholdSet: ['int', 'int'],
+        },
+        {
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
+    },
     functions: [
       {
         arguments: [
           {
             name: 'owner',
             type: 'address',
+          },
+          {
+            name: 'vals',
+            type: {
+              list: [
+                {
+                  bytes: 20,
+                },
+              ],
+            },
+          },
+          {
+            name: 'threshold',
+            type: 'int',
           },
         ],
         name: 'init',
@@ -982,10 +1219,6 @@ export const MULTISIG_ISM_ACI = {
       },
       {
         arguments: [
-          {
-            name: 'domain',
-            type: 'int',
-          },
           {
             name: 'vals',
             type: {
@@ -1009,12 +1242,7 @@ export const MULTISIG_ISM_ACI = {
         stateful: true,
       },
       {
-        arguments: [
-          {
-            name: 'domain',
-            type: 'int',
-          },
-        ],
+        arguments: [],
         name: 'get_validators',
         payable: false,
         returns: {
@@ -1027,12 +1255,7 @@ export const MULTISIG_ISM_ACI = {
         stateful: false,
       },
       {
-        arguments: [
-          {
-            name: 'domain',
-            type: 'int',
-          },
-        ],
+        arguments: [],
         name: 'get_threshold',
         payable: false,
         returns: 'int',
@@ -1041,7 +1264,7 @@ export const MULTISIG_ISM_ACI = {
       {
         arguments: [
           {
-            name: 'message',
+            name: '_message',
             type: {
               bytes: 'any',
             },
@@ -1061,6 +1284,36 @@ export const MULTISIG_ISM_ACI = {
             'int',
           ],
         },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
         stateful: false,
       },
       {
@@ -1094,25 +1347,24 @@ export const MULTISIG_ISM_ACI = {
           type: 'address',
         },
         {
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
+        },
+        {
           name: 'validators',
           type: {
-            map: [
-              'int',
+            list: [
               {
-                list: [
-                  {
-                    bytes: 20,
-                  },
-                ],
+                bytes: 20,
               },
             ],
           },
         },
         {
-          name: 'thresholds',
-          type: {
-            map: ['int', 'int'],
-          },
+          name: 'threshold',
+          type: 'int',
         },
       ],
     },
@@ -1402,6 +1654,20 @@ export const AEX9_ACI = {
         stateful: true,
         payable: false,
       },
+      {
+        name: 'get_minter',
+        arguments: [],
+        returns: { option: ['address'] },
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'set_minter',
+        arguments: [{ name: 'minter', type: 'address' }],
+        returns: 'unit',
+        stateful: true,
+        payable: false,
+      },
     ],
   },
 };
@@ -1477,6 +1743,105 @@ export const WARP_ROUTER_ACI = {
         returns: 'unit',
         stateful: true,
         payable: false,
+      },
+      {
+        name: 'get_enrolled_domains',
+        arguments: [],
+        returns: { list: ['int'] },
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'get_local_domain',
+        arguments: [],
+        returns: 'int',
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'quote_gas_payment',
+        arguments: [{ name: 'domain', type: 'int' }],
+        returns: 'int',
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'set_destination_gas',
+        arguments: [
+          { name: 'domain', type: 'int' },
+          { name: 'gas', type: 'int' },
+        ],
+        returns: 'unit',
+        stateful: true,
+        payable: false,
+      },
+      {
+        name: 'set_destination_gas_batch',
+        arguments: [
+          {
+            name: 'configs',
+            type: { list: [{ tuple: ['int', 'int'] }] },
+          },
+        ],
+        returns: 'unit',
+        stateful: true,
+        payable: false,
+      },
+      {
+        name: 'unenroll_remote_routers',
+        arguments: [{ name: 'domains', type: { list: ['int'] } }],
+        returns: 'unit',
+        stateful: true,
+        payable: false,
+      },
+      {
+        name: 'get_owner',
+        arguments: [],
+        returns: 'address',
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'transfer_ownership',
+        arguments: [{ name: 'new_owner', type: 'address' }],
+        returns: 'unit',
+        stateful: true,
+        payable: false,
+      },
+      {
+        name: 'accept_ownership',
+        arguments: [],
+        returns: 'unit',
+        stateful: true,
+        payable: false,
+      },
+      {
+        name: 'renounce_ownership',
+        arguments: [],
+        returns: 'unit',
+        stateful: true,
+        payable: false,
+      },
+      {
+        name: 'set_interchain_security_module',
+        arguments: [{ name: 'ism', type: 'IInterchainSecurityModule' }],
+        returns: 'unit',
+        stateful: true,
+        payable: false,
+      },
+      {
+        name: 'verify_setup',
+        arguments: [],
+        returns: 'bool',
+        stateful: false,
+        payable: false,
+      },
+      {
+        name: 'deposit',
+        arguments: [],
+        returns: 'unit',
+        stateful: true,
+        payable: true,
       },
     ],
   },
