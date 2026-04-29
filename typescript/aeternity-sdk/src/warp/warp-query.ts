@@ -15,10 +15,31 @@ export async function getWarpRouterConfig(
     address: routerAddress as `ct_${string}`,
   });
 
-  const remoteRouters = new Map<number, string>();
+  const [scalingResult, domainsResult] = await Promise.all([
+    contract.get_decimal_scaling(),
+    contract.get_enrolled_domains(),
+  ]);
 
-  const scalingResult = await contract.get_decimal_scaling();
   const scaling = scalingResult.decodedResult;
+  const domains: number[] = domainsResult.decodedResult.map(Number);
+
+  const remoteRouters = new Map<number, string>();
+  for (const domain of domains) {
+    try {
+      const routerResult = await contract.get_remote_router(domain);
+      if (routerResult.decodedResult) {
+        const routerBytes = routerResult.decodedResult;
+        remoteRouters.set(
+          domain,
+          typeof routerBytes === 'string'
+            ? routerBytes
+            : Buffer.from(routerBytes).toString('hex'),
+        );
+      }
+    } catch {
+      // Domain enrolled but router query failed — skip
+    }
+  }
 
   return {
     remoteRouters,
@@ -27,6 +48,46 @@ export async function getWarpRouterConfig(
       denominator: Number(scaling[1]),
     },
   };
+}
+
+export async function getLocalDomain(
+  sdk: AeSdk,
+  routerAddress: string,
+): Promise<number> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [WARP_ROUTER_ACI],
+    address: routerAddress as `ct_${string}`,
+  });
+  const result = await contract.get_local_domain();
+  return Number(result.decodedResult);
+}
+
+export async function quoteWarpGasPayment(
+  sdk: AeSdk,
+  routerAddress: string,
+  destination: number,
+): Promise<bigint> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [WARP_ROUTER_ACI],
+    address: routerAddress as `ct_${string}`,
+  });
+  const result = await contract.quote_gas_payment(destination);
+  return BigInt(result.decodedResult);
+}
+
+export async function verifySetup(
+  sdk: AeSdk,
+  routerAddress: string,
+): Promise<boolean> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [WARP_ROUTER_ACI],
+    address: routerAddress as `ct_${string}`,
+  });
+  const result = await contract.verify_setup();
+  return result.decodedResult;
 }
 
 export async function quoteTransferRemote(

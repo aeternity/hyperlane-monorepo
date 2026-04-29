@@ -10,7 +10,13 @@ export {
   getHookQuoteDispatch,
 } from './hook/hook-query.js';
 
-export { buildSetHookTx, buildSetRequiredHookTx } from './hook/hook-tx.js';
+export {
+  buildSetHookTx,
+  buildSetRequiredHookTx,
+  buildInitializeMailboxTx,
+  buildRenounceOwnershipTx,
+  buildSetOwnIsmTx,
+} from './hook/hook-tx.js';
 
 export {
   getIsmType,
@@ -29,8 +35,10 @@ export {
 export {
   buildPayForGasTx,
   buildSetDestinationGasOverheadTx,
+  buildSetDestinationGasOverheadBatchTx,
   buildSetBeneficiaryTx,
   buildClaimTx,
+  buildSetOracleTx,
 } from './igp/igp-tx.js';
 
 export {
@@ -43,6 +51,9 @@ export {
   getWarpRouterConfig,
   quoteTransferRemote,
   getAex9TokenMetadata,
+  getLocalDomain,
+  quoteWarpGasPayment,
+  verifySetup,
 } from './warp/warp-query.js';
 
 export {

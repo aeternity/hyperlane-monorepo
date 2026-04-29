@@ -47,3 +47,25 @@ export function buildClaimTx(igpAddress: string): AeternityTransaction {
     args: [],
   };
 }
+
+export function buildSetDestinationGasOverheadBatchTx(
+  igpAddress: string,
+  entries: Array<{ domain: number; overhead: bigint }>,
+): AeternityTransaction {
+  return {
+    contractId: igpAddress,
+    entrypoint: 'set_destination_gas_overheads',
+    args: [entries.map((e) => [e.domain, e.overhead])],
+  };
+}
+
+export function buildSetOracleTx(
+  igpAddress: string,
+  oracle: string,
+): AeternityTransaction {
+  return {
+    contractId: igpAddress,
+    entrypoint: 'set_oracle',
+    args: [oracle],
+  };
+}

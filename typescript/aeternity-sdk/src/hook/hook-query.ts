@@ -2,7 +2,7 @@ import { AeSdk, Contract } from '@aeternity/aepp-sdk';
 
 import { IGP_ACI, MERKLE_TREE_HOOK_ACI, NOOP_HOOK_ACI } from '../aci/index.js';
 
-const HOOK_TYPE_IGP = 6;
+const HOOK_TYPE_IGP = 4;
 
 export async function getHookType(
   sdk: AeSdk,

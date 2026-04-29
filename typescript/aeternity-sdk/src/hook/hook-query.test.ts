@@ -85,25 +85,21 @@ describe('Hook query functions', () => {
   describe('getHookQuoteDispatch', () => {
     it('returns the quote dispatch amount as bigint', async () => {
       mockContractInitialize({
+        hook_type: mockMethod(4),
         quote_dispatch: mockMethod(BigInt(1000)),
       });
 
-      const result = await getHookQuoteDispatch(
-        createMockSdk(),
-        'ct_testHook',
-      );
+      const result = await getHookQuoteDispatch(createMockSdk(), 'ct_testHook');
       expect(result).to.equal(BigInt(1000));
     });
 
     it('returns zero for free hooks', async () => {
       mockContractInitialize({
+        hook_type: mockMethod(13),
         quote_dispatch: mockMethod(0),
       });
 
-      const result = await getHookQuoteDispatch(
-        createMockSdk(),
-        'ct_testHook',
-      );
+      const result = await getHookQuoteDispatch(createMockSdk(), 'ct_testHook');
       expect(result).to.equal(BigInt(0));
     });
   });

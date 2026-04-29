@@ -21,12 +21,10 @@ describe('Warp query functions', () => {
     it('returns router configuration with decimal scaling', async () => {
       mockContractInitialize({
         get_decimal_scaling: mockMethod([BigInt(1), BigInt(1)]),
+        get_enrolled_domains: mockMethod([]),
       });
 
-      const config = await getWarpRouterConfig(
-        createMockSdk(),
-        'ct_router',
-      );
+      const config = await getWarpRouterConfig(createMockSdk(), 'ct_router');
 
       expect(config.decimalScaling.numerator).to.equal(1);
       expect(config.decimalScaling.denominator).to.equal(1);
@@ -36,12 +34,10 @@ describe('Warp query functions', () => {
     it('handles non-trivial decimal scaling', async () => {
       mockContractInitialize({
         get_decimal_scaling: mockMethod([BigInt(10), BigInt(18)]),
+        get_enrolled_domains: mockMethod([]),
       });
 
-      const config = await getWarpRouterConfig(
-        createMockSdk(),
-        'ct_router',
-      );
+      const config = await getWarpRouterConfig(createMockSdk(), 'ct_router');
 
       expect(config.decimalScaling.numerator).to.equal(10);
       expect(config.decimalScaling.denominator).to.equal(18);
@@ -91,17 +87,12 @@ describe('Warp query functions', () => {
         total_supply: mockMethod(BigInt('1000000000000000000000')),
       });
 
-      const metadata = await getAex9TokenMetadata(
-        createMockSdk(),
-        'ct_token',
-      );
+      const metadata = await getAex9TokenMetadata(createMockSdk(), 'ct_token');
 
       expect(metadata.name).to.equal('Wrapped Ether');
       expect(metadata.symbol).to.equal('WETH');
       expect(metadata.decimals).to.equal(18);
-      expect(metadata.totalSupply).to.equal(
-        BigInt('1000000000000000000000'),
-      );
+      expect(metadata.totalSupply).to.equal(BigInt('1000000000000000000000'));
     });
 
     it('handles tokens with zero decimals', async () => {
@@ -112,10 +103,7 @@ describe('Warp query functions', () => {
         total_supply: mockMethod(BigInt(1000)),
       });
 
-      const metadata = await getAex9TokenMetadata(
-        createMockSdk(),
-        'ct_simple',
-      );
+      const metadata = await getAex9TokenMetadata(createMockSdk(), 'ct_simple');
 
       expect(metadata.decimals).to.equal(0);
       expect(metadata.totalSupply).to.equal(BigInt(1000));
