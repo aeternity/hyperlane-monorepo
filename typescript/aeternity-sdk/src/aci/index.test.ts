@@ -8,6 +8,15 @@ import {
   NOOP_HOOK_ACI,
   AEX9_ACI,
   WARP_ROUTER_ACI,
+  DOMAIN_ROUTING_HOOK_ACI,
+  FALLBACK_DOMAIN_ROUTING_HOOK_ACI,
+  PAUSABLE_HOOK_ACI,
+  WEIGHTED_MULTISIG_ISM_ACI,
+  AGGREGATION_ISM_ACI,
+  PAUSABLE_ISM_ACI,
+  TRUSTED_RELAYER_ISM_ACI,
+  RATE_LIMITED_ISM_ACI,
+  TIMELOCK_ISM_ACI,
 } from './index.js';
 
 function getFunctionNames(aci: any): string[] {
@@ -45,6 +54,10 @@ describe('ACI definitions', () => {
         'dispatch',
         'quote_dispatch',
         'process',
+        'recipient_ism_for',
+        'processor',
+        'processed_at',
+        'renounce_ownership',
       ]);
     });
 
@@ -93,7 +106,7 @@ describe('ACI definitions', () => {
         (f: any) => f.name === 'latest_checkpoint',
       );
       // ACI tuple element can be 'bytes(32)' or { bytes: 32 }
-      const tuple = cp?.returns?.tuple;
+      const tuple = (cp?.returns as any)?.tuple;
       expect(tuple).to.have.length(2);
       const first = tuple[0];
       const isBytes32 =
@@ -196,6 +209,110 @@ describe('ACI definitions', () => {
         (f: any) => f.name === 'transfer',
       );
       expect(fn?.stateful).to.be.true;
+    });
+  });
+
+  describe('DOMAIN_ROUTING_HOOK_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(DOMAIN_ROUTING_HOOK_ACI.contract.name).to.equal('DomainRoutingHook');
+    });
+
+    it('exposes all required entrypoints', () => {
+      const names = getFunctionNames(DOMAIN_ROUTING_HOOK_ACI);
+      expect(names).to.include.members([
+        'hook_type',
+        'set_hook',
+        'remove_hook',
+        'get_hook',
+        'get_domains',
+        'post_dispatch',
+        'quote_dispatch',
+      ]);
+    });
+  });
+
+  describe('FALLBACK_DOMAIN_ROUTING_HOOK_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(FALLBACK_DOMAIN_ROUTING_HOOK_ACI.contract.name).to.equal(
+        'FallbackDomainRoutingHook',
+      );
+    });
+
+    it('exposes get_fallback_hook', () => {
+      const names = getFunctionNames(FALLBACK_DOMAIN_ROUTING_HOOK_ACI);
+      expect(names).to.include('get_fallback_hook');
+    });
+  });
+
+  describe('PAUSABLE_HOOK_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(PAUSABLE_HOOK_ACI.contract.name).to.equal('PausableHook');
+    });
+
+    it('exposes pause/unpause/is_paused', () => {
+      const names = getFunctionNames(PAUSABLE_HOOK_ACI);
+      expect(names).to.include.members(['pause', 'unpause', 'is_paused']);
+    });
+  });
+
+  describe('WEIGHTED_MULTISIG_ISM_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(WEIGHTED_MULTISIG_ISM_ACI.contract.name).to.equal('WeightedMultisigIsm');
+    });
+
+    it('exposes module_type and verify', () => {
+      const names = getFunctionNames(WEIGHTED_MULTISIG_ISM_ACI);
+      expect(names).to.include.members(['module_type', 'verify']);
+    });
+  });
+
+  describe('AGGREGATION_ISM_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(AGGREGATION_ISM_ACI.contract.name).to.equal('AggregationIsm');
+    });
+
+    it('exposes get_modules and get_threshold', () => {
+      const names = getFunctionNames(AGGREGATION_ISM_ACI);
+      expect(names).to.include.members(['get_modules', 'get_threshold']);
+    });
+  });
+
+  describe('PAUSABLE_ISM_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(PAUSABLE_ISM_ACI.contract.name).to.equal('PausableIsm');
+    });
+
+    it('exposes pause and unpause', () => {
+      const names = getFunctionNames(PAUSABLE_ISM_ACI);
+      expect(names).to.include.members(['pause', 'unpause']);
+    });
+  });
+
+  describe('TRUSTED_RELAYER_ISM_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(TRUSTED_RELAYER_ISM_ACI.contract.name).to.equal('TrustedRelayerIsm');
+    });
+  });
+
+  describe('RATE_LIMITED_ISM_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(RATE_LIMITED_ISM_ACI.contract.name).to.equal('RateLimitedIsm');
+    });
+
+    it('exposes get_mailbox', () => {
+      const names = getFunctionNames(RATE_LIMITED_ISM_ACI);
+      expect(names).to.include('get_mailbox');
+    });
+  });
+
+  describe('TIMELOCK_ISM_ACI', () => {
+    it('has the correct contract name', () => {
+      expect(TIMELOCK_ISM_ACI.contract.name).to.equal('TimelockIsm');
+    });
+
+    it('exposes get_preverifier', () => {
+      const names = getFunctionNames(TIMELOCK_ISM_ACI);
+      expect(names).to.include('get_preverifier');
     });
   });
 

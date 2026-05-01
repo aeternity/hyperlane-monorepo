@@ -38,7 +38,7 @@ describe('ISM query functions', () => {
   });
 
   describe('getMultisigIsmConfig', () => {
-    it('returns validators and threshold for a domain', async () => {
+    it('returns validators and threshold', async () => {
       const validators = [
         '0x1234567890abcdef1234567890abcdef12345678',
         '0xabcdef1234567890abcdef1234567890abcdef12',
@@ -52,7 +52,6 @@ describe('ISM query functions', () => {
       const config = await getMultisigIsmConfig(
         createMockSdk(),
         'ct_testIsm',
-        11155111,
       );
 
       expect(config.validators).to.deep.equal(validators);
@@ -72,7 +71,6 @@ describe('ISM query functions', () => {
       const config = await getMultisigIsmConfig(
         createMockSdk(),
         'ct_testIsm',
-        457,
       );
 
       expect(config.validators).to.have.length(1);
@@ -88,7 +86,6 @@ describe('ISM query functions', () => {
       const config = await getMultisigIsmConfig(
         createMockSdk(),
         'ct_testIsm',
-        999,
       );
 
       expect(config.validators).to.be.empty;
@@ -107,6 +104,7 @@ describe('ISM query functions', () => {
         'ct_testIsm',
         new Uint8Array([1, 2, 3]),
         new Uint8Array([4, 5, 6]),
+        'ak_senderAddr',
       );
 
       expect(result).to.be.true;
@@ -122,6 +120,7 @@ describe('ISM query functions', () => {
         'ct_testIsm',
         new Uint8Array([0]),
         new Uint8Array([0]),
+        'ak_senderAddr',
       );
 
       expect(result).to.be.false;

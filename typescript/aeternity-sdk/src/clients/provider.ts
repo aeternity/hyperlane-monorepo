@@ -238,9 +238,14 @@ export class AeternityProvider implements AltVM.IProvider<AeternityTransaction> 
         BigInt(req.amount!),
       );
 
+      const r = result.decodedResult;
+      const total = typeof r === 'object' && r.total_token !== undefined
+        ? BigInt(r.total_token)
+        : BigInt(r ?? 0);
+
       return {
         denom: '',
-        amount: BigInt(result.decodedResult ?? 0),
+        amount: total,
       };
     } catch {
       return {

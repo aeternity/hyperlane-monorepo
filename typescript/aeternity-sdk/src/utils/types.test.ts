@@ -15,12 +15,54 @@ describe('Aeternity types', () => {
       );
     });
 
+    it('defines MERKLE_ROOT_MULTISIG', () => {
+      expect(AeternityIsmTypes.MERKLE_ROOT_MULTISIG).to.equal(
+        'MerkleRootMultisigIsm',
+      );
+    });
+
+    it('defines WEIGHTED_MULTISIG', () => {
+      expect(AeternityIsmTypes.WEIGHTED_MULTISIG).to.equal(
+        'WeightedMultisigIsm',
+      );
+    });
+
     it('defines DOMAIN_ROUTING', () => {
       expect(AeternityIsmTypes.DOMAIN_ROUTING).to.equal('DomainRoutingIsm');
     });
 
-    it('has exactly 2 members', () => {
-      expect(Object.keys(AeternityIsmTypes)).to.have.length(2);
+    it('defines INCREMENTAL_DOMAIN_ROUTING', () => {
+      expect(AeternityIsmTypes.INCREMENTAL_DOMAIN_ROUTING).to.equal(
+        'IncrementalDomainRoutingIsm',
+      );
+    });
+
+    it('defines AGGREGATION', () => {
+      expect(AeternityIsmTypes.AGGREGATION).to.equal('AggregationIsm');
+    });
+
+    it('defines PAUSABLE', () => {
+      expect(AeternityIsmTypes.PAUSABLE).to.equal('PausableIsm');
+    });
+
+    it('defines TRUSTED_RELAYER', () => {
+      expect(AeternityIsmTypes.TRUSTED_RELAYER).to.equal('TrustedRelayerIsm');
+    });
+
+    it('defines RATE_LIMITED', () => {
+      expect(AeternityIsmTypes.RATE_LIMITED).to.equal('RateLimitedIsm');
+    });
+
+    it('defines TIMELOCK', () => {
+      expect(AeternityIsmTypes.TIMELOCK).to.equal('TimelockIsm');
+    });
+
+    it('defines NOOP', () => {
+      expect(AeternityIsmTypes.NOOP).to.equal('NoopIsm');
+    });
+
+    it('has exactly 11 members', () => {
+      expect(Object.keys(AeternityIsmTypes)).to.have.length(11);
     });
   });
 
@@ -41,8 +83,28 @@ describe('Aeternity types', () => {
       expect(AeternityHookTypes.PROTOCOL_FEE).to.equal('ProtocolFee');
     });
 
-    it('has exactly 4 members', () => {
-      expect(Object.keys(AeternityHookTypes)).to.have.length(4);
+    it('defines DOMAIN_ROUTING', () => {
+      expect(AeternityHookTypes.DOMAIN_ROUTING).to.equal('DomainRoutingHook');
+    });
+
+    it('defines FALLBACK_DOMAIN_ROUTING', () => {
+      expect(AeternityHookTypes.FALLBACK_DOMAIN_ROUTING).to.equal(
+        'FallbackDomainRoutingHook',
+      );
+    });
+
+    it('defines PAUSABLE', () => {
+      expect(AeternityHookTypes.PAUSABLE).to.equal('PausableHook');
+    });
+
+    it('defines STATIC_AGGREGATION', () => {
+      expect(AeternityHookTypes.STATIC_AGGREGATION).to.equal(
+        'StaticAggregationHook',
+      );
+    });
+
+    it('has exactly 8 members', () => {
+      expect(Object.keys(AeternityHookTypes)).to.have.length(8);
     });
   });
 

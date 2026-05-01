@@ -14,6 +14,7 @@ export async function getMailboxState(
   owner: string;
   deployedBlock: number;
   latestDispatchedId: string;
+  maxMessageBodyBytes: number;
 }> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
@@ -30,6 +31,7 @@ export async function getMailboxState(
     ownerResult,
     deployedBlockResult,
     latestIdResult,
+    maxMessageBodyBytesResult,
   ] = await Promise.all([
     contract.local_domain(),
     contract.nonce(),
@@ -39,6 +41,7 @@ export async function getMailboxState(
     contract.owner(),
     contract.deployed_block(),
     contract.latest_dispatched_id(),
+    contract.get_max_message_body_bytes(),
   ]);
 
   return {
@@ -50,6 +53,7 @@ export async function getMailboxState(
     owner: ownerResult.decodedResult,
     deployedBlock: Number(deployedBlockResult.decodedResult),
     latestDispatchedId: latestIdResult.decodedResult,
+    maxMessageBodyBytes: Number(maxMessageBodyBytesResult.decodedResult),
   };
 }
 
@@ -65,6 +69,51 @@ export async function isMessageDelivered(
   });
 
   const result = await contract.delivered(messageId);
+  return result.decodedResult;
+}
+
+export async function getMessageProcessor(
+  sdk: AeSdk,
+  mailboxAddress: string,
+  messageId: string,
+): Promise<string | null> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [MAILBOX_ACI],
+    address: mailboxAddress as `ct_${string}`,
+  });
+
+  const result = await contract.processor(messageId);
+  return result.decodedResult ?? null;
+}
+
+export async function getMessageProcessedAt(
+  sdk: AeSdk,
+  mailboxAddress: string,
+  messageId: string,
+): Promise<number | null> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [MAILBOX_ACI],
+    address: mailboxAddress as `ct_${string}`,
+  });
+
+  const result = await contract.processed_at(messageId);
+  return result.decodedResult != null ? Number(result.decodedResult) : null;
+}
+
+export async function getRecipientIsm(
+  sdk: AeSdk,
+  mailboxAddress: string,
+  recipientAddress: string,
+): Promise<string> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [MAILBOX_ACI],
+    address: mailboxAddress as `ct_${string}`,
+  });
+
+  const result = await contract.recipient_ism_for(recipientAddress);
   return result.decodedResult;
 }
 
@@ -89,4 +138,17 @@ export async function quoteDispatch(
     undefined,
   );
   return BigInt(result.decodedResult);
+}
+
+export async function getMaxMessageBodyBytes(
+  sdk: AeSdk,
+  mailboxAddress: string,
+): Promise<number> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [MAILBOX_ACI],
+    address: mailboxAddress as `ct_${string}`,
+  });
+  const result = await contract.get_max_message_body_bytes();
+  return Number(result.decodedResult);
 }

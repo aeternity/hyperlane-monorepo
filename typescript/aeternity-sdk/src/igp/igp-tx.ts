@@ -69,3 +69,26 @@ export function buildSetOracleTx(
     args: [oracle],
   };
 }
+
+export function buildSetOracleForDomainTx(
+  igpAddress: string,
+  domain: number,
+  oracle: string,
+): AeternityTransaction {
+  return {
+    contractId: igpAddress,
+    entrypoint: 'set_oracle_for_domain',
+    args: [domain, oracle],
+  };
+}
+
+export function buildRemoveOracleForDomainTx(
+  igpAddress: string,
+  domain: number,
+): AeternityTransaction {
+  return {
+    contractId: igpAddress,
+    entrypoint: 'remove_oracle_for_domain',
+    args: [domain],
+  };
+}

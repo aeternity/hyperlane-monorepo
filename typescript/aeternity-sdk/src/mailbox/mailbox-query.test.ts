@@ -4,6 +4,9 @@ import {
   getMailboxState,
   isMessageDelivered,
   quoteDispatch,
+  getMessageProcessor,
+  getMessageProcessedAt,
+  getRecipientIsm,
 } from './mailbox-query.js';
 import {
   createMockSdk,
@@ -130,6 +133,77 @@ describe('Mailbox query functions', () => {
       );
 
       expect(fee).to.equal(BigInt(0));
+    });
+  });
+
+  describe('getMessageProcessor', () => {
+    it('returns the processor address when message was processed', async () => {
+      mockContractInitialize({
+        processor: mockMethod('ak_processor123'),
+      });
+
+      const result = await getMessageProcessor(
+        createMockSdk(),
+        'ct_mailbox',
+        '0xabc',
+      );
+      expect(result).to.equal('ak_processor123');
+    });
+
+    it('returns null when message was not processed', async () => {
+      mockContractInitialize({
+        processor: mockMethod(undefined),
+      });
+
+      const result = await getMessageProcessor(
+        createMockSdk(),
+        'ct_mailbox',
+        '0xdef',
+      );
+      expect(result).to.be.null;
+    });
+  });
+
+  describe('getMessageProcessedAt', () => {
+    it('returns the block number when message was processed', async () => {
+      mockContractInitialize({
+        processed_at: mockMethod(12345),
+      });
+
+      const result = await getMessageProcessedAt(
+        createMockSdk(),
+        'ct_mailbox',
+        '0xabc',
+      );
+      expect(result).to.equal(12345);
+    });
+
+    it('returns null when message was not processed', async () => {
+      mockContractInitialize({
+        processed_at: mockMethod(undefined),
+      });
+
+      const result = await getMessageProcessedAt(
+        createMockSdk(),
+        'ct_mailbox',
+        '0xdef',
+      );
+      expect(result).to.be.null;
+    });
+  });
+
+  describe('getRecipientIsm', () => {
+    it('returns the ISM address for a recipient', async () => {
+      mockContractInitialize({
+        recipient_ism_for: mockMethod('ct_ismAddr'),
+      });
+
+      const result = await getRecipientIsm(
+        createMockSdk(),
+        'ct_mailbox',
+        'ak_recipient',
+      );
+      expect(result).to.equal('ct_ismAddr');
     });
   });
 });

@@ -55,3 +55,26 @@ export function buildSetOwnIsmTx(
     args: [ism],
   };
 }
+
+export function buildSetRateLimitCapacityTx(
+  hookAddress: string,
+  newCapacity: bigint,
+): AeternityTransaction {
+  return {
+    contractId: hookAddress,
+    entrypoint: 'set_max_capacity',
+    args: [newCapacity.toString()],
+  };
+}
+
+export function buildSetLinearFeeConfigTx(
+  feeAddress: string,
+  maxFee: bigint,
+  halfAmount: bigint,
+): AeternityTransaction {
+  return {
+    contractId: feeAddress,
+    entrypoint: 'set_fee_config',
+    args: [maxFee.toString(), halfAmount.toString()],
+  };
+}

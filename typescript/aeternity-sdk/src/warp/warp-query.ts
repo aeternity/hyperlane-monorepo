@@ -1,6 +1,7 @@
 import { AeSdk, Contract } from '@aeternity/aepp-sdk';
 
 import { WARP_ROUTER_ACI, AEX9_ACI } from '../aci/index.js';
+import type { TransferQuote } from '../utils/types.js';
 
 export async function getWarpRouterConfig(
   sdk: AeSdk,
@@ -96,7 +97,7 @@ export async function quoteTransferRemote(
   destination: number,
   recipient: string,
   amount: bigint,
-): Promise<bigint> {
+): Promise<TransferQuote> {
   const contract = await Contract.initialize({
     ...sdk.getContext(),
     aci: [WARP_ROUTER_ACI],
@@ -108,7 +109,74 @@ export async function quoteTransferRemote(
     recipient,
     amount,
   );
+  const r = result.decodedResult;
+
+  if (typeof r === 'object' && r.dispatch_cost !== undefined) {
+    return {
+      dispatchCost: BigInt(r.dispatch_cost),
+      feeAmount: BigInt(r.fee_amount),
+      totalToken: BigInt(r.total_token),
+    };
+  }
+
+  const total = BigInt(r);
+  return {
+    dispatchCost: total,
+    feeAmount: 0n,
+    totalToken: total,
+  };
+}
+
+export async function isWarpRoutePaused(
+  sdk: AeSdk,
+  routerAddress: string,
+): Promise<boolean> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [WARP_ROUTER_ACI],
+    address: routerAddress as `ct_${string}`,
+  });
+  const result = await contract.is_paused();
+  return Boolean(result.decodedResult);
+}
+
+export async function getWarpRouteFeeBalance(
+  sdk: AeSdk,
+  routerAddress: string,
+): Promise<bigint> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [WARP_ROUTER_ACI],
+    address: routerAddress as `ct_${string}`,
+  });
+  const result = await contract.get_fee_balance();
   return BigInt(result.decodedResult);
+}
+
+export async function getWarpRoutePendingOwner(
+  sdk: AeSdk,
+  routerAddress: string,
+): Promise<string | null> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [WARP_ROUTER_ACI],
+    address: routerAddress as `ct_${string}`,
+  });
+  const result = await contract.get_pending_owner();
+  return result.decodedResult ?? null;
+}
+
+export async function getWarpRouteDeployedBlock(
+  sdk: AeSdk,
+  routerAddress: string,
+): Promise<number> {
+  const contract = await Contract.initialize({
+    ...sdk.getContext(),
+    aci: [WARP_ROUTER_ACI],
+    address: routerAddress as `ct_${string}`,
+  });
+  const result = await contract.deployed_block();
+  return Number(result.decodedResult);
 }
 
 export async function getAex9TokenMetadata(

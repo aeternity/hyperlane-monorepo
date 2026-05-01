@@ -4,6 +4,8 @@ import {
   getHookType,
   getMerkleTreeHookConfig,
   getHookQuoteDispatch,
+  getDomainRoutingHookConfig,
+  isPausableHookPaused,
 } from './hook-query.js';
 import {
   createMockSdk,
@@ -101,6 +103,57 @@ describe('Hook query functions', () => {
 
       const result = await getHookQuoteDispatch(createMockSdk(), 'ct_testHook');
       expect(result).to.equal(BigInt(0));
+    });
+  });
+
+  describe('getDomainRoutingHookConfig', () => {
+    it('returns owner and domains', async () => {
+      mockContractInitialize({
+        get_owner: mockMethod('ak_ownerAddr'),
+        get_domains: mockMethod([457, 11155111]),
+      });
+
+      const config = await getDomainRoutingHookConfig(
+        createMockSdk(),
+        'ct_testHook',
+      );
+
+      expect(config.owner).to.equal('ak_ownerAddr');
+      expect(config.domains).to.deep.equal([457, 11155111]);
+    });
+
+    it('handles empty domain list', async () => {
+      mockContractInitialize({
+        get_owner: mockMethod('ak_owner'),
+        get_domains: mockMethod([]),
+      });
+
+      const config = await getDomainRoutingHookConfig(
+        createMockSdk(),
+        'ct_testHook',
+      );
+
+      expect(config.domains).to.be.empty;
+    });
+  });
+
+  describe('isPausableHookPaused', () => {
+    it('returns true when hook is paused', async () => {
+      mockContractInitialize({
+        is_paused: mockMethod(true),
+      });
+
+      const result = await isPausableHookPaused(createMockSdk(), 'ct_testHook');
+      expect(result).to.be.true;
+    });
+
+    it('returns false when hook is not paused', async () => {
+      mockContractInitialize({
+        is_paused: mockMethod(false),
+      });
+
+      const result = await isPausableHookPaused(createMockSdk(), 'ct_testHook');
+      expect(result).to.be.false;
     });
   });
 });
