@@ -48,6 +48,48 @@ impl AeMailbox {
         })
     }
 
+    /// Query the maximum allowed message body size from the Mailbox contract.
+    /// Returns 0 if no limit is configured.
+    pub async fn max_message_body_bytes(&self) -> ChainResult<u32> {
+        let result = self
+            .provider
+            .call_contract(
+                &self.contract_address,
+                "get_max_message_body_bytes",
+                &[],
+                &contracts::MAILBOX_SOURCE,
+            )
+            .await?;
+
+        result.as_u64().map(|n| n as u32).ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected integer from get_max_message_body_bytes(), got {result}"
+            ))
+            .into()
+        })
+    }
+
+    /// Query the deployment block height of the Mailbox contract.
+    /// Used to set the indexer scan start point and avoid empty blocks.
+    pub async fn deployed_block(&self) -> ChainResult<u64> {
+        let result = self
+            .provider
+            .call_contract(
+                &self.contract_address,
+                "deployed_block",
+                &[],
+                &contracts::MAILBOX_SOURCE,
+            )
+            .await?;
+
+        result.as_u64().ok_or_else(|| {
+            HyperlaneAeternityError::ContractCallError(format!(
+                "expected integer from deployed_block(), got {result}"
+            ))
+            .into()
+        })
+    }
+
     /// Build the calldata for a `process(metadata, message, recipient_addr, body_recipient_addr)` call.
     fn build_process_calldata(
         contract_address: &str,
@@ -186,7 +228,7 @@ impl Mailbox for AeMailbox {
             .provider
             .call_contract(
                 &self.contract_address,
-                "get_recipient_ism",
+                "recipient_ism_for",
                 &[recipient_addr.clone()],
                 &contracts::MAILBOX_SOURCE,
             )
@@ -194,10 +236,10 @@ impl Mailbox for AeMailbox {
 
         match &result {
             Ok(val) => {
-                info!(recipient = %recipient_addr, decoded = %val, "get_recipient_ism raw decoded")
+                info!(recipient = %recipient_addr, decoded = %val, "recipient_ism_for raw decoded")
             }
             Err(e) => {
-                warn!(recipient = %recipient_addr, error = %e, "get_recipient_ism call failed")
+                warn!(recipient = %recipient_addr, error = %e, "recipient_ism_for call failed")
             }
         }
 
@@ -205,12 +247,16 @@ impl Mailbox for AeMailbox {
             Ok(val) => match parse_option_contract_address(&val) {
                 Ok(h) => Ok(h),
                 Err(_) => {
-                    info!("get_recipient_ism returned None, falling back to default_ism");
-                    self.default_ism().await
+                    info!("recipient_ism_for returned non-option value, trying direct parse");
+                    if let Some(addr_str) = val.as_str() {
+                        crate::ae_address_to_h256(addr_str)
+                    } else {
+                        self.default_ism().await
+                    }
                 }
             },
             Err(_) => {
-                info!("get_recipient_ism errored, falling back to default_ism");
+                info!("recipient_ism_for errored, falling back to default_ism");
                 self.default_ism().await
             }
         }
@@ -227,6 +273,25 @@ impl Mailbox for AeMailbox {
         metadata: &Metadata,
         _tx_gas_limit: Option<U256>,
     ) -> ChainResult<TxOutcome> {
+        // Pre-flight: reject messages with zero recipient
+        if message.recipient == H256::zero() {
+            return Err(HyperlaneAeternityError::ContractCallError(
+                "message has zero recipient — rejected by Mailbox".into(),
+            )
+            .into());
+        }
+
+        // Pre-flight: body size limit check to avoid wasting gas
+        let max_bytes = self.max_message_body_bytes().await.unwrap_or(0);
+        if max_bytes > 0 && message.body.len() as u32 > max_bytes {
+            return Err(HyperlaneAeternityError::ContractCallError(format!(
+                "message body {} bytes exceeds max_message_body_bytes {}",
+                message.body.len(),
+                max_bytes
+            ))
+            .into());
+        }
+
         let message_hex = format!("Bytes.to_any_size(#{})", hex::encode(message.to_vec()));
         let fate_metadata = convert_metadata_sigs_to_vrs(metadata);
         let metadata_hex = format!("Bytes.to_any_size(#{})", hex::encode(&fate_metadata));
@@ -331,21 +396,27 @@ fn convert_metadata_sigs_to_vrs(metadata: &[u8]) -> Vec<u8> {
     out
 }
 
-/// Extract the body recipient address from a Hyperlane token transfer message.
+/// Extract the body recipient address from a Hyperlane message.
 ///
-/// The token message body is `recipient (32 bytes) || amount (32 bytes)`.
-/// Returns the first 32 bytes as an `ak_...` account address.
+/// For warp route messages: the first 32 bytes of the body contain the recipient H256.
+/// For ICA/ICQ and other middleware messages: body may be shorter than 32 bytes or use
+/// a different encoding — in these cases, message.recipient (the router contract)
+/// serves as the body_recipient for the Mailbox process() call.
 fn body_recipient_from_message(message: &HyperlaneMessage) -> ChainResult<String> {
-    if message.body.len() < 32 {
-        return Err(HyperlaneAeternityError::ContractCallError(format!(
-            "message body too short ({} bytes) to extract recipient, need >= 32",
-            message.body.len()
-        ))
-        .into());
+    if message.body.len() >= 32 {
+        let mut recipient_bytes = [0u8; 32];
+        recipient_bytes.copy_from_slice(&message.body[..32]);
+        let recipient_h256 = H256::from(recipient_bytes);
+
+        // Zero recipient in body = fall back to message.recipient (router contract)
+        if recipient_h256 == H256::zero() {
+            return Ok(h256_to_account_address(message.recipient));
+        }
+        Ok(h256_to_account_address(recipient_h256))
+    } else {
+        // Short body (ICA/ICQ messages) — use the router contract as body recipient
+        Ok(h256_to_account_address(message.recipient))
     }
-    let mut buf = [0u8; 32];
-    buf.copy_from_slice(&message.body[..32]);
-    Ok(h256_to_account_address(H256::from(buf)))
 }
 
 /// Parse `option(contract_ref)` decoded by the compiler.
@@ -453,6 +524,52 @@ mod tests {
         assert_eq!(converted[133], 28);
         assert_eq!(&converted[134..166], &[2u8; 32]);
         assert_eq!(&converted[166..198], &[4u8; 32]);
+    }
+
+    #[test]
+    fn test_body_recipient_short_body_uses_message_recipient() {
+        use super::body_recipient_from_message;
+        let recipient = H256::repeat_byte(0xBB);
+        let message = HyperlaneMessage {
+            recipient,
+            body: vec![0x01, 0x02, 0x03], // too short for warp route format
+            ..Default::default()
+        };
+        let result = body_recipient_from_message(&message).unwrap();
+        assert!(result.starts_with("ak_"));
+    }
+
+    #[test]
+    fn test_body_recipient_zero_body_falls_back() {
+        use super::body_recipient_from_message;
+        let recipient = H256::repeat_byte(0xCC);
+        let message = HyperlaneMessage {
+            recipient,
+            body: vec![0u8; 64], // first 32 bytes are zero
+            ..Default::default()
+        };
+        let result = body_recipient_from_message(&message).unwrap();
+        let expected = crate::h256_to_account_address(recipient);
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_body_recipient_warp_route_extracts_from_body() {
+        use super::body_recipient_from_message;
+        let body_recipient = H256::repeat_byte(0xDD);
+        let message_recipient = H256::repeat_byte(0xEE);
+        let mut body = Vec::with_capacity(64);
+        body.extend_from_slice(body_recipient.as_bytes());
+        body.extend_from_slice(&[0u8; 32]);
+
+        let message = HyperlaneMessage {
+            recipient: message_recipient,
+            body,
+            ..Default::default()
+        };
+        let result = body_recipient_from_message(&message).unwrap();
+        let expected = crate::h256_to_account_address(body_recipient);
+        assert_eq!(result, expected);
     }
 
     #[test]

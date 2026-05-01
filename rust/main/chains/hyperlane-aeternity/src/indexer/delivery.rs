@@ -27,6 +27,24 @@ impl AeDeliveryIndexer {
             contract_address,
         })
     }
+
+    /// Get the Mailbox deployment block to use as indexing start.
+    /// Falls back to 0 if the query fails (for contracts without deployed_block).
+    pub async fn get_start_block(&self) -> u64 {
+        match self
+            .provider
+            .call_contract(
+                &self.contract_address,
+                "deployed_block",
+                &[],
+                &contracts::MAILBOX_SOURCE,
+            )
+            .await
+        {
+            Ok(val) => val.as_u64().unwrap_or(0),
+            Err(_) => 0,
+        }
+    }
 }
 
 #[async_trait]

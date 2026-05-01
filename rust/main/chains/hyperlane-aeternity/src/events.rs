@@ -65,6 +65,75 @@ pub(crate) static INSERTED_INTO_TREE_HASH: Lazy<String> =
     Lazy::new(|| blake2b_hex("InsertedIntoTree"));
 pub(crate) static GAS_PAYMENT_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("GasPayment"));
 
+// Token contract pause events — used by event indexers and test infrastructure
+#[allow(dead_code)]
+pub(crate) static PAUSED_EVENT_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("Paused"));
+#[allow(dead_code)]
+pub(crate) static UNPAUSED_EVENT_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("Unpaused"));
+#[allow(dead_code)]
+pub(crate) static FEE_CHARGED_EVENT_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("FeeCharged"));
+#[allow(dead_code)]
+pub(crate) static FEE_RECIPIENT_SET_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("FeeRecipientSet"));
+#[allow(dead_code)]
+pub(crate) static FEE_CLAIMED_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("FeeClaimed"));
+#[allow(dead_code)]
+pub(crate) static NATIVE_RESCUED_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("NativeRescued"));
+#[allow(dead_code)]
+pub(crate) static OWNERSHIP_TRANSFER_STARTED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("OwnershipTransferStarted"));
+
+// Validator staking events
+#[allow(dead_code)]
+pub(crate) static VALIDATOR_STAKED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("ValidatorStaked"));
+#[allow(dead_code)]
+pub(crate) static UNSTAKE_INITIATED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("UnstakeInitiated"));
+#[allow(dead_code)]
+pub(crate) static UNSTAKE_COMPLETED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("UnstakeCompleted"));
+#[allow(dead_code)]
+pub(crate) static VALIDATOR_SLASHED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("ValidatorSlashed"));
+
+// Fraud detection events
+#[allow(dead_code)]
+pub(crate) static FRAUD_ATTRIBUTED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("FraudAttributed"));
+#[allow(dead_code)]
+pub(crate) static FRAUD_SLASH_EXECUTED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("FraudSlashExecuted"));
+
+// ISM change events (timelock)
+#[allow(dead_code)]
+pub(crate) static ISM_CHANGE_QUEUED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("IsmChangeQueued"));
+#[allow(dead_code)]
+pub(crate) static ISM_CHANGE_EXECUTED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("IsmChangeExecuted"));
+#[allow(dead_code)]
+pub(crate) static ISM_CHANGE_CANCELLED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("IsmChangeCancelled"));
+
+// Hook events (rate limiting)
+#[allow(dead_code)]
+pub(crate) static RATE_LIMIT_SET_HASH: Lazy<String> = Lazy::new(|| blake2b_hex("RateLimitSet"));
+#[allow(dead_code)]
+pub(crate) static CONSUMED_FILLED_LEVEL_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("ConsumedFilledLevel"));
+
+// Governance events (timelock)
+#[allow(dead_code)]
+pub(crate) static OPERATION_SCHEDULED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("OperationScheduled"));
+#[allow(dead_code)]
+pub(crate) static OPERATION_EXECUTED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("OperationExecuted"));
+#[allow(dead_code)]
+pub(crate) static OPERATION_CANCELLED_HASH: Lazy<String> =
+    Lazy::new(|| blake2b_hex("OperationCancelled"));
+
 // ---------------------------------------------------------------------------
 // Error type
 // ---------------------------------------------------------------------------
@@ -362,6 +431,149 @@ pub fn parse_gas_payment(
 }
 
 // ---------------------------------------------------------------------------
+// Event data structs
+// ---------------------------------------------------------------------------
+
+/// Warp route pause/unpause event.
+#[derive(Debug, Clone)]
+pub struct PauseEvent {
+    pub contract_id: String,
+    pub paused: bool,
+}
+
+/// Validator staking event (emitted on stake/unstake).
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct ValidatorStakedEvent {
+    pub validator: H256,
+    pub total_amount: U256,
+    pub signing_key: [u8; 20],
+}
+
+/// Fraud attribution event from CheckpointFraudProofs.
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct FraudAttributedEvent {
+    pub signer: [u8; 20],
+    pub digest: H256,
+    pub fraud_type: u32,
+}
+
+/// Fraud slash execution event from FraudSlasher.
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct FraudSlashExecutedEvent {
+    pub validator: H256,
+    pub proof_id: H256,
+    pub slash_amount: U256,
+}
+
+// ---------------------------------------------------------------------------
+// Parse functions
+// ---------------------------------------------------------------------------
+
+/// Parse a Paused/Unpaused event from a warp route or hook contract.
+pub fn parse_pause_event(log: &ContractLogEntry) -> Result<Option<PauseEvent>, EventParseError> {
+    let is_paused = log.event_hash == *PAUSED_EVENT_HASH;
+    let is_unpaused = log.event_hash == *UNPAUSED_EVENT_HASH;
+    if !is_paused && !is_unpaused {
+        return Ok(None);
+    }
+    Ok(Some(PauseEvent {
+        contract_id: log.contract_id.clone(),
+        paused: is_paused,
+    }))
+}
+
+/// Parse a ValidatorStaked event.
+/// Sophia layout: indexed validator (address), total_amount (int), signing_key (bytes(20))
+#[allow(dead_code)]
+pub fn parse_validator_staked(
+    log: &ContractLogEntry,
+) -> Result<Option<ValidatorStakedEvent>, EventParseError> {
+    if log.event_hash != *VALIDATOR_STAKED_HASH {
+        return Ok(None);
+    }
+    if log.args.len() < 3 {
+        return Err(EventParseError::MissingField(
+            "ValidatorStaked requires 3 args".into(),
+        ));
+    }
+    let validator = contract_address_to_h256(&log.args[0])
+        .map_err(|_| EventParseError::InvalidData("invalid validator address".into()))?;
+    let total_amount = parse_topic_u256(&log.args[1])?;
+    let signing_key_hex = log.args[2].trim_start_matches('#');
+    let key_bytes = hex::decode(signing_key_hex)
+        .map_err(|e| EventParseError::InvalidData(format!("invalid signing_key: {e}")))?;
+    let mut signing_key = [0u8; 20];
+    if key_bytes.len() >= 20 {
+        signing_key.copy_from_slice(&key_bytes[..20]);
+    }
+    Ok(Some(ValidatorStakedEvent {
+        validator,
+        total_amount,
+        signing_key,
+    }))
+}
+
+/// Parse a FraudAttributed event from AttributeCheckpointFraud.
+/// Sophia layout: indexed signer (bytes(20)), digest (bytes(32)), fraud_type (int)
+#[allow(dead_code)]
+pub fn parse_fraud_attributed(
+    log: &ContractLogEntry,
+) -> Result<Option<FraudAttributedEvent>, EventParseError> {
+    if log.event_hash != *FRAUD_ATTRIBUTED_HASH {
+        return Ok(None);
+    }
+    if log.args.len() < 3 {
+        return Err(EventParseError::MissingField(
+            "FraudAttributed requires 3 args".into(),
+        ));
+    }
+    let signer_hex = log.args[0].trim_start_matches('#');
+    let signer_bytes = hex::decode(signer_hex)
+        .map_err(|e| EventParseError::InvalidData(format!("invalid signer: {e}")))?;
+    let mut signer = [0u8; 20];
+    if signer_bytes.len() >= 20 {
+        signer.copy_from_slice(&signer_bytes[..20]);
+    }
+    let digest = parse_topic_h256(&log.args[1])?;
+    let fraud_type: u32 = log.args[2]
+        .parse()
+        .map_err(|e| EventParseError::InvalidData(format!("invalid fraud_type: {e}")))?;
+    Ok(Some(FraudAttributedEvent {
+        signer,
+        digest,
+        fraud_type,
+    }))
+}
+
+/// Parse a FraudSlashExecuted event from FraudSlasher.
+/// Sophia layout: indexed validator (address), proof_id (bytes(32)), slash_amount (int)
+#[allow(dead_code)]
+pub fn parse_fraud_slash_executed(
+    log: &ContractLogEntry,
+) -> Result<Option<FraudSlashExecutedEvent>, EventParseError> {
+    if log.event_hash != *FRAUD_SLASH_EXECUTED_HASH {
+        return Ok(None);
+    }
+    if log.args.len() < 3 {
+        return Err(EventParseError::MissingField(
+            "FraudSlashExecuted requires 3 args".into(),
+        ));
+    }
+    let validator = contract_address_to_h256(&log.args[0])
+        .map_err(|_| EventParseError::InvalidData("invalid validator".into()))?;
+    let proof_id = parse_topic_h256(&log.args[1])?;
+    let slash_amount = parse_topic_u256(&log.args[2])?;
+    Ok(Some(FraudSlashExecutedEvent {
+        validator,
+        proof_id,
+        slash_amount,
+    }))
+}
+
+// ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
@@ -605,5 +817,131 @@ mod tests {
         assert_eq!(indexed.inner().payment, U256::from(10));
         assert_eq!(indexed.inner().destination, 5);
         assert_eq!(indexed.sequence, Some(0));
+    }
+
+    // -----------------------------------------------------------------------
+    // Event hash tests
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_round3_event_hashes_are_unique() {
+        let hashes = vec![
+            PAUSED_EVENT_HASH.clone(),
+            UNPAUSED_EVENT_HASH.clone(),
+            VALIDATOR_STAKED_HASH.clone(),
+            FRAUD_ATTRIBUTED_HASH.clone(),
+            FRAUD_SLASH_EXECUTED_HASH.clone(),
+            OPERATION_SCHEDULED_HASH.clone(),
+        ];
+        for (i, h1) in hashes.iter().enumerate() {
+            for (j, h2) in hashes.iter().enumerate() {
+                if i != j {
+                    assert_ne!(h1, h2, "hash collision at ({i}, {j})");
+                }
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Pause event tests
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_pause_event_paused() {
+        let log = make_log(
+            &PAUSED_EVENT_HASH,
+            vec!["ak_2swhLkgBPeeADxVTAby2CaivPq43LDJzWGKfSstbn1epwMuQzv"],
+            "",
+        );
+        let result = parse_pause_event(&log).unwrap();
+        assert!(result.is_some());
+        let event = result.unwrap();
+        assert!(event.paused);
+        assert!(!event.contract_id.is_empty());
+    }
+
+    #[test]
+    fn test_parse_pause_event_unpaused() {
+        let log = make_log(
+            &UNPAUSED_EVENT_HASH,
+            vec!["ak_2swhLkgBPeeADxVTAby2CaivPq43LDJzWGKfSstbn1epwMuQzv"],
+            "",
+        );
+        let result = parse_pause_event(&log).unwrap();
+        assert!(result.is_some());
+        let event = result.unwrap();
+        assert!(!event.paused);
+    }
+
+    #[test]
+    fn test_parse_pause_event_wrong_hash() {
+        let log = make_log("0xdeadbeef", vec![], "");
+        let result = parse_pause_event(&log).unwrap();
+        assert!(result.is_none());
+    }
+
+    // -----------------------------------------------------------------------
+    // Validator staking event tests
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_validator_staked_wrong_hash() {
+        let log = make_log("0xdeadbeef", vec![], "");
+        let result = parse_validator_staked(&log).unwrap();
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_parse_validator_staked_missing_args() {
+        let log = make_log(
+            &VALIDATOR_STAKED_HASH,
+            vec!["ak_2swhLkgBPeeADxVTAby2CaivPq43LDJzWGKfSstbn1epwMuQzv"],
+            "",
+        );
+        let result = parse_validator_staked(&log);
+        assert!(result.is_err());
+    }
+
+    // -----------------------------------------------------------------------
+    // Fraud event tests
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_fraud_attributed_wrong_hash() {
+        let log = make_log("0xdeadbeef", vec![], "");
+        let result = parse_fraud_attributed(&log).unwrap();
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_parse_fraud_attributed_missing_args() {
+        let log = make_log(
+            &FRAUD_ATTRIBUTED_HASH,
+            vec!["#".to_owned() + &"ab".repeat(20)]
+                .iter()
+                .map(|s| s.as_str())
+                .collect(),
+            "",
+        );
+        let result = parse_fraud_attributed(&log);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_parse_fraud_slash_executed_wrong_hash() {
+        let log = make_log("0xdeadbeef", vec![], "");
+        let result = parse_fraud_slash_executed(&log).unwrap();
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_parse_fraud_slash_executed_missing_args() {
+        let log = make_log(
+            &FRAUD_SLASH_EXECUTED_HASH,
+            vec!["ak_2swhLkgBPeeADxVTAby2CaivPq43LDJzWGKfSstbn1epwMuQzv"],
+            "",
+        );
+        let result = parse_fraud_slash_executed(&log);
+        assert!(result.is_err());
     }
 }

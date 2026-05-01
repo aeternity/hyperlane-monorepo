@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use tracing::warn;
 
 use hyperlane_core::{
     ChainResult, ContractLocator, HyperlaneChain, HyperlaneContract, HyperlaneDomain,
@@ -50,9 +51,17 @@ pub(crate) fn json_to_module_type(value: &serde_json::Value) -> ChainResult<Modu
         5 => Ok(ModuleType::MessageIdMultisig),
         6 => Ok(ModuleType::Null),
         7 => Ok(ModuleType::CcipRead),
-        n => Err(
-            HyperlaneAeternityError::ContractCallError(format!("unknown module type: {n}")).into(),
-        ),
+        // Weighted multisig variants (Hyperlane v3) — map to base multisig types
+        // since the relayer uses identical metadata format for verification.
+        9 => Ok(ModuleType::MerkleRootMultisig),
+        10 => Ok(ModuleType::MessageIdMultisig),
+        n => {
+            warn!(
+                module_type = n,
+                "unknown ISM module type, treating as Unused"
+            );
+            Ok(ModuleType::Unused)
+        }
     }
 }
 

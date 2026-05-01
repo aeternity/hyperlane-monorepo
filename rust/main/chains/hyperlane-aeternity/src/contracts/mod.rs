@@ -20,6 +20,38 @@ const ROUTING_ISM_ACI: &str = include_str!("../../abis/DomainRoutingIsm.aci.json
 const AGGREGATION_ISM_ACI_JSON: &str = include_str!("../../abis/AggregationIsm.aci.json");
 const MERKLE_ROOT_MULTISIG_ISM_ACI: &str =
     include_str!("../../abis/MerkleRootMultisigIsm.aci.json");
+const DOMAIN_ROUTING_HOOK_ACI: &str = include_str!("../../abis/DomainRoutingHook.aci.json");
+const FALLBACK_DOMAIN_ROUTING_HOOK_ACI: &str =
+    include_str!("../../abis/FallbackDomainRoutingHook.aci.json");
+const PAUSABLE_HOOK_ACI: &str = include_str!("../../abis/PausableHook.aci.json");
+
+// ISM ABIs
+const AMOUNT_ROUTING_ISM_ACI: &str = include_str!("../../abis/AmountRoutingIsm.aci.json");
+const TIMELOCK_DOMAIN_ROUTING_ISM_ACI: &str =
+    include_str!("../../abis/TimelockDomainRoutingIsm.aci.json");
+
+// Hook ABIs
+const RATE_LIMITED_HOOK_ACI: &str = include_str!("../../abis/RateLimitedHook.aci.json");
+const AMOUNT_ROUTING_HOOK_ACI: &str = include_str!("../../abis/AmountRoutingHook.aci.json");
+const DESTINATION_RECIPIENT_ROUTING_HOOK_ACI: &str =
+    include_str!("../../abis/DestinationRecipientRoutingHook.aci.json");
+const OFFCHAIN_QUOTED_IGP_ACI: &str = include_str!("../../abis/OffchainQuotedIGP.aci.json");
+
+// Token/Fee ABIs
+const HYP_NATIVE_AE_ACI: &str = include_str!("../../abis/HypNativeAE.aci.json");
+const HYP_AEX9_SYNTHETIC_ACI: &str = include_str!("../../abis/HypAEX9Synthetic.aci.json");
+const LINEAR_FEE_ACI: &str = include_str!("../../abis/LinearFee.aci.json");
+
+// AVS/Staking ABIs
+const VALIDATOR_STAKING_ACI: &str = include_str!("../../abis/ValidatorStaking.aci.json");
+const FRAUD_SLASHER_ACI: &str = include_str!("../../abis/FraudSlasher.aci.json");
+const CHECKPOINT_FRAUD_PROOFS_ACI: &str = include_str!("../../abis/CheckpointFraudProofs.aci.json");
+
+// Middleware ABIs
+const INTERCHAIN_ACCOUNT_ROUTER_ACI: &str =
+    include_str!("../../abis/InterchainAccountRouter.aci.json");
+const INTERCHAIN_QUERY_ROUTER_ACI: &str = include_str!("../../abis/InterchainQueryRouter.aci.json");
+const TIMELOCK_GOVERNANCE_ACI: &str = include_str!("../../abis/TimelockGovernance.aci.json");
 
 /// Mailbox contract stub generated from ACI.
 pub static MAILBOX_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(MAILBOX_ACI));
@@ -41,6 +73,61 @@ pub static AGGREGATION_ISM_SOURCE: Lazy<String> =
 /// MerkleRootMultisigIsm contract stub generated from ACI.
 pub static MERKLE_ROOT_MULTISIG_ISM_SOURCE: Lazy<String> =
     Lazy::new(|| aci_to_sophia(MERKLE_ROOT_MULTISIG_ISM_ACI));
+/// DomainRoutingHook contract stub generated from ACI.
+pub static DOMAIN_ROUTING_HOOK_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(DOMAIN_ROUTING_HOOK_ACI));
+/// FallbackDomainRoutingHook contract stub generated from ACI.
+pub static FALLBACK_DOMAIN_ROUTING_HOOK_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(FALLBACK_DOMAIN_ROUTING_HOOK_ACI));
+/// PausableHook contract stub generated from ACI.
+pub static PAUSABLE_HOOK_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(PAUSABLE_HOOK_ACI));
+
+/// AmountRoutingIsm contract stub generated from ACI.
+pub static AMOUNT_ROUTING_ISM_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(AMOUNT_ROUTING_ISM_ACI));
+/// TimelockDomainRoutingIsm contract stub generated from ACI.
+pub static TIMELOCK_DOMAIN_ROUTING_ISM_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(TIMELOCK_DOMAIN_ROUTING_ISM_ACI));
+
+/// RateLimitedHook contract stub generated from ACI.
+pub static RATE_LIMITED_HOOK_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(RATE_LIMITED_HOOK_ACI));
+/// AmountRoutingHook contract stub generated from ACI.
+pub static AMOUNT_ROUTING_HOOK_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(AMOUNT_ROUTING_HOOK_ACI));
+/// DestinationRecipientRoutingHook contract stub generated from ACI.
+pub static DESTINATION_RECIPIENT_ROUTING_HOOK_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(DESTINATION_RECIPIENT_ROUTING_HOOK_ACI));
+/// OffchainQuotedIGP contract stub generated from ACI.
+pub static OFFCHAIN_QUOTED_IGP_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(OFFCHAIN_QUOTED_IGP_ACI));
+
+/// HypNativeAE contract stub generated from ACI.
+pub static HYP_NATIVE_AE_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(HYP_NATIVE_AE_ACI));
+/// HypAEX9Synthetic contract stub generated from ACI.
+pub static HYP_AEX9_SYNTHETIC_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(HYP_AEX9_SYNTHETIC_ACI));
+/// LinearFee contract stub generated from ACI.
+pub static LINEAR_FEE_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(LINEAR_FEE_ACI));
+
+/// ValidatorStaking contract stub generated from ACI.
+pub static VALIDATOR_STAKING_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(VALIDATOR_STAKING_ACI));
+/// FraudSlasher contract stub generated from ACI.
+pub static FRAUD_SLASHER_SOURCE: Lazy<String> = Lazy::new(|| aci_to_sophia(FRAUD_SLASHER_ACI));
+/// CheckpointFraudProofs contract stub generated from ACI.
+pub static CHECKPOINT_FRAUD_PROOFS_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(CHECKPOINT_FRAUD_PROOFS_ACI));
+
+/// InterchainAccountRouter contract stub generated from ACI.
+pub static INTERCHAIN_ACCOUNT_ROUTER_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(INTERCHAIN_ACCOUNT_ROUTER_ACI));
+/// InterchainQueryRouter contract stub generated from ACI.
+pub static INTERCHAIN_QUERY_ROUTER_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(INTERCHAIN_QUERY_ROUTER_ACI));
+/// TimelockGovernance contract stub generated from ACI.
+pub static TIMELOCK_GOVERNANCE_SOURCE: Lazy<String> =
+    Lazy::new(|| aci_to_sophia(TIMELOCK_GOVERNANCE_ACI));
 
 /// Generic ISM stub for contracts where only `module_type` is called.
 pub static BASE_ISM_SOURCE: Lazy<String> = Lazy::new(|| {
@@ -481,5 +568,100 @@ mod tests {
         let source = aci_to_sophia(MERKLE_ROOT_MULTISIG_ISM_ACI);
         assert!(source.contains("main contract MerkleRootMultisigIsmStub"));
         assert!(source.contains("entrypoint validators_and_threshold("));
+    }
+
+    #[test]
+    fn test_domain_routing_hook_aci_generates_valid_stub() {
+        let source = aci_to_sophia(DOMAIN_ROUTING_HOOK_ACI);
+        assert!(source.contains("main contract DomainRoutingHookStub"));
+        assert!(source.contains("entrypoint hook_type("));
+        assert!(source.contains("entrypoint get_domains("));
+    }
+
+    #[test]
+    fn test_fallback_domain_routing_hook_aci_generates_valid_stub() {
+        let source = aci_to_sophia(FALLBACK_DOMAIN_ROUTING_HOOK_ACI);
+        assert!(source.contains("main contract FallbackDomainRoutingHookStub"));
+        assert!(source.contains("entrypoint hook_type("));
+        assert!(source.contains("entrypoint get_fallback_hook("));
+    }
+
+    #[test]
+    fn test_pausable_hook_aci_generates_valid_stub() {
+        let source = aci_to_sophia(PAUSABLE_HOOK_ACI);
+        assert!(source.contains("main contract PausableHookStub"));
+        assert!(source.contains("entrypoint hook_type("));
+        assert!(source.contains("entrypoint is_paused("));
+    }
+
+    #[test]
+    fn test_amount_routing_ism_aci_generates_valid_stub() {
+        let source = aci_to_sophia(AMOUNT_ROUTING_ISM_ACI);
+        assert!(source.contains("main contract AmountRoutingIsmStub"));
+        assert!(source.contains("entrypoint module_type("));
+        assert!(source.contains("entrypoint route("));
+    }
+
+    #[test]
+    fn test_timelock_domain_routing_ism_aci_generates_valid_stub() {
+        let source = aci_to_sophia(TIMELOCK_DOMAIN_ROUTING_ISM_ACI);
+        assert!(source.contains("main contract TimelockDomainRoutingIsmStub"));
+        assert!(source.contains("entrypoint module_type("));
+        assert!(source.contains("entrypoint route("));
+    }
+
+    #[test]
+    fn test_rate_limited_hook_aci_generates_valid_stub() {
+        let source = aci_to_sophia(RATE_LIMITED_HOOK_ACI);
+        assert!(source.contains("main contract RateLimitedHookStub"));
+        assert!(source.contains("entrypoint hook_type("));
+        assert!(source.contains("entrypoint current_level("));
+    }
+
+    #[test]
+    fn test_hyp_native_ae_aci_generates_valid_stub() {
+        let source = aci_to_sophia(HYP_NATIVE_AE_ACI);
+        assert!(source.contains("main contract HypNativeAEStub"));
+        assert!(source.contains("entrypoint is_paused("));
+        assert!(source.contains("entrypoint deployed_block("));
+        assert!(source.contains("entrypoint quote_transfer_remote("));
+    }
+
+    #[test]
+    fn test_validator_staking_aci_generates_valid_stub() {
+        let source = aci_to_sophia(VALIDATOR_STAKING_ACI);
+        assert!(source.contains("main contract ValidatorStakingStub"));
+        assert!(source.contains("entrypoint get_active_validators("));
+        assert!(source.contains("entrypoint is_active_validator("));
+        assert!(source.contains("entrypoint get_total_staked("));
+    }
+
+    #[test]
+    fn test_checkpoint_fraud_proofs_aci_generates_valid_stub() {
+        let source = aci_to_sophia(CHECKPOINT_FRAUD_PROOFS_ACI);
+        assert!(source.contains("main contract CheckpointFraudProofsStub"));
+        assert!(source.contains("entrypoint is_premature("));
+        assert!(source.contains("entrypoint is_fraudulent_message_id("));
+    }
+
+    #[test]
+    fn test_fraud_slasher_aci_generates_valid_stub() {
+        let source = aci_to_sophia(FRAUD_SLASHER_ACI);
+        assert!(source.contains("main contract FraudSlasherStub"));
+        assert!(source.contains("entrypoint slash_premature("));
+        assert!(source.contains("entrypoint get_slash_amount("));
+    }
+
+    #[test]
+    fn test_linear_fee_aci_generates_valid_stub() {
+        let source = aci_to_sophia(LINEAR_FEE_ACI);
+        assert!(source.contains("main contract LinearFeeStub"));
+        assert!(source.contains("entrypoint quote_transfer_fee("));
+    }
+
+    #[test]
+    fn test_mailbox_aci_has_new_round3_entrypoints() {
+        let source = aci_to_sophia(MAILBOX_ACI);
+        assert!(source.contains("entrypoint get_max_message_body_bytes("));
     }
 }

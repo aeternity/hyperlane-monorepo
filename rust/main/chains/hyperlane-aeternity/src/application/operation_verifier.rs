@@ -4,7 +4,7 @@ use async_trait::async_trait;
 use derive_new::new;
 use tracing::trace;
 
-use hyperlane_core::{Decode, HyperlaneMessage, U256};
+use hyperlane_core::{Decode, HyperlaneMessage, H256, U256};
 use hyperlane_operation_verifier::{
     ApplicationOperationVerifier, ApplicationOperationVerifierReport,
 };
@@ -53,6 +53,11 @@ impl AeApplicationOperationVerifier {
             return None;
         }
 
+        // Reject warp route messages with zero recipient (Mailbox rejects on-chain)
+        if message.recipient == H256::zero() {
+            return Some(MalformedMessage(message.clone()));
+        }
+
         let mut reader = Cursor::new(message.body.as_slice());
         let token_message = match TokenMessage::read_from(&mut reader) {
             Ok(m) => m,
@@ -86,10 +91,11 @@ mod tests {
         let app_context = Some("H/warp-route".to_string());
         let amount = max_ae_amount();
 
-        let token_message = TokenMessage::new(H256::zero(), amount, vec![]);
+        let token_message = TokenMessage::new(H256::repeat_byte(0x01), amount, vec![]);
         let encoded = encode(token_message);
         let message = HyperlaneMessage {
             body: encoded,
+            recipient: H256::repeat_byte(0x01),
             ..Default::default()
         };
 
@@ -138,6 +144,33 @@ mod tests {
     fn test_no_context_skips() {
         let message = HyperlaneMessage::default();
         let report = AeApplicationOperationVerifier::verify_message(&None, &message);
+        assert_eq!(report, None);
+    }
+
+    #[test]
+    fn test_zero_recipient_rejected_in_warp_context() {
+        let app_context = Some("H/warp-route".to_string());
+        let message = HyperlaneMessage {
+            recipient: H256::zero(),
+            body: vec![0u8; 64],
+            ..Default::default()
+        };
+        let report = AeApplicationOperationVerifier::verify_message(&app_context, &message);
+        assert_eq!(report.unwrap(), MalformedMessage(message));
+    }
+
+    #[test]
+    fn test_nonzero_recipient_passes_warp_context() {
+        let app_context = Some("H/warp-route".to_string());
+        let amount = U256::from(100u64);
+        let token_message = TokenMessage::new(H256::repeat_byte(0xAA), amount, vec![]);
+        let encoded = encode(token_message);
+        let message = HyperlaneMessage {
+            recipient: H256::repeat_byte(0x01),
+            body: encoded,
+            ..Default::default()
+        };
+        let report = AeApplicationOperationVerifier::verify_message(&app_context, &message);
         assert_eq!(report, None);
     }
 }
