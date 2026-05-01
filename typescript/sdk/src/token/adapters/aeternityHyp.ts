@@ -1,5 +1,7 @@
 import { AeSdk, Node, Contract } from '@aeternity/aepp-sdk';
 
+import { WARP_ROUTER_ACI, AEX9_ACI } from '@hyperlane-xyz/aeternity-sdk';
+import type { AeternityTransaction } from '@hyperlane-xyz/aeternity-sdk';
 import { Address } from '@hyperlane-xyz/utils';
 
 import type { MultiProviderAdapter } from '../../providers/MultiProviderAdapter.js';
@@ -14,116 +16,12 @@ import type {
   TransferParams,
 } from './ITokenAdapter.js';
 
-interface AeternityTransaction {
-  contractId: string;
-  entrypoint: string;
-  args: any[];
-  options?: {
-    amount?: bigint;
-    gas?: number;
-    gasPrice?: number;
-  };
-}
-
 interface HypTokenAdapterInput {
   standard?: TokenStandard;
   chainName: string;
   addressOrDenom: string;
   collateralAddressOrDenom?: string;
 }
-
-const WARP_ROUTER_ACI = {
-  contract: {
-    name: 'WarpRouter',
-    kind: 'contract_main',
-    payable: true,
-    typedefs: [],
-    functions: [
-      {
-        name: 'transfer_remote',
-        arguments: [
-          { name: 'destination', type: 'int' },
-          { name: 'recipient', type: { bytes: 32 } },
-          { name: 'amount', type: 'int' },
-        ],
-        returns: { bytes: 32 },
-        stateful: true,
-        payable: true,
-      },
-      {
-        name: 'quote_transfer_remote',
-        arguments: [
-          { name: 'destination', type: 'int' },
-          { name: 'recipient', type: { bytes: 32 } },
-          { name: 'amount', type: 'int' },
-        ],
-        returns: 'int',
-        stateful: false,
-        payable: false,
-      },
-      {
-        name: 'get_remote_router',
-        arguments: [{ name: 'domain', type: 'int' }],
-        returns: { option: [{ bytes: 32 }] },
-        stateful: false,
-        payable: false,
-      },
-      {
-        name: 'get_destination_gas',
-        arguments: [{ name: 'domain', type: 'int' }],
-        returns: 'int',
-        stateful: false,
-        payable: false,
-      },
-    ],
-  },
-};
-
-const AEX9_ACI = {
-  contract: {
-    name: 'MintableAEX9',
-    kind: 'contract_main',
-    payable: false,
-    typedefs: [],
-    functions: [
-      {
-        name: 'name',
-        arguments: [],
-        returns: 'string',
-        stateful: false,
-        payable: false,
-      },
-      {
-        name: 'symbol',
-        arguments: [],
-        returns: 'string',
-        stateful: false,
-        payable: false,
-      },
-      {
-        name: 'decimals',
-        arguments: [],
-        returns: 'int',
-        stateful: false,
-        payable: false,
-      },
-      {
-        name: 'total_supply',
-        arguments: [],
-        returns: 'int',
-        stateful: false,
-        payable: false,
-      },
-      {
-        name: 'balance',
-        arguments: [{ name: 'owner', type: 'address' }],
-        returns: 'int',
-        stateful: false,
-        payable: false,
-      },
-    ],
-  },
-};
 
 export function createAeternityHypAdapter(
   multiProvider: MultiProviderAdapter<{ mailbox?: string }>,
@@ -257,8 +155,11 @@ abstract class BaseAeternityHypAdapter implements IHypTokenAdapter<AeternityTran
         recipientHex,
         amount,
       );
-      const fee = BigInt(result.decodedResult ?? 0);
-      return { igpQuote: { amount: fee } };
+      const r = result.decodedResult;
+      const totalCost = typeof r === 'object' && r.total_token !== undefined
+        ? BigInt(r.total_token)
+        : BigInt(r ?? 0);
+      return { igpQuote: { amount: totalCost } };
     } catch {
       return { igpQuote: { amount: 0n } };
     }
@@ -267,25 +168,36 @@ abstract class BaseAeternityHypAdapter implements IHypTokenAdapter<AeternityTran
   async populateTransferRemoteTx(
     params: TransferRemoteParams,
   ): Promise<AeternityTransaction> {
-    let interchainGas = params.interchainGas;
-    if (!interchainGas) {
-      interchainGas = await this.quoteTransferRemoteGas({
-        destination: params.destination,
-        recipient: params.recipient,
-        amount: BigInt(params.weiAmountOrId),
-      });
+    const amount = BigInt(params.weiAmountOrId);
+
+    const MAX_UINT256 = 2n ** 256n - 1n;
+    if (amount > MAX_UINT256) {
+      throw new Error(`Amount ${amount} exceeds max uint256`);
     }
-    const igpFee = interchainGas.igpQuote.amount;
-    const totalAmount = BigInt(params.weiAmountOrId) + igpFee;
 
     const recipientHex = params.recipient.replace(/^0x/i, '').toLowerCase();
     const padded = recipientHex.padStart(64, '0');
     const recipient = '0x' + padded;
 
+    const contract = await this.getContract();
+    const quote = await contract.quote_transfer_remote(
+      params.destination,
+      recipient,
+      amount,
+    );
+
+    const r = quote.decodedResult;
+    let totalAmount: bigint;
+    if (typeof r === 'object' && r.total_token !== undefined) {
+      totalAmount = BigInt(r.total_token) + BigInt(r.dispatch_cost);
+    } else {
+      totalAmount = amount + BigInt(r);
+    }
+
     return {
       contractId: this.tokenAddress,
       entrypoint: 'transfer_remote',
-      args: [params.destination, recipient, BigInt(params.weiAmountOrId)],
+      args: [params.destination, recipient, amount],
       options: {
         amount: totalAmount,
       },

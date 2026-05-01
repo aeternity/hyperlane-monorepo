@@ -1,53 +1,12 @@
 import { AeSdk, Node, Contract } from '@aeternity/aepp-sdk';
 
+import { AEX9_ACI } from '@hyperlane-xyz/aeternity-sdk';
+import type { AeternityTransaction } from '@hyperlane-xyz/aeternity-sdk';
 import { Address } from '@hyperlane-xyz/utils';
 
 import type { MultiProviderAdapter } from '../../providers/MultiProviderAdapter.js';
 import type { ChainName } from '../../types.js';
 import type { ITokenAdapter, TransferParams } from './ITokenAdapter.js';
-
-const AEX9_ACI = {
-  contract: {
-    name: 'MintableAEX9',
-    kind: 'contract_main',
-    payable: false,
-    typedefs: [],
-    functions: [
-      { name: 'name', arguments: [], returns: 'string', stateful: false, payable: false },
-      { name: 'symbol', arguments: [], returns: 'string', stateful: false, payable: false },
-      { name: 'decimals', arguments: [], returns: 'int', stateful: false, payable: false },
-      { name: 'total_supply', arguments: [], returns: 'int', stateful: false, payable: false },
-      {
-        name: 'balance',
-        arguments: [{ name: 'owner', type: 'address' }],
-        returns: 'int',
-        stateful: false,
-        payable: false,
-      },
-      {
-        name: 'transfer',
-        arguments: [
-          { name: 'to', type: 'address' },
-          { name: 'value', type: 'int' },
-        ],
-        returns: 'unit',
-        stateful: true,
-        payable: false,
-      },
-    ],
-  },
-};
-
-interface AeternityTransaction {
-  contractId: string;
-  entrypoint: string;
-  args: any[];
-  options?: {
-    amount?: bigint;
-    gas?: number;
-    gasPrice?: number;
-  };
-}
 
 export class AeternityNativeTokenAdapter implements ITokenAdapter<AeternityTransaction> {
   constructor(
