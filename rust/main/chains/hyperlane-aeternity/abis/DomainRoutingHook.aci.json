@@ -4,9 +4,23 @@
       "functions": [
         {
           "arguments": [],
-          "name": "module_type",
+          "name": "hook_type",
           "payable": false,
           "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
           "stateful": false
         },
         {
@@ -22,20 +36,36 @@
               "type": {
                 "bytes": "any"
               }
-            },
-            {
-              "name": "_3",
-              "type": "address"
             }
           ],
-          "name": "verify",
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
           "payable": false,
-          "returns": "bool",
+          "returns": "int",
           "stateful": false
         }
       ],
       "kind": "contract_interface",
-      "name": "IInterchainSecurityModule",
+      "name": "IPostDispatchHook",
       "payable": false,
       "typedefs": []
     }
@@ -102,29 +132,24 @@
     }
   },
   {
+    "namespace": {
+      "name": "StandardHookMetadata",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [
           {
-            "IsmSet": [
+            "HookSet": [
+              "int",
+              "address"
+            ]
+          },
+          {
+            "HookRemoved": [
               "int"
-            ]
-          },
-          {
-            "DefaultIsmSet": [
-              "address"
-            ]
-          },
-          {
-            "OwnershipTransferStarted": [
-              "address",
-              "address"
-            ]
-          },
-          {
-            "OwnershipTransferred": [
-              "address",
-              "address"
             ]
           }
         ]
@@ -139,12 +164,12 @@
           ],
           "name": "init",
           "payable": false,
-          "returns": "IncrementalDomainRoutingIsm.state",
+          "returns": "DomainRoutingHook.state",
           "stateful": true
         },
         {
           "arguments": [],
-          "name": "module_type",
+          "name": "hook_type",
           "payable": false,
           "returns": "int",
           "stateful": false
@@ -152,15 +177,43 @@
         {
           "arguments": [
             {
-              "name": "domain",
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
               "type": "int"
             },
             {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
+              "name": "hook",
+              "type": "IPostDispatchHook"
             }
           ],
-          "name": "set_ism",
+          "name": "set_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            }
+          ],
+          "name": "remove_hook",
           "payable": false,
           "returns": {
             "tuple": []
@@ -173,26 +226,12 @@
               "name": "configs",
               "type": {
                 "list": [
-                  "IncrementalDomainRoutingIsm.ism_config"
+                  "DomainRoutingHook.hook_config"
                 ]
               }
             }
           ],
-          "name": "set_isms",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ],
-          "name": "set_default_ism",
+          "name": "set_hooks",
           "payable": false,
           "returns": {
             "tuple": []
@@ -212,19 +251,21 @@
               "type": {
                 "bytes": "any"
               }
-            },
-            {
-              "name": "sender",
-              "type": "address"
             }
           ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": true
         },
         {
           "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
             {
               "name": "message",
               "type": {
@@ -232,9 +273,25 @@
               }
             }
           ],
-          "name": "route",
+          "name": "quote_dispatch",
           "payable": false,
-          "returns": "IInterchainSecurityModule",
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            }
+          ],
+          "name": "get_hook",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IPostDispatchHook"
+            ]
+          },
           "stateful": false
         },
         {
@@ -249,38 +306,6 @@
           "stateful": false
         },
         {
-          "arguments": [
-            {
-              "name": "new_owner",
-              "type": "address"
-            }
-          ],
-          "name": "transfer_ownership",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "accept_ownership",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "renounce_ownership",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
           "arguments": [],
           "name": "get_owner",
           "payable": false,
@@ -289,7 +314,7 @@
         }
       ],
       "kind": "contract_main",
-      "name": "IncrementalDomainRoutingIsm",
+      "name": "DomainRoutingHook",
       "payable": false,
       "state": {
         "record": [
@@ -298,19 +323,11 @@
             "type": "address"
           },
           {
-            "name": "pending_owner",
-            "type": {
-              "option": [
-                "address"
-              ]
-            }
-          },
-          {
-            "name": "isms",
+            "name": "hooks",
             "type": {
               "map": [
                 "int",
-                "IInterchainSecurityModule"
+                "IPostDispatchHook"
               ]
             }
           },
@@ -321,29 +338,21 @@
                 "int"
               ]
             }
-          },
-          {
-            "name": "default_ism",
-            "type": {
-              "option": [
-                "IInterchainSecurityModule"
-              ]
-            }
           }
         ]
       },
       "typedefs": [
         {
-          "name": "ism_config",
+          "name": "hook_config",
           "typedef": {
             "record": [
               {
-                "name": "domain",
+                "name": "destination",
                 "type": "int"
               },
               {
-                "name": "ism",
-                "type": "IInterchainSecurityModule"
+                "name": "hook",
+                "type": "IPostDispatchHook"
               }
             ]
           },

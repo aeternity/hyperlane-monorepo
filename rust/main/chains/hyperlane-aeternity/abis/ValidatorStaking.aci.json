@@ -1,0 +1,359 @@
+[
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "ValidatorStaked": [
+              "address",
+              "int",
+              {
+                "bytes": 20
+              }
+            ]
+          },
+          {
+            "UnstakeInitiated": [
+              "address",
+              "int"
+            ]
+          },
+          {
+            "UnstakeCompleted": [
+              "address",
+              "int"
+            ]
+          },
+          {
+            "ValidatorSlashed": [
+              "address",
+              "int",
+              "address"
+            ]
+          },
+          {
+            "SlasherSet": [
+              "address"
+            ]
+          },
+          {
+            "MinStakeUpdated": [
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "min_stake",
+              "type": "int"
+            },
+            {
+              "name": "unstake_delay",
+              "type": "int"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "ValidatorStaking.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "signing_key",
+              "type": {
+                "bytes": 20
+              }
+            }
+          ],
+          "name": "stake",
+          "payable": true,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "initiate_unstake",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "complete_unstake",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "validator",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "int"
+            },
+            {
+              "name": "reporter",
+              "type": "address"
+            }
+          ],
+          "name": "slash",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "slasher_addr",
+              "type": "address"
+            }
+          ],
+          "name": "set_slasher",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_min",
+              "type": "int"
+            }
+          ],
+          "name": "set_min_stake",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            }
+          ],
+          "name": "get_validator",
+          "payable": false,
+          "returns": {
+            "option": [
+              "ValidatorStaking.validator_info"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_active_validators",
+          "payable": false,
+          "returns": {
+            "list": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_total_staked",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_min_stake",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_unstake_delay",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "deployed_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            }
+          ],
+          "name": "is_active_validator",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            }
+          ],
+          "name": "get_validator_weight",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "ValidatorStaking",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "min_stake",
+            "type": "int"
+          },
+          {
+            "name": "unstake_delay",
+            "type": "int"
+          },
+          {
+            "name": "slasher",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "validators",
+            "type": {
+              "map": [
+                "address",
+                "ValidatorStaking.validator_info"
+              ]
+            }
+          },
+          {
+            "name": "active_validators",
+            "type": {
+              "list": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "total_staked",
+            "type": "int"
+          },
+          {
+            "name": "deployed_block",
+            "type": "int"
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "validator_info",
+          "typedef": {
+            "record": [
+              {
+                "name": "staked_amount",
+                "type": "int"
+              },
+              {
+                "name": "status",
+                "type": "int"
+              },
+              {
+                "name": "unstake_start",
+                "type": "int"
+              },
+              {
+                "name": "signing_key",
+                "type": {
+                  "bytes": 20
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

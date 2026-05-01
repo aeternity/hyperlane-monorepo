@@ -22,6 +22,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_3",
+              "type": "address"
             }
           ],
           "name": "verify",
@@ -44,6 +48,20 @@
           "name": "hook_type",
           "payable": false,
           "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
           "stateful": false
         },
         {
@@ -245,6 +263,11 @@
             "RequiredHookSet": [
               "address"
             ]
+          },
+          {
+            "MaxMessageBodyBytesSet": [
+              "int"
+            ]
           }
         ]
       },
@@ -375,6 +398,42 @@
           "stateful": false
         },
         {
+          "arguments": [
+            {
+              "name": "id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "processor",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "processed_at",
+          "payable": false,
+          "returns": {
+            "option": [
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
           "arguments": [],
           "name": "owner",
           "payable": false,
@@ -406,6 +465,18 @@
               "IInterchainSecurityModule"
             ]
           },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "recipient",
+              "type": "address"
+            }
+          ],
+          "name": "recipient_ism_for",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
           "stateful": false
         },
         {
@@ -535,6 +606,27 @@
             "tuple": []
           },
           "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "max_bytes",
+              "type": "int"
+            }
+          ],
+          "name": "set_max_message_body_bytes",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_max_message_body_bytes",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
         },
         {
           "arguments": [
@@ -735,6 +827,10 @@
           {
             "name": "initialized",
             "type": "bool"
+          },
+          {
+            "name": "max_message_body_bytes",
+            "type": "int"
           }
         ]
       },

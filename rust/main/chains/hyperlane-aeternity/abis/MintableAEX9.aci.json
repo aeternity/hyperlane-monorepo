@@ -28,6 +28,18 @@
               "address",
               "int"
             ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
           }
         ]
       },
@@ -82,6 +94,17 @@
           "name": "owner",
           "payable": false,
           "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
           "stateful": false
         },
         {
@@ -222,6 +245,24 @@
           "stateful": true
         },
         {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
           "arguments": [
             {
               "name": "spender",
@@ -327,6 +368,14 @@
           {
             "name": "owner",
             "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
           },
           {
             "name": "minter",

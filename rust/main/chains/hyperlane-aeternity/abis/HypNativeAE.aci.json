@@ -22,6 +22,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_3",
+              "type": "address"
             }
           ],
           "name": "verify",
@@ -44,6 +48,20 @@
           "name": "hook_type",
           "payable": false,
           "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
           "stateful": false
         },
         {
@@ -363,13 +381,39 @@
   },
   {
     "namespace": {
-      "name": "ListInternal",
+      "name": "RouterLib",
       "typedefs": []
     }
   },
   {
-    "namespace": {
-      "name": "List",
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "_3",
+              "type": "int"
+            }
+          ],
+          "name": "quote_transfer_fee",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "ITokenFee",
+      "payable": false,
       "typedefs": []
     }
   },
@@ -415,9 +459,48 @@
             ]
           },
           {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
             "OwnershipTransferred": [
               "address",
               "address"
+            ]
+          },
+          {
+            "Paused": [
+              "address"
+            ]
+          },
+          {
+            "Unpaused": [
+              "address"
+            ]
+          },
+          {
+            "FeeRecipientSet": [
+              "address"
+            ]
+          },
+          {
+            "FeeCharged": [
+              "address",
+              "int"
+            ]
+          },
+          {
+            "FeeClaimed": [
+              "address",
+              "int"
+            ]
+          },
+          {
+            "NativeRescued": [
+              "address",
+              "int"
             ]
           },
           {
@@ -541,6 +624,15 @@
         },
         {
           "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
           "name": "renounce_ownership",
           "payable": false,
           "returns": {
@@ -616,6 +708,97 @@
             "tuple": []
           },
           "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "pause",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "unpause",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_paused",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "fee_contract",
+              "type": "ITokenFee"
+            }
+          ],
+          "name": "set_fee_recipient",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "clear_fee_recipient",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_fee_recipient",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_fee_balance",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "deployed_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
         },
         {
           "arguments": [
@@ -759,7 +942,7 @@
           ],
           "name": "quote_transfer_remote",
           "payable": false,
-          "returns": "int",
+          "returns": "HypNativeAE.transfer_quote",
           "stateful": false
         },
         {
@@ -773,6 +956,38 @@
           "payable": false,
           "returns": "int",
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "beneficiary",
+              "type": "address"
+            }
+          ],
+          "name": "claim_fees",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "amount",
+              "type": "int"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            }
+          ],
+          "name": "rescue_native",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         }
       ],
       "kind": "contract_main",
@@ -783,6 +998,14 @@
           {
             "name": "owner",
             "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
           },
           {
             "name": "mailbox",
@@ -800,14 +1023,6 @@
                 {
                   "bytes": 32
                 }
-              ]
-            }
-          },
-          {
-            "name": "enrolled_domains",
-            "type": {
-              "list": [
-                "int"
               ]
             }
           },
@@ -835,10 +1050,51 @@
           {
             "name": "scale_denominator",
             "type": "int"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "fee_recipient",
+            "type": {
+              "option": [
+                "ITokenFee"
+              ]
+            }
+          },
+          {
+            "name": "fee_balance",
+            "type": "int"
+          },
+          {
+            "name": "deployed_block",
+            "type": "int"
           }
         ]
       },
-      "typedefs": []
+      "typedefs": [
+        {
+          "name": "transfer_quote",
+          "typedef": {
+            "record": [
+              {
+                "name": "dispatch_cost",
+                "type": "int"
+              },
+              {
+                "name": "fee_amount",
+                "type": "int"
+              },
+              {
+                "name": "total_token",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
     }
   }
 ]

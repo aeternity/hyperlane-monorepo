@@ -38,6 +38,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "sender",
+              "type": "address"
             }
           ],
           "name": "verify",

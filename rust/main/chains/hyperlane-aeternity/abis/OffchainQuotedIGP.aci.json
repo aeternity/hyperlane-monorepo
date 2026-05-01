@@ -125,8 +125,32 @@
             ]
           },
           {
-            "DomainOracleRemoved": [
+            "SignerAdded": [
+              "address"
+            ]
+          },
+          {
+            "SignerRemoved": [
+              "address"
+            ]
+          },
+          {
+            "OffchainQuoteStored": [
+              "int",
+              "int",
               "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
             ]
           }
         ]
@@ -149,7 +173,7 @@
           ],
           "name": "init",
           "payable": false,
-          "returns": "InterchainGasPaymaster.state",
+          "returns": "OffchainQuotedIGP.state",
           "stateful": true
         },
         {
@@ -211,6 +235,88 @@
           "name": "quote_dispatch",
           "payable": false,
           "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            },
+            {
+              "name": "exchange_rate",
+              "type": "int"
+            },
+            {
+              "name": "gas_price",
+              "type": "int"
+            },
+            {
+              "name": "expiry",
+              "type": "int"
+            }
+          ],
+          "name": "submit_offchain_quote",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "signer",
+              "type": "address"
+            }
+          ],
+          "name": "add_signer",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "signer",
+              "type": "address"
+            }
+          ],
+          "name": "remove_signer",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            }
+          ],
+          "name": "is_signer",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            }
+          ],
+          "name": "get_standing_quote",
+          "payable": false,
+          "returns": {
+            "option": [
+              "OffchainQuotedIGP.stored_gas_quote"
+            ]
+          },
           "stateful": false
         },
         {
@@ -279,7 +385,7 @@
               "name": "configs",
               "type": {
                 "list": [
-                  "InterchainGasPaymaster.gas_overhead_config"
+                  "OffchainQuotedIGP.gas_overhead_config"
                 ]
               }
             }
@@ -324,36 +430,6 @@
           "stateful": true
         },
         {
-          "arguments": [
-            {
-              "name": "domain",
-              "type": "int"
-            }
-          ],
-          "name": "remove_domain_oracle",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "domain",
-              "type": "int"
-            }
-          ],
-          "name": "get_domain_oracle",
-          "payable": false,
-          "returns": {
-            "option": [
-              "IGasOracle"
-            ]
-          },
-          "stateful": false
-        },
-        {
           "arguments": [],
           "name": "claim",
           "payable": false,
@@ -378,9 +454,13 @@
         },
         {
           "arguments": [],
-          "name": "deployed_block",
+          "name": "get_pending_owner",
           "payable": false,
-          "returns": "int",
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
           "stateful": false
         },
         {
@@ -394,16 +474,56 @@
           "payable": false,
           "returns": "int",
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         }
       ],
       "kind": "contract_main",
-      "name": "InterchainGasPaymaster",
+      "name": "OffchainQuotedIGP",
       "payable": false,
       "state": {
         "record": [
           {
             "name": "owner",
             "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
           },
           {
             "name": "beneficiary",
@@ -432,12 +552,50 @@
             }
           },
           {
-            "name": "deployed_block",
-            "type": "int"
+            "name": "signers",
+            "type": {
+              "map": [
+                "address",
+                "bool"
+              ]
+            }
+          },
+          {
+            "name": "standing_quotes",
+            "type": {
+              "map": [
+                "int",
+                "OffchainQuotedIGP.stored_gas_quote"
+              ]
+            }
           }
         ]
       },
       "typedefs": [
+        {
+          "name": "stored_gas_quote",
+          "typedef": {
+            "record": [
+              {
+                "name": "exchange_rate",
+                "type": "int"
+              },
+              {
+                "name": "gas_price",
+                "type": "int"
+              },
+              {
+                "name": "issued_at",
+                "type": "int"
+              },
+              {
+                "name": "expiry",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        },
         {
           "name": "gas_overhead_config",
           "typedef": {

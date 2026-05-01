@@ -187,6 +187,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_sender",
+              "type": "address"
             }
           ],
           "name": "verify",
@@ -211,6 +215,15 @@
         {
           "arguments": [],
           "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
           "payable": false,
           "returns": {
             "tuple": []

@@ -1,0 +1,554 @@
+[
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "CheckpointLib",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "ICheckpointFraudProofs.checkpoint"
+            },
+            {
+              "name": "_2",
+              "type": "address"
+            }
+          ],
+          "name": "is_premature",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "ICheckpointFraudProofs.checkpoint"
+            },
+            {
+              "name": "_2",
+              "type": "address"
+            },
+            {
+              "name": "_3",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "_4",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "is_fraudulent_message_id",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "ICheckpointFraudProofs.checkpoint"
+            },
+            {
+              "name": "_2",
+              "type": "address"
+            },
+            {
+              "name": "_3",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            }
+          ],
+          "name": "is_fraudulent_root",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "ICheckpointFraudProofs",
+      "payable": false,
+      "typedefs": [
+        {
+          "name": "checkpoint",
+          "typedef": {
+            "record": [
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "merkle_tree",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "root",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "index",
+                "type": "int"
+              },
+              {
+                "name": "message_id",
+                "type": {
+                  "bytes": 32
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "FraudAttributed": [
+              {
+                "bytes": 20
+              },
+              {
+                "bytes": 32
+              },
+              "int"
+            ]
+          },
+          {
+            "MerkleTreeWhitelisted": [
+              "address"
+            ]
+          },
+          {
+            "MerkleTreeRemovedFromWhitelist": [
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "fraud_proofs",
+              "type": "ICheckpointFraudProofs"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "AttributeCheckpointFraud.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "merkle_tree",
+              "type": "address"
+            }
+          ],
+          "name": "whitelist_merkle_tree",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "merkle_tree",
+              "type": "address"
+            }
+          ],
+          "name": "remove_from_whitelist",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "cp",
+              "type": "AttributeCheckpointFraud.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "signature",
+              "type": {
+                "bytes": 65
+              }
+            }
+          ],
+          "name": "attribute_whitelist",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "cp",
+              "type": "AttributeCheckpointFraud.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "signature",
+              "type": {
+                "bytes": 65
+              }
+            }
+          ],
+          "name": "attribute_premature",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "cp",
+              "type": "AttributeCheckpointFraud.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "proof",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "actual_message_id",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "signature",
+              "type": {
+                "bytes": 65
+              }
+            }
+          ],
+          "name": "attribute_message_id",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "cp",
+              "type": "AttributeCheckpointFraud.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "proof",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "signature",
+              "type": {
+                "bytes": 65
+              }
+            }
+          ],
+          "name": "attribute_root",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "cp",
+              "type": "AttributeCheckpointFraud.checkpoint"
+            },
+            {
+              "name": "signature",
+              "type": {
+                "bytes": 65
+              }
+            }
+          ],
+          "name": "get_attribution",
+          "payable": false,
+          "returns": {
+            "option": [
+              "AttributeCheckpointFraud.attribution"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "merkle_tree",
+              "type": "address"
+            }
+          ],
+          "name": "is_whitelisted",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "AttributeCheckpointFraud",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "fraud_proofs",
+            "type": "ICheckpointFraudProofs"
+          },
+          {
+            "name": "merkle_tree_whitelist",
+            "type": {
+              "map": [
+                "address",
+                "bool"
+              ]
+            }
+          },
+          {
+            "name": "attributions",
+            "type": {
+              "map": [
+                {
+                  "tuple": [
+                    {
+                      "bytes": 20
+                    },
+                    {
+                      "bytes": 32
+                    }
+                  ]
+                },
+                "AttributeCheckpointFraud.attribution"
+              ]
+            }
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "checkpoint",
+          "typedef": {
+            "record": [
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "merkle_tree",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "root",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "index",
+                "type": "int"
+              },
+              {
+                "name": "message_id",
+                "type": {
+                  "bytes": 32
+                }
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "fraud_type",
+          "typedef": {
+            "variant": [
+              {
+                "Whitelist": []
+              },
+              {
+                "Premature": []
+              },
+              {
+                "MessageId": []
+              },
+              {
+                "Root": []
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "attribution",
+          "typedef": {
+            "record": [
+              {
+                "name": "fraud_type",
+                "type": "AttributeCheckpointFraud.fraud_type"
+              },
+              {
+                "name": "timestamp",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

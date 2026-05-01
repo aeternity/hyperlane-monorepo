@@ -1,13 +1,42 @@
 [
   {
-    "namespace": {
-      "name": "ListInternal",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
-      "name": "List",
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_3",
+              "type": "address"
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IInterchainSecurityModule",
+      "payable": false,
       "typedefs": []
     }
   },
@@ -20,12 +49,6 @@
   {
     "namespace": {
       "name": "TypeCasts",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
-      "name": "CheckpointLib",
       "typedefs": []
     }
   },
@@ -80,32 +103,8 @@
   },
   {
     "namespace": {
-      "name": "MerkleLib",
-      "typedefs": [
-        {
-          "name": "merkle_tree",
-          "typedef": {
-            "record": [
-              {
-                "name": "branch",
-                "type": {
-                  "map": [
-                    "int",
-                    {
-                      "bytes": 32
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "count",
-                "type": "int"
-              }
-            ]
-          },
-          "vars": []
-        }
-      ]
+      "name": "TokenMessage",
+      "typedefs": []
     }
   },
   {
@@ -113,9 +112,19 @@
       "event": {
         "variant": [
           {
-            "ValidatorsAndThresholdSet": [
+            "ThresholdSet": [
               "int",
               "int"
+            ]
+          },
+          {
+            "LowerIsmSet": [
+              "address"
+            ]
+          },
+          {
+            "UpperIsmSet": [
+              "address"
             ]
           },
           {
@@ -140,14 +149,12 @@
               "type": "address"
             },
             {
-              "name": "vals",
-              "type": {
-                "list": [
-                  {
-                    "bytes": 20
-                  }
-                ]
-              }
+              "name": "lower_ism",
+              "type": "IInterchainSecurityModule"
+            },
+            {
+              "name": "upper_ism",
+              "type": "IInterchainSecurityModule"
             },
             {
               "name": "threshold",
@@ -156,7 +163,7 @@
           ],
           "name": "init",
           "payable": false,
-          "returns": "MerkleRootMultisigIsm.state",
+          "returns": "AmountRoutingIsm.state",
           "stateful": true
         },
         {
@@ -169,21 +176,77 @@
         {
           "arguments": [
             {
-              "name": "vals",
+              "name": "message",
               "type": {
-                "list": [
-                  {
-                    "bytes": 20
-                  }
-                ]
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "route",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
               }
             },
             {
-              "name": "threshold",
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "sender",
+              "type": "address"
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_threshold",
               "type": "int"
             }
           ],
-          "name": "set_validators_and_threshold",
+          "name": "set_threshold",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "ism",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_lower_ism",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "ism",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_upper_ism",
           "payable": false,
           "returns": {
             "tuple": []
@@ -192,15 +255,16 @@
         },
         {
           "arguments": [],
-          "name": "get_validators",
+          "name": "get_lower_ism",
           "payable": false,
-          "returns": {
-            "list": [
-              {
-                "bytes": 20
-              }
-            ]
-          },
+          "returns": "IInterchainSecurityModule",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_upper_ism",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
           "stateful": false
         },
         {
@@ -211,26 +275,19 @@
           "stateful": false
         },
         {
-          "arguments": [
-            {
-              "name": "_message",
-              "type": {
-                "bytes": "any"
-              }
-            }
-          ],
-          "name": "validators_and_threshold",
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
           "payable": false,
           "returns": {
-            "tuple": [
-              {
-                "list": [
-                  {
-                    "bytes": 20
-                  }
-                ]
-              },
-              "int"
+            "option": [
+              "address"
             ]
           },
           "stateful": false
@@ -266,41 +323,10 @@
             "tuple": []
           },
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_owner",
-          "payable": false,
-          "returns": "address",
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "metadata",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "message",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "_sender",
-              "type": "address"
-            }
-          ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "MerkleRootMultisigIsm",
+      "name": "AmountRoutingIsm",
       "payable": false,
       "state": {
         "record": [
@@ -317,14 +343,12 @@
             }
           },
           {
-            "name": "validators",
-            "type": {
-              "list": [
-                {
-                  "bytes": 20
-                }
-              ]
-            }
+            "name": "lower_ism",
+            "type": "IInterchainSecurityModule"
+          },
+          {
+            "name": "upper_ism",
+            "type": "IInterchainSecurityModule"
           },
           {
             "name": "threshold",

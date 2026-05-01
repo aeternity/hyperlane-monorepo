@@ -131,6 +131,20 @@
               "type": {
                 "bytes": "any"
               }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
             },
             {
               "name": "message",

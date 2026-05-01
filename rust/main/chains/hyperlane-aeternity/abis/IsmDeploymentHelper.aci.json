@@ -1,23 +1,5 @@
 [
   {
-    "namespace": {
-      "name": "ListInternal",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
-      "name": "List",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
-      "name": "Option",
-      "typedefs": []
-    }
-  },
-  {
     "contract": {
       "functions": [
         {
@@ -63,15 +45,10 @@
       "event": {
         "variant": [
           {
-            "ModulesAndThresholdSet": [
+            "IsmDeployed": [
+              "address",
               "int",
               "int"
-            ]
-          },
-          {
-            "OwnershipTransferStarted": [
-              "address",
-              "address"
             ]
           },
           {
@@ -92,32 +69,21 @@
           ],
           "name": "init",
           "payable": false,
-          "returns": "AggregationIsm.state",
+          "returns": "IsmDeploymentHelper.state",
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "module_type",
-          "payable": false,
-          "returns": "int",
-          "stateful": false
         },
         {
           "arguments": [
             {
-              "name": "mods",
-              "type": {
-                "list": [
-                  "IInterchainSecurityModule"
-                ]
-              }
+              "name": "ism",
+              "type": "IInterchainSecurityModule"
             },
             {
-              "name": "threshold",
+              "name": "domain",
               "type": "int"
             }
           ],
-          "name": "set_modules_and_threshold",
+          "name": "record_deployment",
           "payable": false,
           "returns": {
             "tuple": []
@@ -126,44 +92,43 @@
         },
         {
           "arguments": [],
-          "name": "get_modules",
+          "name": "get_deployments",
           "payable": false,
           "returns": {
             "list": [
-              "IInterchainSecurityModule"
+              "IsmDeploymentHelper.deployment_record"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "get_deployments_for_domain",
+          "payable": false,
+          "returns": {
+            "list": [
+              "IsmDeploymentHelper.deployment_record"
             ]
           },
           "stateful": false
         },
         {
           "arguments": [],
-          "name": "get_threshold",
+          "name": "deployment_count",
           "payable": false,
           "returns": "int",
           "stateful": false
         },
         {
-          "arguments": [
-            {
-              "name": "metadata",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "message",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "sender",
-              "type": "address"
-            }
-          ],
-          "name": "verify",
+          "arguments": [],
+          "name": "get_owner",
           "payable": false,
-          "returns": "bool",
+          "returns": "address",
           "stateful": false
         },
         {
@@ -179,35 +144,10 @@
             "tuple": []
           },
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "accept_ownership",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "renounce_ownership",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_owner",
-          "payable": false,
-          "returns": "address",
-          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "AggregationIsm",
+      "name": "IsmDeploymentHelper",
       "payable": false,
       "state": {
         "record": [
@@ -216,28 +156,41 @@
             "type": "address"
           },
           {
-            "name": "pending_owner",
-            "type": {
-              "option": [
-                "address"
-              ]
-            }
-          },
-          {
-            "name": "modules",
+            "name": "deployments",
             "type": {
               "list": [
-                "IInterchainSecurityModule"
+                "IsmDeploymentHelper.deployment_record"
               ]
             }
-          },
-          {
-            "name": "threshold",
-            "type": "int"
           }
         ]
       },
-      "typedefs": []
+      "typedefs": [
+        {
+          "name": "deployment_record",
+          "typedef": {
+            "record": [
+              {
+                "name": "ism_address",
+                "type": "address"
+              },
+              {
+                "name": "ism_type",
+                "type": "int"
+              },
+              {
+                "name": "domain",
+                "type": "int"
+              },
+              {
+                "name": "timestamp",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
     }
   }
 ]

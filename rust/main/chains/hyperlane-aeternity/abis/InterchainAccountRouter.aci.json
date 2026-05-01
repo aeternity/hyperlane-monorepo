@@ -318,6 +318,44 @@
     }
   },
   {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "_3",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_4",
+              "type": "address"
+            }
+          ],
+          "name": "handle",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IMessageRecipient",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
     "namespace": {
       "name": "Option",
       "typedefs": []
@@ -330,79 +368,87 @@
     }
   },
   {
-    "namespace": {
-      "name": "MessageLib",
-      "typedefs": [
+    "contract": {
+      "functions": [
         {
-          "name": "message",
-          "typedef": {
-            "record": [
-              {
-                "name": "version",
-                "type": "int"
-              },
-              {
-                "name": "nonce",
-                "type": "int"
-              },
-              {
-                "name": "origin",
-                "type": "int"
-              },
-              {
-                "name": "sender",
-                "type": {
-                  "bytes": 32
-                }
-              },
-              {
-                "name": "destination",
-                "type": "int"
-              },
-              {
-                "name": "recipient",
-                "type": {
-                  "bytes": 32
-                }
-              },
-              {
-                "name": "body",
-                "type": {
-                  "bytes": "any"
-                }
-              }
-            ]
-          },
-          "vars": []
-        }
-      ]
-    }
-  },
-  {
-    "namespace": {
-      "name": "RateLimitLib",
-      "typedefs": [
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            },
+            {
+              "name": "_2",
+              "type": "int"
+            }
+          ],
+          "name": "send_ae",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
         {
-          "name": "bucket",
-          "typedef": {
-            "record": [
-              {
-                "name": "max_capacity",
-                "type": "int"
-              },
-              {
-                "name": "filled_level",
-                "type": "int"
-              },
-              {
-                "name": "last_updated",
-                "type": "int"
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "list": [
+                  {
+                    "tuple": [
+                      "address",
+                      "int"
+                    ]
+                  }
+                ]
               }
-            ]
+            }
+          ],
+          "name": "send_ae_batch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "deposit",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_origin_domain",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_origin_sender",
+          "payable": false,
+          "returns": {
+            "bytes": 32
           },
-          "vars": []
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "deployed_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
         }
-      ]
+      ],
+      "kind": "contract_interface",
+      "name": "IInterchainAccount",
+      "payable": false,
+      "typedefs": []
     }
   },
   {
@@ -410,15 +456,46 @@
       "event": {
         "variant": [
           {
-            "RateLimitSet": [
+            "InterchainAccountCreated": [
               "int",
+              {
+                "bytes": 32
+              },
+              "address"
+            ]
+          },
+          {
+            "RemoteCallDispatched": [
+              "int",
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          {
+            "RemoteCallExecuted": [
+              "int",
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          {
+            "RemoteRouterEnrolled": [
+              "int",
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          {
+            "RemoteRouterUnenrolled": [
               "int"
             ]
           },
           {
-            "ConsumedFilledLevel": [
-              "int",
-              "int"
+            "CustomHookSet": [
+              "address"
             ]
           },
           {
@@ -439,12 +516,20 @@
         {
           "arguments": [
             {
-              "name": "owner",
-              "type": "address"
-            },
-            {
               "name": "mailbox",
               "type": "IMailbox"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "InterchainAccountRouter.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
             },
             {
               "name": "recipient",
@@ -453,68 +538,164 @@
               }
             },
             {
-              "name": "max_capacity",
+              "name": "amount",
               "type": "int"
             }
           ],
-          "name": "init",
-          "payable": false,
-          "returns": "RateLimitedIsm.state",
+          "name": "call_remote_ae",
+          "payable": true,
+          "returns": {
+            "bytes": 32
+          },
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "module_type",
-          "payable": false,
-          "returns": "int",
-          "stateful": false
         },
         {
           "arguments": [
             {
-              "name": "_metadata",
+              "name": "origin",
+              "type": "int"
+            },
+            {
+              "name": "sender",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "body",
               "type": {
                 "bytes": "any"
               }
             },
             {
-              "name": "message",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "_sender",
+              "name": "body_recipient",
               "type": "address"
             }
           ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
+          "name": "handle",
+          "payable": true,
+          "returns": {
+            "tuple": []
+          },
           "stateful": true
         },
         {
-          "arguments": [],
-          "name": "current_level",
+          "arguments": [
+            {
+              "name": "origin",
+              "type": "int"
+            },
+            {
+              "name": "owner",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "ica",
+              "type": "IInterchainAccount"
+            }
+          ],
+          "name": "register_ica",
           "payable": false,
-          "returns": "int",
-          "stateful": false
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         },
         {
-          "arguments": [],
-          "name": "get_max_capacity",
+          "arguments": [
+            {
+              "name": "origin",
+              "type": "int"
+            },
+            {
+              "name": "owner",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "get_local_ica",
           "payable": false,
-          "returns": "int",
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
           "stateful": false
         },
         {
           "arguments": [
             {
-              "name": "new_capacity",
+              "name": "domain",
+              "type": "int"
+            },
+            {
+              "name": "router",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "enroll_remote_router",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
               "type": "int"
             }
           ],
-          "name": "set_max_capacity",
+          "name": "unenroll_remote_router",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "get_remote_router",
+          "payable": false,
+          "returns": {
+            "option": [
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_enrolled_domains",
+          "payable": false,
+          "returns": {
+            "list": [
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "hook",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_custom_hook",
           "payable": false,
           "returns": {
             "tuple": []
@@ -546,30 +727,21 @@
         },
         {
           "arguments": [],
-          "name": "renounce_ownership",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_owner",
+          "name": "owner",
           "payable": false,
           "returns": "address",
           "stateful": false
         },
         {
           "arguments": [],
-          "name": "get_mailbox",
+          "name": "deployed_block",
           "payable": false,
-          "returns": "address",
+          "returns": "int",
           "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "RateLimitedIsm",
+      "name": "InterchainAccountRouter",
       "payable": false,
       "state": {
         "record": [
@@ -590,25 +762,47 @@
             "type": "IMailbox"
           },
           {
-            "name": "recipient",
+            "name": "local_domain",
+            "type": "int"
+          },
+          {
+            "name": "remote_routers",
             "type": {
-              "bytes": 32
+              "map": [
+                "int",
+                {
+                  "bytes": 32
+                }
+              ]
             }
           },
           {
-            "name": "bucket",
-            "type": "RateLimitLib.bucket"
+            "name": "custom_hook",
+            "type": {
+              "option": [
+                "IPostDispatchHook"
+              ]
+            }
           },
           {
-            "name": "validated",
+            "name": "ica_registry",
             "type": {
               "map": [
                 {
-                  "bytes": 32
+                  "tuple": [
+                    "int",
+                    {
+                      "bytes": 32
+                    }
+                  ]
                 },
-                "bool"
+                "IInterchainAccount"
               ]
             }
+          },
+          {
+            "name": "deployed_block",
+            "type": "int"
           }
         ]
       },

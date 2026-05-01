@@ -16,6 +16,20 @@
               "type": {
                 "bytes": "any"
               }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
             },
             {
               "name": "_2",
@@ -57,6 +71,18 @@
     }
   },
   {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "StandardHookMetadata",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "functions": [
         {
@@ -80,6 +106,20 @@
           "name": "hook_type",
           "payable": false,
           "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
           "stateful": false
         },
         {

@@ -230,6 +230,15 @@
         },
         {
           "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
           "name": "get_owner",
           "payable": false,
           "returns": "address",
@@ -248,6 +257,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_sender",
+              "type": "address"
             }
           ],
           "name": "verify",

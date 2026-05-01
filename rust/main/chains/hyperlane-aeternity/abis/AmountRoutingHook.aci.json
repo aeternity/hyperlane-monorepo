@@ -1,5 +1,76 @@
 [
   {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IPostDispatchHook",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
     "namespace": {
       "name": "Option",
       "typedefs": []
@@ -61,26 +132,23 @@
     }
   },
   {
+    "namespace": {
+      "name": "TokenMessage",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [
           {
-            "MessageQueued": [
-              {
-                "bytes": 32
-              },
+            "ThresholdUpdated": [
+              "int",
               "int"
             ]
           },
           {
-            "MessageCancelled": [
-              {
-                "bytes": 32
-              }
-            ]
-          },
-          {
-            "PreverifierSet": [
+            "HooksUpdated": [
               "address",
               "address"
             ]
@@ -107,22 +175,26 @@
               "type": "address"
             },
             {
-              "name": "preverifier",
-              "type": "address"
+              "name": "lower_hook",
+              "type": "IPostDispatchHook"
             },
             {
-              "name": "timelock_window",
+              "name": "upper_hook",
+              "type": "IPostDispatchHook"
+            },
+            {
+              "name": "threshold",
               "type": "int"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "TimelockIsm.state",
+          "returns": "AmountRoutingHook.state",
           "stateful": true
         },
         {
           "arguments": [],
-          "name": "module_type",
+          "name": "hook_type",
           "payable": false,
           "returns": "int",
           "stateful": false
@@ -130,39 +202,21 @@
         {
           "arguments": [
             {
-              "name": "message_id",
-              "type": {
-                "bytes": 32
-              }
-            }
-          ],
-          "name": "queue_message",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "message_id",
-              "type": {
-                "bytes": 32
-              }
-            }
-          ],
-          "name": "cancel_message",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
               "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
               "type": {
                 "bytes": "any"
               }
@@ -172,52 +226,29 @@
               "type": {
                 "bytes": "any"
               }
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
             },
             {
-              "name": "_sender",
-              "type": "address"
-            }
-          ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "message_id",
+              "name": "message",
               "type": {
-                "bytes": 32
+                "bytes": "any"
               }
             }
           ],
-          "name": "get_ready_at",
-          "payable": false,
-          "returns": {
-            "option": [
-              "int"
-            ]
-          },
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "message_id",
-              "type": {
-                "bytes": 32
-              }
-            }
-          ],
-          "name": "is_cancelled",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
-        },
-        {
-          "arguments": [],
-          "name": "get_timelock_window",
+          "name": "quote_dispatch",
           "payable": false,
           "returns": "int",
           "stateful": false
@@ -225,11 +256,29 @@
         {
           "arguments": [
             {
-              "name": "new_preverifier",
-              "type": "address"
+              "name": "new_threshold",
+              "type": "int"
             }
           ],
-          "name": "set_preverifier",
+          "name": "set_threshold",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "lower",
+              "type": "IPostDispatchHook"
+            },
+            {
+              "name": "upper",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_hooks",
           "payable": false,
           "returns": {
             "tuple": []
@@ -238,9 +287,41 @@
         },
         {
           "arguments": [],
-          "name": "get_preverifier",
+          "name": "get_threshold",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_lower_hook",
           "payable": false,
           "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_upper_hook",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
           "stateful": false
         },
         {
@@ -274,17 +355,10 @@
             "tuple": []
           },
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_owner",
-          "payable": false,
-          "returns": "address",
-          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "TimelockIsm",
+      "name": "AmountRoutingHook",
       "payable": false,
       "state": {
         "record": [
@@ -301,34 +375,16 @@
             }
           },
           {
-            "name": "preverifier",
-            "type": "address"
+            "name": "lower_hook",
+            "type": "IPostDispatchHook"
           },
           {
-            "name": "timelock_window",
+            "name": "upper_hook",
+            "type": "IPostDispatchHook"
+          },
+          {
+            "name": "threshold",
             "type": "int"
-          },
-          {
-            "name": "ready_at",
-            "type": {
-              "map": [
-                {
-                  "bytes": 32
-                },
-                "int"
-              ]
-            }
-          },
-          {
-            "name": "cancelled",
-            "type": {
-              "map": [
-                {
-                  "bytes": 32
-                },
-                "bool"
-              ]
-            }
           }
         ]
       },

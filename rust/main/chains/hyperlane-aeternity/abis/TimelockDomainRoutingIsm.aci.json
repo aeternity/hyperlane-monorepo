@@ -106,13 +106,36 @@
       "event": {
         "variant": [
           {
-            "IsmSet": [
+            "IsmChangeQueued": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "IsmRemovalQueued": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "IsmChangeExecuted": [
+              "int"
+            ]
+          },
+          {
+            "IsmChangeCancelled": [
               "int"
             ]
           },
           {
             "DefaultIsmSet": [
               "address"
+            ]
+          },
+          {
+            "TimelockSet": [
+              "int",
+              "int"
             ]
           },
           {
@@ -135,11 +158,15 @@
             {
               "name": "owner",
               "type": "address"
+            },
+            {
+              "name": "timelock",
+              "type": "int"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "IncrementalDomainRoutingIsm.state",
+          "returns": "TimelockDomainRoutingIsm.state",
           "stateful": true
         },
         {
@@ -160,7 +187,7 @@
               "type": "IInterchainSecurityModule"
             }
           ],
-          "name": "set_ism",
+          "name": "queue_set_ism",
           "payable": false,
           "returns": {
             "tuple": []
@@ -170,15 +197,39 @@
         {
           "arguments": [
             {
-              "name": "configs",
-              "type": {
-                "list": [
-                  "IncrementalDomainRoutingIsm.ism_config"
-                ]
-              }
+              "name": "domain",
+              "type": "int"
             }
           ],
-          "name": "set_isms",
+          "name": "queue_remove_ism",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "execute_change",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "cancel_change",
           "payable": false,
           "returns": {
             "tuple": []
@@ -202,6 +253,86 @@
         {
           "arguments": [
             {
+              "name": "new_timelock",
+              "type": "int"
+            }
+          ],
+          "name": "set_timelock",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_timelock",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_domains",
+          "payable": false,
+          "returns": {
+            "list": [
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "get_pending_change",
+          "payable": false,
+          "returns": {
+            "option": [
+              "TimelockDomainRoutingIsm.pending_change"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "route",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
               "name": "metadata",
               "type": {
                 "bytes": "any"
@@ -221,31 +352,6 @@
           "name": "verify",
           "payable": false,
           "returns": "bool",
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "message",
-              "type": {
-                "bytes": "any"
-              }
-            }
-          ],
-          "name": "route",
-          "payable": false,
-          "returns": "IInterchainSecurityModule",
-          "stateful": false
-        },
-        {
-          "arguments": [],
-          "name": "get_domains",
-          "payable": false,
-          "returns": {
-            "list": [
-              "int"
-            ]
-          },
           "stateful": false
         },
         {
@@ -279,17 +385,10 @@
             "tuple": []
           },
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_owner",
-          "payable": false,
-          "returns": "address",
-          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "IncrementalDomainRoutingIsm",
+      "name": "TimelockDomainRoutingIsm",
       "payable": false,
       "state": {
         "record": [
@@ -329,21 +428,38 @@
                 "IInterchainSecurityModule"
               ]
             }
+          },
+          {
+            "name": "timelock",
+            "type": "int"
+          },
+          {
+            "name": "pending",
+            "type": {
+              "map": [
+                "int",
+                "TimelockDomainRoutingIsm.pending_change"
+              ]
+            }
           }
         ]
       },
       "typedefs": [
         {
-          "name": "ism_config",
+          "name": "pending_change",
           "typedef": {
             "record": [
               {
-                "name": "domain",
-                "type": "int"
+                "name": "ism",
+                "type": {
+                  "option": [
+                    "IInterchainSecurityModule"
+                  ]
+                }
               },
               {
-                "name": "ism",
-                "type": "IInterchainSecurityModule"
+                "name": "timestamp",
+                "type": "int"
               }
             ]
           },

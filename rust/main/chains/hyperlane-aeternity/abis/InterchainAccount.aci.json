@@ -1,0 +1,146 @@
+[
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "CallExecuted": [
+              "address",
+              "int"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "origin_domain",
+              "type": "int"
+            },
+            {
+              "name": "origin_sender",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "InterchainAccount.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_origin_domain",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_origin_sender",
+          "payable": false,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "deployed_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "int"
+            }
+          ],
+          "name": "send_ae",
+          "payable": true,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "recipients",
+              "type": {
+                "list": [
+                  {
+                    "tuple": [
+                      "address",
+                      "int"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "name": "send_ae_batch",
+          "payable": true,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "deposit",
+          "payable": true,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "InterchainAccount",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "origin_domain",
+            "type": "int"
+          },
+          {
+            "name": "origin_sender",
+            "type": {
+              "bytes": 32
+            }
+          },
+          {
+            "name": "deployed_block",
+            "type": "int"
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

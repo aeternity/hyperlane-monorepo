@@ -1,18 +1,6 @@
 [
   {
     "namespace": {
-      "name": "ListInternal",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
-      "name": "List",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
       "name": "Option",
       "typedefs": []
     }
@@ -20,12 +8,6 @@
   {
     "namespace": {
       "name": "TypeCasts",
-      "typedefs": []
-    }
-  },
-  {
-    "namespace": {
-      "name": "CheckpointLib",
       "typedefs": []
     }
   },
@@ -80,25 +62,28 @@
   },
   {
     "namespace": {
-      "name": "MerkleLib",
+      "name": "TokenMessage",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "RateLimitLib",
       "typedefs": [
         {
-          "name": "merkle_tree",
+          "name": "bucket",
           "typedef": {
             "record": [
               {
-                "name": "branch",
-                "type": {
-                  "map": [
-                    "int",
-                    {
-                      "bytes": 32
-                    }
-                  ]
-                }
+                "name": "max_capacity",
+                "type": "int"
               },
               {
-                "name": "count",
+                "name": "filled_level",
+                "type": "int"
+              },
+              {
+                "name": "last_updated",
                 "type": "int"
               }
             ]
@@ -113,7 +98,13 @@
       "event": {
         "variant": [
           {
-            "ValidatorsAndThresholdSet": [
+            "RateLimitSet": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "ConsumedFilledLevel": [
               "int",
               "int"
             ]
@@ -136,32 +127,26 @@
         {
           "arguments": [
             {
-              "name": "owner",
+              "name": "mailbox",
               "type": "address"
             },
             {
-              "name": "vals",
-              "type": {
-                "list": [
-                  {
-                    "bytes": 20
-                  }
-                ]
-              }
+              "name": "max_capacity",
+              "type": "int"
             },
             {
-              "name": "threshold",
-              "type": "int"
+              "name": "sender_addr",
+              "type": "address"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "MerkleRootMultisigIsm.state",
+          "returns": "RateLimitedHook.state",
           "stateful": true
         },
         {
           "arguments": [],
-          "name": "module_type",
+          "name": "hook_type",
           "payable": false,
           "returns": "int",
           "stateful": false
@@ -169,49 +154,45 @@
         {
           "arguments": [
             {
-              "name": "vals",
+              "name": "_metadata",
               "type": {
-                "list": [
-                  {
-                    "bytes": 20
-                  }
-                ]
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
               }
             },
             {
-              "name": "threshold",
-              "type": "int"
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
             }
           ],
-          "name": "set_validators_and_threshold",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
           "stateful": true
         },
         {
-          "arguments": [],
-          "name": "get_validators",
-          "payable": false,
-          "returns": {
-            "list": [
-              {
-                "bytes": 20
-              }
-            ]
-          },
-          "stateful": false
-        },
-        {
-          "arguments": [],
-          "name": "get_threshold",
-          "payable": false,
-          "returns": "int",
-          "stateful": false
-        },
-        {
           "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
             {
               "name": "_message",
               "type": {
@@ -219,21 +200,70 @@
               }
             }
           ],
-          "name": "validators_and_threshold",
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "current_level",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_max_capacity",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
           "payable": false,
           "returns": {
-            "tuple": [
-              {
-                "list": [
-                  {
-                    "bytes": 20
-                  }
-                ]
-              },
-              "int"
+            "option": [
+              "address"
             ]
           },
           "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_mailbox",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_sender",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_capacity",
+              "type": "int"
+            }
+          ],
+          "name": "set_max_capacity",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         },
         {
           "arguments": [
@@ -266,41 +296,10 @@
             "tuple": []
           },
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_owner",
-          "payable": false,
-          "returns": "address",
-          "stateful": false
-        },
-        {
-          "arguments": [
-            {
-              "name": "metadata",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "message",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "_sender",
-              "type": "address"
-            }
-          ],
-          "name": "verify",
-          "payable": false,
-          "returns": "bool",
-          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "MerkleRootMultisigIsm",
+      "name": "RateLimitedHook",
       "payable": false,
       "state": {
         "record": [
@@ -317,18 +316,27 @@
             }
           },
           {
-            "name": "validators",
-            "type": {
-              "list": [
-                {
-                  "bytes": 20
-                }
-              ]
-            }
+            "name": "mailbox",
+            "type": "address"
           },
           {
-            "name": "threshold",
-            "type": "int"
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "name": "bucket",
+            "type": "RateLimitLib.bucket"
+          },
+          {
+            "name": "validated_messages",
+            "type": {
+              "map": [
+                {
+                  "bytes": 32
+                },
+                "bool"
+              ]
+            }
           }
         ]
       },

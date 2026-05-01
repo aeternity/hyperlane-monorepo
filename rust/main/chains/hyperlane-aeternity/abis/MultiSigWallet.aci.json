@@ -1,0 +1,287 @@
+[
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "TransactionSubmitted": [
+              "int",
+              "address",
+              "int"
+            ]
+          },
+          {
+            "TransactionConfirmed": [
+              "int",
+              "address"
+            ]
+          },
+          {
+            "TransactionRevoked": [
+              "int",
+              "address"
+            ]
+          },
+          {
+            "TransactionExecuted": [
+              "int"
+            ]
+          },
+          {
+            "OwnerAdded": [
+              "address"
+            ]
+          },
+          {
+            "OwnerRemoved": [
+              "address"
+            ]
+          },
+          {
+            "ThresholdChanged": [
+              "int",
+              "int"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owners",
+              "type": {
+                "list": [
+                  "address"
+                ]
+              }
+            },
+            {
+              "name": "threshold",
+              "type": "int"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "MultiSigWallet.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "target",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "type": "int"
+            },
+            {
+              "name": "data",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "submit",
+          "payable": false,
+          "returns": "int",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "tx_id",
+              "type": "int"
+            }
+          ],
+          "name": "confirm",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "tx_id",
+              "type": "int"
+            }
+          ],
+          "name": "revoke",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "tx_id",
+              "type": "int"
+            }
+          ],
+          "name": "execute",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "tx_id",
+              "type": "int"
+            }
+          ],
+          "name": "get_transaction",
+          "payable": false,
+          "returns": {
+            "option": [
+              "MultiSigWallet.transaction"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "tx_id",
+              "type": "int"
+            },
+            {
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "is_confirmed",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            }
+          ],
+          "name": "is_owner",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_threshold",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owners",
+          "payable": false,
+          "returns": {
+            "list": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_tx_count",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "MultiSigWallet",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owners",
+            "type": {
+              "map": [
+                "address",
+                "bool"
+              ]
+            }
+          },
+          {
+            "name": "owner_list",
+            "type": {
+              "list": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "threshold",
+            "type": "int"
+          },
+          {
+            "name": "tx_count",
+            "type": "int"
+          },
+          {
+            "name": "transactions",
+            "type": {
+              "map": [
+                "int",
+                "MultiSigWallet.transaction"
+              ]
+            }
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "transaction",
+          "typedef": {
+            "record": [
+              {
+                "name": "target",
+                "type": "address"
+              },
+              {
+                "name": "value",
+                "type": "int"
+              },
+              {
+                "name": "data",
+                "type": {
+                  "bytes": "any"
+                }
+              },
+              {
+                "name": "executed",
+                "type": "bool"
+              },
+              {
+                "name": "confirmations",
+                "type": {
+                  "map": [
+                    "address",
+                    "bool"
+                  ]
+                }
+              },
+              {
+                "name": "confirm_count",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

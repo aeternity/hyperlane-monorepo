@@ -13,12 +13,31 @@
   },
   {
     "contract": {
+      "event": {
+        "variant": [
+          {
+            "Paused": [
+              "address"
+            ]
+          },
+          {
+            "Unpaused": [
+              "address"
+            ]
+          }
+        ]
+      },
       "functions": [
         {
-          "arguments": [],
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            }
+          ],
           "name": "init",
           "payable": false,
-          "returns": "NoopHook.state",
+          "returns": "PausableHook.state",
           "stateful": true
         },
         {
@@ -45,7 +64,7 @@
         {
           "arguments": [
             {
-              "name": "metadata",
+              "name": "_metadata",
               "type": {
                 "bytes": "any"
               }
@@ -65,7 +84,7 @@
         {
           "arguments": [
             {
-              "name": "metadata",
+              "name": "_metadata",
               "type": {
                 "bytes": "any"
               }
@@ -81,15 +100,51 @@
           "payable": false,
           "returns": "int",
           "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "pause",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "unpause",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_paused",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "NoopHook",
+      "name": "PausableHook",
       "payable": false,
       "state": {
         "record": [
           {
-            "name": "dummy",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "paused",
             "type": "bool"
           }
         ]

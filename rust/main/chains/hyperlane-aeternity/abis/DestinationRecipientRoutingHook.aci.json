@@ -1,5 +1,76 @@
 [
   {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IPostDispatchHook",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
     "namespace": {
       "name": "Option",
       "typedefs": []
@@ -61,72 +132,47 @@
     }
   },
   {
-    "namespace": {
-      "name": "StandardHookMetadata",
-      "typedefs": []
-    }
-  },
-  {
-    "contract": {
-      "functions": [
-        {
-          "arguments": [
-            {
-              "name": "_1",
-              "type": "int"
-            }
-          ],
-          "name": "get_exchange_rate_and_gas_price",
-          "payable": false,
-          "returns": {
-            "tuple": [
-              "int",
-              "int"
-            ]
-          },
-          "stateful": false
-        }
-      ],
-      "kind": "contract_interface",
-      "name": "IGasOracle",
-      "payable": false,
-      "typedefs": []
-    }
-  },
-  {
     "contract": {
       "event": {
         "variant": [
           {
-            "GasPayment": [
+            "DomainHookSet": [
+              "int",
+              "address"
+            ]
+          },
+          {
+            "DomainHookRemoved": [
+              "int"
+            ]
+          },
+          {
+            "CustomHookSet": [
+              "int",
               {
                 "bytes": 32
               },
-              "int",
-              "string",
-              "int"
-            ]
-          },
-          {
-            "BeneficiarySet": [
               "address"
             ]
           },
           {
-            "DestinationGasOverheadSet": [
+            "CustomHookRemoved": [
               "int",
-              "int"
+              {
+                "bytes": 32
+              }
             ]
           },
           {
-            "DomainOracleSet": [
-              "int",
+            "OwnershipTransferStarted": [
+              "address",
               "address"
             ]
           },
           {
-            "DomainOracleRemoved": [
-              "int"
+            "OwnershipTransferred": [
+              "address",
+              "address"
             ]
           }
         ]
@@ -137,19 +183,11 @@
             {
               "name": "owner",
               "type": "address"
-            },
-            {
-              "name": "beneficiary",
-              "type": "address"
-            },
-            {
-              "name": "oracle",
-              "type": "IGasOracle"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "InterchainGasPaymaster.state",
+          "returns": "DestinationRecipientRoutingHook.state",
           "stateful": true
         },
         {
@@ -162,7 +200,7 @@
         {
           "arguments": [
             {
-              "name": "metadata",
+              "name": "_metadata",
               "type": {
                 "bytes": "any"
               }
@@ -216,27 +254,57 @@
         {
           "arguments": [
             {
-              "name": "message_id",
+              "name": "destination",
+              "type": "int"
+            },
+            {
+              "name": "hook",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_domain_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            }
+          ],
+          "name": "remove_domain_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            },
+            {
+              "name": "recipient",
               "type": {
                 "bytes": 32
               }
             },
             {
-              "name": "destination",
-              "type": "int"
-            },
-            {
-              "name": "gas_limit",
-              "type": "int"
-            },
-            {
-              "name": "refund_address",
-              "type": "address"
+              "name": "hook",
+              "type": "IPostDispatchHook"
             }
           ],
-          "name": "pay_for_gas",
-          "payable": true,
-          "returns": "unit",
+          "name": "set_custom_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
           "stateful": true
         },
         {
@@ -246,127 +314,66 @@
               "type": "int"
             },
             {
-              "name": "gas_limit",
+              "name": "recipient",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "remove_custom_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
               "type": "int"
             }
           ],
-          "name": "quote_gas_payment",
+          "name": "get_domain_hook",
           "payable": false,
-          "returns": "int",
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
           "stateful": false
         },
         {
           "arguments": [
             {
-              "name": "domain",
+              "name": "destination",
               "type": "int"
             },
             {
-              "name": "overhead",
-              "type": "int"
-            }
-          ],
-          "name": "set_destination_gas_overhead",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "configs",
+              "name": "recipient",
               "type": {
-                "list": [
-                  "InterchainGasPaymaster.gas_overhead_config"
-                ]
+                "bytes": 32
               }
             }
           ],
-          "name": "set_destination_gas_overheads",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "addr",
-              "type": "address"
-            }
-          ],
-          "name": "set_beneficiary",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "domain",
-              "type": "int"
-            },
-            {
-              "name": "oracle",
-              "type": "IGasOracle"
-            }
-          ],
-          "name": "set_domain_oracle",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "domain",
-              "type": "int"
-            }
-          ],
-          "name": "remove_domain_oracle",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "domain",
-              "type": "int"
-            }
-          ],
-          "name": "get_domain_oracle",
+          "name": "get_custom_hook",
           "payable": false,
           "returns": {
             "option": [
-              "IGasOracle"
+              "address"
             ]
           },
           "stateful": false
         },
         {
           "arguments": [],
-          "name": "claim",
+          "name": "get_domains",
           "payable": false,
           "returns": {
-            "tuple": []
+            "list": [
+              "int"
+            ]
           },
-          "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_beneficiary",
-          "payable": false,
-          "returns": "address",
           "stateful": false
         },
         {
@@ -378,26 +385,50 @@
         },
         {
           "arguments": [],
-          "name": "deployed_block",
+          "name": "get_pending_owner",
           "payable": false,
-          "returns": "int",
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
           "stateful": false
         },
         {
           "arguments": [
             {
-              "name": "domain",
-              "type": "int"
+              "name": "new_owner",
+              "type": "address"
             }
           ],
-          "name": "destination_gas_overhead",
+          "name": "transfer_ownership",
           "payable": false,
-          "returns": "int",
-          "stateful": false
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         }
       ],
       "kind": "contract_main",
-      "name": "InterchainGasPaymaster",
+      "name": "DestinationRecipientRoutingHook",
       "payable": false,
       "state": {
         "record": [
@@ -406,55 +437,49 @@
             "type": "address"
           },
           {
-            "name": "beneficiary",
-            "type": "address"
-          },
-          {
-            "name": "oracle",
-            "type": "IGasOracle"
-          },
-          {
-            "name": "domain_oracles",
+            "name": "pending_owner",
             "type": {
-              "map": [
-                "int",
-                "IGasOracle"
+              "option": [
+                "address"
               ]
             }
           },
           {
-            "name": "gas_overhead",
+            "name": "domain_hooks",
             "type": {
               "map": [
                 "int",
+                "IPostDispatchHook"
+              ]
+            }
+          },
+          {
+            "name": "custom_hooks",
+            "type": {
+              "map": [
+                {
+                  "tuple": [
+                    "int",
+                    {
+                      "bytes": 32
+                    }
+                  ]
+                },
+                "IPostDispatchHook"
+              ]
+            }
+          },
+          {
+            "name": "domains",
+            "type": {
+              "list": [
                 "int"
               ]
             }
-          },
-          {
-            "name": "deployed_block",
-            "type": "int"
           }
         ]
       },
-      "typedefs": [
-        {
-          "name": "gas_overhead_config",
-          "typedef": {
-            "record": [
-              {
-                "name": "domain",
-                "type": "int"
-              },
-              {
-                "name": "overhead",
-                "type": "int"
-              }
-            ]
-          },
-          "vars": []
-        }
-      ]
+      "typedefs": []
     }
   }
 ]

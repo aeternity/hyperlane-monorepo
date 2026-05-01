@@ -4,13 +4,9 @@
       "event": {
         "variant": [
           {
-            "Paused": [
-              "address"
-            ]
-          },
-          {
-            "Unpaused": [
-              "address"
+            "FeeConfigured": [
+              "int",
+              "int"
             ]
           },
           {
@@ -33,16 +29,39 @@
             {
               "name": "owner",
               "type": "address"
+            },
+            {
+              "name": "max_fee",
+              "type": "int"
+            },
+            {
+              "name": "half_amount",
+              "type": "int"
             }
           ],
           "name": "init",
           "payable": false,
-          "returns": "PausableIsm.state",
+          "returns": "LinearFee.state",
           "stateful": true
         },
         {
-          "arguments": [],
-          "name": "module_type",
+          "arguments": [
+            {
+              "name": "_destination",
+              "type": "int"
+            },
+            {
+              "name": "_recipient",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "amount",
+              "type": "int"
+            }
+          ],
+          "name": "quote_transfer_fee",
           "payable": false,
           "returns": "int",
           "stateful": false
@@ -50,50 +69,51 @@
         {
           "arguments": [
             {
-              "name": "_metadata",
-              "type": {
-                "bytes": "any"
-              }
+              "name": "new_max_fee",
+              "type": "int"
             },
             {
-              "name": "_message",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "_sender",
-              "type": "address"
+              "name": "new_half_amount",
+              "type": "int"
             }
           ],
-          "name": "verify",
+          "name": "set_fee_config",
           "payable": false,
-          "returns": "bool",
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_max_fee",
+          "payable": false,
+          "returns": "int",
           "stateful": false
         },
         {
           "arguments": [],
-          "name": "pause",
+          "name": "get_half_amount",
           "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
+          "returns": "int",
+          "stateful": false
         },
         {
           "arguments": [],
-          "name": "unpause",
+          "name": "get_owner",
           "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
+          "returns": "address",
+          "stateful": false
         },
         {
           "arguments": [],
-          "name": "is_paused",
+          "name": "get_pending_owner",
           "payable": false,
-          "returns": "bool",
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
           "stateful": false
         },
         {
@@ -127,17 +147,10 @@
             "tuple": []
           },
           "stateful": true
-        },
-        {
-          "arguments": [],
-          "name": "get_owner",
-          "payable": false,
-          "returns": "address",
-          "stateful": false
         }
       ],
       "kind": "contract_main",
-      "name": "PausableIsm",
+      "name": "LinearFee",
       "payable": false,
       "state": {
         "record": [
@@ -154,8 +167,12 @@
             }
           },
           {
-            "name": "paused",
-            "type": "bool"
+            "name": "max_fee",
+            "type": "int"
+          },
+          {
+            "name": "half_amount",
+            "type": "int"
           }
         ]
       },

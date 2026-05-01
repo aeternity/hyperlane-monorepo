@@ -1,5 +1,17 @@
 [
   {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "StandardHookMetadata",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [
@@ -56,7 +68,21 @@
         {
           "arguments": [
             {
-              "name": "_metadata",
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
               "type": {
                 "bytes": "any"
               }
@@ -76,7 +102,7 @@
         {
           "arguments": [
             {
-              "name": "_metadata",
+              "name": "metadata",
               "type": {
                 "bytes": "any"
               }

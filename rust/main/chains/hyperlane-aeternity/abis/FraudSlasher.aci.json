@@ -1,0 +1,423 @@
+[
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            },
+            {
+              "name": "_2",
+              "type": "int"
+            },
+            {
+              "name": "_3",
+              "type": "address"
+            }
+          ],
+          "name": "slash",
+          "payable": false,
+          "returns": "unit",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IValidatorStaking",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            },
+            {
+              "name": "_2",
+              "type": "address"
+            }
+          ],
+          "name": "is_premature",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            },
+            {
+              "name": "_2",
+              "type": "address"
+            },
+            {
+              "name": "_3",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "_4",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "is_fraudulent_message_id",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            },
+            {
+              "name": "_2",
+              "type": "address"
+            },
+            {
+              "name": "_3",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            }
+          ],
+          "name": "is_fraudulent_root",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "ICheckpointFraudProofsForSlasher",
+      "payable": false,
+      "typedefs": [
+        {
+          "name": "checkpoint",
+          "typedef": {
+            "record": [
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "merkle_tree",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "root",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "index",
+                "type": "int"
+              },
+              {
+                "name": "message_id",
+                "type": {
+                  "bytes": 32
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "FraudSlashExecuted": [
+              "address",
+              {
+                "bytes": 32
+              },
+              "int"
+            ]
+          },
+          {
+            "SlashAmountUpdated": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "staking",
+              "type": "IValidatorStaking"
+            },
+            {
+              "name": "fraud_proofs",
+              "type": "ICheckpointFraudProofsForSlasher"
+            },
+            {
+              "name": "slash_amount",
+              "type": "int"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "FraudSlasher.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "validator",
+              "type": "address"
+            },
+            {
+              "name": "cp",
+              "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            }
+          ],
+          "name": "slash_premature",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "validator",
+              "type": "address"
+            },
+            {
+              "name": "cp",
+              "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "proof",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "actual_message_id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "slash_fraudulent_message_id",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "validator",
+              "type": "address"
+            },
+            {
+              "name": "cp",
+              "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "proof",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            }
+          ],
+          "name": "slash_fraudulent_root",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_amount",
+              "type": "int"
+            }
+          ],
+          "name": "set_slash_amount",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_slash_amount",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "proof_id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "is_proof_slashed",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "deployed_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "FraudSlasher",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "staking",
+            "type": "IValidatorStaking"
+          },
+          {
+            "name": "fraud_proofs",
+            "type": "ICheckpointFraudProofsForSlasher"
+          },
+          {
+            "name": "slash_amount",
+            "type": "int"
+          },
+          {
+            "name": "slashed_proofs",
+            "type": {
+              "map": [
+                {
+                  "bytes": 32
+                },
+                "bool"
+              ]
+            }
+          },
+          {
+            "name": "deployed_block",
+            "type": "int"
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]
