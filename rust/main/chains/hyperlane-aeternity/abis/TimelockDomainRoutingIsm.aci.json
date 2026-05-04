@@ -1,0 +1,477 @@
+[
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_3",
+              "type": "address"
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IInterchainSecurityModule",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "MessageLib",
+      "typedefs": [
+        {
+          "name": "message",
+          "typedef": {
+            "record": [
+              {
+                "name": "version",
+                "type": "int"
+              },
+              {
+                "name": "nonce",
+                "type": "int"
+              },
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "sender",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "destination",
+                "type": "int"
+              },
+              {
+                "name": "recipient",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "body",
+                "type": {
+                  "bytes": "any"
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "IsmChangeQueued": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "IsmRemovalQueued": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "IsmChangeExecuted": [
+              "int"
+            ]
+          },
+          {
+            "IsmChangeCancelled": [
+              "int"
+            ]
+          },
+          {
+            "DefaultIsmSet": [
+              "address"
+            ]
+          },
+          {
+            "TimelockSet": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "timelock",
+              "type": "int"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "TimelockDomainRoutingIsm.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            },
+            {
+              "name": "ism",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "queue_set_ism",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "queue_remove_ism",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "execute_change",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "cancel_change",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "ism",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_default_ism",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_timelock",
+              "type": "int"
+            }
+          ],
+          "name": "set_timelock",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_timelock",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_domains",
+          "payable": false,
+          "returns": {
+            "list": [
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "get_pending_change",
+          "payable": false,
+          "returns": {
+            "option": [
+              "TimelockDomainRoutingIsm.pending_change"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "route",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "sender",
+              "type": "address"
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "TimelockDomainRoutingIsm",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "isms",
+            "type": {
+              "map": [
+                "int",
+                "IInterchainSecurityModule"
+              ]
+            }
+          },
+          {
+            "name": "domains",
+            "type": {
+              "list": [
+                "int"
+              ]
+            }
+          },
+          {
+            "name": "default_ism",
+            "type": {
+              "option": [
+                "IInterchainSecurityModule"
+              ]
+            }
+          },
+          {
+            "name": "timelock",
+            "type": "int"
+          },
+          {
+            "name": "pending",
+            "type": {
+              "map": [
+                "int",
+                "TimelockDomainRoutingIsm.pending_change"
+              ]
+            }
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "pending_change",
+          "typedef": {
+            "record": [
+              {
+                "name": "ism",
+                "type": {
+                  "option": [
+                    "IInterchainSecurityModule"
+                  ]
+                }
+              },
+              {
+                "name": "timestamp",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

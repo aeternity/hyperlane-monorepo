@@ -35,6 +35,11 @@ import type {
 } from 'zksync-ethers';
 
 import type {
+  AeternityProvider as AeternitySDKProvider,
+  AeternityReceipt as AeternitySDKReceipt,
+  AeternityTransaction as AeternitySDKTransaction,
+} from '@hyperlane-xyz/aeternity-sdk/runtime';
+import type {
   AleoProvider as AleoSDKProvider,
   AleoReceipt as AleoSDKReceipt,
   AleoTransaction as AleoSDKTransaction,
@@ -61,6 +66,7 @@ export enum ProviderType {
   Radix = 'radix',
   Aleo = 'aleo',
   Tron = 'tron',
+  Aeternity = 'aeternity',
 }
 
 export type { KnownProtocolType };
@@ -77,6 +83,7 @@ export const PROTOCOL_TO_DEFAULT_PROVIDER_TYPE: Record<
   [ProtocolType.Radix]: ProviderType.Radix,
   [ProtocolType.Aleo]: ProviderType.Aleo,
   [ProtocolType.Tron]: ProviderType.Tron,
+  [ProtocolType.Aeternity]: ProviderType.Aeternity,
 };
 
 export type ProviderMap<Value> = Partial<Record<ProviderType, Value>>;
@@ -129,6 +136,12 @@ type ProtocolTypesMapping = {
     provider: TronProvider;
     contract: null;
     receipt: EthersV5TransactionReceipt;
+  };
+  [ProtocolType.Aeternity]: {
+    transaction: AeternityTypedTransaction;
+    provider: AeternityTypedProvider;
+    contract: null;
+    receipt: AeternityTypedTransactionReceipt;
   };
   [ProtocolType.Unknown]: {
     transaction: never;
@@ -232,6 +245,11 @@ export interface AleoProvider extends TypedProviderBase<AleoSDKProvider> {
   provider: AleoSDKProvider;
 }
 
+export interface AeternityTypedProvider extends TypedProviderBase<AeternitySDKProvider> {
+  type: ProviderType.Aeternity;
+  provider: AeternitySDKProvider;
+}
+
 export interface TronProvider extends TypedProviderBase<EV5Providers.Provider> {
   type: ProviderType.Tron;
   provider: EV5Providers.Provider;
@@ -260,7 +278,8 @@ export type TypedProvider =
   | GnosisTxBuilderProvider
   | RadixProvider
   | AleoProvider
-  | TronProvider;
+  | TronProvider
+  | AeternityTypedProvider;
 
 /**
  * Contracts with discriminated union of provider type
@@ -378,6 +397,11 @@ export interface ZKSyncTransaction extends TypedTransactionBase<zkSyncTypes.Tran
   transaction: zkSyncTypes.TransactionRequest;
 }
 
+export interface AeternityTypedTransaction extends TypedTransactionBase<AeternitySDKTransaction> {
+  type: ProviderType.Aeternity;
+  transaction: AeternitySDKTransaction;
+}
+
 export interface TronTransaction extends TypedTransactionBase<EV5Transaction> {
   type: ProviderType.Tron;
   transaction: EV5Transaction;
@@ -395,7 +419,8 @@ export type TypedTransaction =
   | ZKSyncTransaction
   | RadixTransaction
   | AleoTransaction
-  | TronTransaction;
+  | TronTransaction
+  | AeternityTypedTransaction;
 
 export type AnnotatedEV5Transaction = Annotated<EV5Transaction>;
 
@@ -418,6 +443,8 @@ export type AnnotatedRadixTransaction = Annotated<RadixSDKTransaction>;
 
 export type AnnotatedTronTransaction = Annotated<EV5Transaction>;
 
+export type AnnotatedAeternityTransaction = Annotated<AeternitySDKTransaction>;
+
 export type TypedAnnotatedTransaction =
   | AnnotatedEV5Transaction
   | AnnotatedViemTransaction
@@ -428,7 +455,8 @@ export type TypedAnnotatedTransaction =
   | AnnotatedStarknetJsTransaction
   | AnnotatedZKSyncTransaction
   | AnnotatedRadixTransaction
-  | AnnotatedTronTransaction;
+  | AnnotatedTronTransaction
+  | AnnotatedAeternityTransaction;
 
 /**
  * Transaction receipt/response with discriminated union of provider type
@@ -489,6 +517,11 @@ export interface AleoTransactionReceipt extends TypedTransactionReceiptBase<Aleo
   receipt: AleoSDKReceipt;
 }
 
+export interface AeternityTypedTransactionReceipt extends TypedTransactionReceiptBase<AeternitySDKReceipt> {
+  type: ProviderType.Aeternity;
+  receipt: AeternitySDKReceipt;
+}
+
 export interface TronTransactionReceipt extends TypedTransactionReceiptBase<EV5Providers.TransactionReceipt> {
   type: ProviderType.Tron;
   receipt: EV5Providers.TransactionReceipt;
@@ -505,4 +538,5 @@ export type TypedTransactionReceipt =
   | ZKSyncTransactionReceipt
   | RadixTransactionReceipt
   | AleoTransactionReceipt
-  | TronTransactionReceipt;
+  | TronTransactionReceipt
+  | AeternityTypedTransactionReceipt;

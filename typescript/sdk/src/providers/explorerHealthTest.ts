@@ -19,6 +19,7 @@ const PROTOCOL_TO_ADDRESS: Record<ProtocolType, Address> = {
   [ProtocolType.Aleo]:
     'aleo1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq3ljyzc',
   [ProtocolType.Tron]: 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb',
+  [ProtocolType.Aeternity]: 'ak_11111111111111111111111111111111273Yts',
   [ProtocolType.Unknown]: '0x0000000000000000000000000000000000000000',
 };
 

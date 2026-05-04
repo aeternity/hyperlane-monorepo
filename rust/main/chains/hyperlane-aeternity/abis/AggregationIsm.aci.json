@@ -1,0 +1,284 @@
+[
+  {
+    "namespace": {
+      "name": "ListInternal",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "List",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_3",
+              "type": "address"
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IInterchainSecurityModule",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "ModulesAndThresholdSet": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "ConfigurationFrozen": []
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "mods",
+              "type": {
+                "list": [
+                  "IInterchainSecurityModule"
+                ]
+              }
+            },
+            {
+              "name": "threshold",
+              "type": "int"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "AggregationIsm.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "mods",
+              "type": {
+                "list": [
+                  "IInterchainSecurityModule"
+                ]
+              }
+            },
+            {
+              "name": "threshold",
+              "type": "int"
+            }
+          ],
+          "name": "set_modules_and_threshold",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_modules",
+          "payable": false,
+          "returns": {
+            "list": [
+              "IInterchainSecurityModule"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_threshold",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "sender",
+              "type": "address"
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "freeze",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_frozen",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "AggregationIsm",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "modules",
+            "type": {
+              "list": [
+                "IInterchainSecurityModule"
+              ]
+            }
+          },
+          {
+            "name": "threshold",
+            "type": "int"
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

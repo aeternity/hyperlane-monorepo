@@ -1,0 +1,201 @@
+[
+  {
+    "namespace": {
+      "name": "ListInternal",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "List",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "String",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "CheckpointLib",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "ValidatorAnnouncement": [
+              {
+                "bytes": 20
+              },
+              "string"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "mailbox_address",
+              "type": "address"
+            },
+            {
+              "name": "local_domain",
+              "type": "int"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "ValidatorAnnounce.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "location",
+              "type": "string"
+            }
+          ],
+          "name": "get_announcement_digest",
+          "payable": false,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "validator",
+              "type": {
+                "bytes": 20
+              }
+            },
+            {
+              "name": "storage_location",
+              "type": "string"
+            },
+            {
+              "name": "signature",
+              "type": {
+                "bytes": 65
+              }
+            }
+          ],
+          "name": "announce",
+          "payable": false,
+          "returns": "bool",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_announced_validators",
+          "payable": false,
+          "returns": {
+            "list": [
+              {
+                "bytes": 20
+              }
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "validators",
+              "type": {
+                "list": [
+                  {
+                    "bytes": 20
+                  }
+                ]
+              }
+            }
+          ],
+          "name": "get_announced_storage_locations",
+          "payable": false,
+          "returns": {
+            "list": [
+              {
+                "list": [
+                  "string"
+                ]
+              }
+            ]
+          },
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "ValidatorAnnounce",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "mailbox_address",
+            "type": "address"
+          },
+          {
+            "name": "local_domain",
+            "type": "int"
+          },
+          {
+            "name": "announced_validators",
+            "type": {
+              "list": [
+                {
+                  "bytes": 20
+                }
+              ]
+            }
+          },
+          {
+            "name": "storage_locations",
+            "type": {
+              "map": [
+                {
+                  "bytes": 20
+                },
+                {
+                  "list": [
+                    "string"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "replay_protection",
+            "type": {
+              "map": [
+                {
+                  "bytes": 32
+                },
+                "bool"
+              ]
+            }
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

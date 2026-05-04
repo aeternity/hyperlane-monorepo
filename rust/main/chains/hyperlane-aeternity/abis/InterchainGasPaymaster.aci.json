@@ -1,0 +1,544 @@
+[
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "MessageLib",
+      "typedefs": [
+        {
+          "name": "message",
+          "typedef": {
+            "record": [
+              {
+                "name": "version",
+                "type": "int"
+              },
+              {
+                "name": "nonce",
+                "type": "int"
+              },
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "sender",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "destination",
+                "type": "int"
+              },
+              {
+                "name": "recipient",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "body",
+                "type": {
+                  "bytes": "any"
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "StandardHookMetadata",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            }
+          ],
+          "name": "get_exchange_rate_and_gas_price",
+          "payable": false,
+          "returns": {
+            "tuple": [
+              "int",
+              "int"
+            ]
+          },
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IGasOracle",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "GasPayment": [
+              {
+                "bytes": 32
+              },
+              "int",
+              "string",
+              "int"
+            ]
+          },
+          {
+            "BeneficiarySet": [
+              "address"
+            ]
+          },
+          {
+            "DestinationGasOverheadSet": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "DomainOracleSet": [
+              "int",
+              "address"
+            ]
+          },
+          {
+            "DomainOracleRemoved": [
+              "int"
+            ]
+          },
+          {
+            "Claimed": [
+              "address",
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "beneficiary",
+              "type": "address"
+            },
+            {
+              "name": "oracle",
+              "type": "IGasOracle"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "InterchainGasPaymaster.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "refund_addr",
+              "type": "address"
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "message_id",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "destination",
+              "type": "int"
+            },
+            {
+              "name": "gas_limit",
+              "type": "int"
+            },
+            {
+              "name": "refund_address",
+              "type": "address"
+            }
+          ],
+          "name": "pay_for_gas",
+          "payable": true,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            },
+            {
+              "name": "gas_limit",
+              "type": "int"
+            }
+          ],
+          "name": "quote_gas_payment",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            },
+            {
+              "name": "overhead",
+              "type": "int"
+            }
+          ],
+          "name": "set_destination_gas_overhead",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "configs",
+              "type": {
+                "list": [
+                  "InterchainGasPaymaster.gas_overhead_config"
+                ]
+              }
+            }
+          ],
+          "name": "set_destination_gas_overheads",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            }
+          ],
+          "name": "set_beneficiary",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            },
+            {
+              "name": "oracle",
+              "type": "IGasOracle"
+            }
+          ],
+          "name": "set_domain_oracle",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "remove_domain_oracle",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "get_domain_oracle",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IGasOracle"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "claim",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_beneficiary",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_collected_fees",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "deployed_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "destination_gas_overhead",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "InterchainGasPaymaster",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "name": "oracle",
+            "type": "IGasOracle"
+          },
+          {
+            "name": "domain_oracles",
+            "type": {
+              "map": [
+                "int",
+                "IGasOracle"
+              ]
+            }
+          },
+          {
+            "name": "gas_overhead",
+            "type": {
+              "map": [
+                "int",
+                "int"
+              ]
+            }
+          },
+          {
+            "name": "deployed_block",
+            "type": "int"
+          },
+          {
+            "name": "collected_fees",
+            "type": "int"
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "gas_overhead_config",
+          "typedef": {
+            "record": [
+              {
+                "name": "domain",
+                "type": "int"
+              },
+              {
+                "name": "overhead",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

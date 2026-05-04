@@ -1,0 +1,159 @@
+[
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "StandardHookMetadata",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "Paused": [
+              "address"
+            ]
+          },
+          {
+            "Unpaused": [
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "PausableHook.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_refund_addr",
+              "type": "address"
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "pause",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "unpause",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_paused",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "PausableHook",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

@@ -1,0 +1,435 @@
+[
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_3",
+              "type": "address"
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IPostDispatchHook",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "MessageLib",
+      "typedefs": [
+        {
+          "name": "message",
+          "typedef": {
+            "record": [
+              {
+                "name": "version",
+                "type": "int"
+              },
+              {
+                "name": "nonce",
+                "type": "int"
+              },
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "sender",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "destination",
+                "type": "int"
+              },
+              {
+                "name": "recipient",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "body",
+                "type": {
+                  "bytes": "any"
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "StandardHookMetadata",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "HookSet": [
+              "int",
+              "address"
+            ]
+          },
+          {
+            "HookRemoved": [
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "DomainRoutingHook.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            },
+            {
+              "name": "hook",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            }
+          ],
+          "name": "remove_hook",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "configs",
+              "type": {
+                "list": [
+                  "DomainRoutingHook.hook_config"
+                ]
+              }
+            }
+          ],
+          "name": "set_hooks",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "refund_addr",
+              "type": "address"
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "destination",
+              "type": "int"
+            }
+          ],
+          "name": "get_hook",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IPostDispatchHook"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_domains",
+          "payable": false,
+          "returns": {
+            "list": [
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "DomainRoutingHook",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "hooks",
+            "type": {
+              "map": [
+                "int",
+                "IPostDispatchHook"
+              ]
+            }
+          },
+          {
+            "name": "domains",
+            "type": {
+              "list": [
+                "int"
+              ]
+            }
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "hook_config",
+          "typedef": {
+            "record": [
+              {
+                "name": "destination",
+                "type": "int"
+              },
+              {
+                "name": "hook",
+                "type": "IPostDispatchHook"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,342 @@
+[
+  {
+    "namespace": {
+      "name": "MerkleLib",
+      "typedefs": [
+        {
+          "name": "merkle_tree",
+          "typedef": {
+            "record": [
+              {
+                "name": "branch",
+                "type": {
+                  "map": [
+                    "int",
+                    {
+                      "bytes": 32
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "count",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "count",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "root",
+          "payable": false,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "latest_checkpoint",
+          "payable": false,
+          "returns": {
+            "tuple": [
+              {
+                "bytes": 32
+              },
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_mailbox",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IMerkleTreeHook",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "CheckpointStored": [
+              "address",
+              {
+                "bytes": 32
+              },
+              "int"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [],
+          "name": "init",
+          "payable": false,
+          "returns": "CheckpointFraudProofs.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "merkle_tree",
+              "type": "IMerkleTreeHook"
+            }
+          ],
+          "name": "store_latest_checkpoint",
+          "payable": false,
+          "returns": {
+            "tuple": [
+              {
+                "bytes": 32
+              },
+              "int"
+            ]
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "index",
+              "type": "int"
+            },
+            {
+              "name": "message_id",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "proof",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            }
+          ],
+          "name": "stored_checkpoint_contains_message",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "cp",
+              "type": "CheckpointFraudProofs.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            }
+          ],
+          "name": "is_premature",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "cp",
+              "type": "CheckpointFraudProofs.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "proof",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "actual_message_id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "is_fraudulent_message_id",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "cp",
+              "type": "CheckpointFraudProofs.checkpoint"
+            },
+            {
+              "name": "merkle_tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "proof",
+              "type": {
+                "map": [
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            }
+          ],
+          "name": "is_fraudulent_root",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "tree_addr",
+              "type": "address"
+            },
+            {
+              "name": "ckpt_root",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "get_stored_checkpoint",
+          "payable": false,
+          "returns": {
+            "option": [
+              "CheckpointFraudProofs.stored_index"
+            ]
+          },
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "CheckpointFraudProofs",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "stored_checkpoints",
+            "type": {
+              "map": [
+                {
+                  "tuple": [
+                    "address",
+                    {
+                      "bytes": 32
+                    }
+                  ]
+                },
+                "CheckpointFraudProofs.stored_index"
+              ]
+            }
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "checkpoint",
+          "typedef": {
+            "record": [
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "merkle_tree",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "root",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "index",
+                "type": "int"
+              },
+              {
+                "name": "message_id",
+                "type": {
+                  "bytes": 32
+                }
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "stored_index",
+          "typedef": {
+            "record": [
+              {
+                "name": "index",
+                "type": "int"
+              },
+              {
+                "name": "exists",
+                "type": "bool"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

@@ -9,6 +9,7 @@ import { useRadixConnectFn } from './radixWallet.js';
 import { useSolanaConnectFn } from './solanaWallet.js';
 import { useStarknetConnectFn } from './starknetWallet.js';
 import { useTronConnectFn } from './tronWallet.js';
+import { useAeternityConnectFn } from './aeternityWallet.js';
 
 export function useConnectFns(): Record<KnownProtocolType, () => void> {
   const onConnectEthereum = useEthereumConnectFn();
@@ -18,6 +19,7 @@ export function useConnectFns(): Record<KnownProtocolType, () => void> {
   const onConnectRadix = useRadixConnectFn();
   const onConnectAleo = useAleoConnectFn();
   const onConnectTron = useTronConnectFn();
+  const onConnectAeternity = useAeternityConnectFn();
 
   return useMemo(
     () => ({
@@ -29,6 +31,7 @@ export function useConnectFns(): Record<KnownProtocolType, () => void> {
       [ProtocolType.Radix]: onConnectRadix,
       [ProtocolType.Aleo]: onConnectAleo,
       [ProtocolType.Tron]: onConnectTron,
+      [ProtocolType.Aeternity]: onConnectAeternity,
     }),
     [
       onConnectEthereum,
@@ -38,6 +41,7 @@ export function useConnectFns(): Record<KnownProtocolType, () => void> {
       onConnectRadix,
       onConnectAleo,
       onConnectTron,
+      onConnectAeternity,
     ],
   );
 }

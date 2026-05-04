@@ -141,6 +141,8 @@ async function getGasPrice(
         return currentGasPrice || createDefaultGasPrice(chain, 1);
       }
     }
+    case ProtocolType.Aeternity:
+      return currentGasPrice || { amount: '1', decimals: 0 };
     case ProtocolType.Aleo:
     case ProtocolType.Radix:
     case ProtocolType.Sealevel:

@@ -96,6 +96,15 @@ export function MultiProtocolWalletModal({
             Tron
           </ProtocolButton>
         )}
+        {includesProtocol(ProtocolType.Aeternity) && (
+          <ProtocolButton
+            protocol={ProtocolType.Aeternity}
+            onClick={onClickProtocol}
+            subTitle="an Aeternity"
+          >
+            Aeternity
+          </ProtocolButton>
+        )}
       </div>
     </Modal>
   );

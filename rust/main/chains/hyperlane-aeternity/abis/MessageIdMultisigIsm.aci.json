@@ -1,0 +1,344 @@
+[
+  {
+    "namespace": {
+      "name": "ListInternal",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "List",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "CheckpointLib",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "MessageLib",
+      "typedefs": [
+        {
+          "name": "message",
+          "typedef": {
+            "record": [
+              {
+                "name": "version",
+                "type": "int"
+              },
+              {
+                "name": "nonce",
+                "type": "int"
+              },
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "sender",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "destination",
+                "type": "int"
+              },
+              {
+                "name": "recipient",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "body",
+                "type": {
+                  "bytes": "any"
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "ValidatorsAndThresholdSet": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "ConfigurationFrozen": []
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "vals",
+              "type": {
+                "list": [
+                  {
+                    "bytes": 20
+                  }
+                ]
+              }
+            },
+            {
+              "name": "threshold",
+              "type": "int"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "MessageIdMultisigIsm.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "vals",
+              "type": {
+                "list": [
+                  {
+                    "bytes": 20
+                  }
+                ]
+              }
+            },
+            {
+              "name": "threshold",
+              "type": "int"
+            }
+          ],
+          "name": "set_validators_and_threshold",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_validators",
+          "payable": false,
+          "returns": {
+            "list": [
+              {
+                "bytes": 20
+              }
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_threshold",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_max_validators",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "validators_and_threshold",
+          "payable": false,
+          "returns": {
+            "tuple": [
+              {
+                "list": [
+                  {
+                    "bytes": 20
+                  }
+                ]
+              },
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "freeze",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_frozen",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_sender",
+              "type": "address"
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_main",
+      "name": "MessageIdMultisigIsm",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "validators",
+            "type": {
+              "list": [
+                {
+                  "bytes": 20
+                }
+              ]
+            }
+          },
+          {
+            "name": "threshold",
+            "type": "int"
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

@@ -53,6 +53,11 @@ import { createRadixHypAdapter } from './adapters/radixHyp.js';
 import { createSealevelHypAdapter } from './adapters/sealevelHyp.js';
 import { createStarknetHypAdapter } from './adapters/starknetHyp.js';
 import { createTronHypAdapter } from './adapters/tronHyp.js';
+import { createAeternityHypAdapter } from './adapters/aeternityHyp.js';
+import {
+  AeternityNativeTokenAdapter,
+  AeternityAEX9TokenAdapter,
+} from './adapters/AeternityTokenAdapter.js';
 
 export class Token extends TokenMetadata implements IToken {
   override amount(amount: Numberish): TokenAmount<this> {
@@ -145,6 +150,12 @@ export class Token extends TokenMetadata implements IToken {
       return new AleoNativeTokenAdapter(chainName, multiProvider, {
         token: addressOrDenom,
       });
+    } else if (standard === TokenStandard.AeternityNative) {
+      return new AeternityNativeTokenAdapter(chainName, multiProvider, {});
+    } else if (standard === TokenStandard.AEX9) {
+      return new AeternityAEX9TokenAdapter(chainName, multiProvider, {
+        token: addressOrDenom,
+      });
     } else if (this.isHypToken()) {
       return this.getHypAdapter(multiProvider);
     } else if (this.isIbcToken()) {
@@ -196,7 +207,8 @@ export class Token extends TokenMetadata implements IToken {
       createCosmosHypAdapter(multiProvider, this) ||
       createStarknetHypAdapter(multiProvider, this) ||
       createRadixHypAdapter(multiProvider, this) ||
-      createAleoHypAdapter(multiProvider, this);
+      createAleoHypAdapter(multiProvider, this) ||
+      createAeternityHypAdapter(multiProvider, this);
 
     if (hypAdapter) {
       return hypAdapter;
@@ -319,6 +331,10 @@ export function getCollateralTokenAdapter({
     });
   } else if (protocolType === ProtocolType.Radix) {
     return new RadixTokenAdapter(chainName, multiProvider, {
+      token: tokenAddress,
+    });
+  } else if (protocolType === ProtocolType.Aeternity) {
+    return new AeternityAEX9TokenAdapter(chainName, multiProvider, {
       token: tokenAddress,
     });
   } else {

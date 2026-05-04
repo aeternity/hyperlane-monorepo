@@ -93,6 +93,13 @@ export enum TokenStandard {
   TronHypEverclearCollateral = 'TronHypEverclearCollateral',
   TronHypEverclearEth = 'TronHypEverclearEth',
   TronHypCrossCollateralRouter = 'TronHypCrossCollateralRouter',
+
+  // Aeternity
+  AeternityNative = 'AeternityNative',
+  AEX9 = 'AEX9',
+  AeternityHypNative = 'AeternityHypNative',
+  AeternityHypCollateral = 'AeternityHypCollateral',
+  AeternityHypSynthetic = 'AeternityHypSynthetic',
 }
 
 // Allows for omission of protocol field in token args
@@ -184,6 +191,13 @@ export const TOKEN_STANDARD_TO_PROTOCOL: Record<
   TronHypEverclearCollateral: ProtocolType.Tron,
   TronHypEverclearEth: ProtocolType.Tron,
   TronHypCrossCollateralRouter: ProtocolType.Tron,
+
+  // Aeternity
+  AeternityNative: ProtocolType.Aeternity,
+  AEX9: ProtocolType.Aeternity,
+  AeternityHypNative: ProtocolType.Aeternity,
+  AeternityHypCollateral: ProtocolType.Aeternity,
+  AeternityHypSynthetic: ProtocolType.Aeternity,
 };
 
 export const TOKEN_STANDARD_TO_PROVIDER_TYPE: Record<
@@ -231,6 +245,8 @@ export const TOKEN_COLLATERALIZED_STANDARDS = [
   TokenStandard.EvmHypCrossCollateralRouter,
   TokenStandard.TronHypCrossCollateralRouter,
   TokenStandard.SealevelHypCrossCollateral,
+  TokenStandard.AeternityHypNative,
+  TokenStandard.AeternityHypCollateral,
 ];
 
 export const TOKEN_CROSS_COLLATERAL_STANDARDS: Set<TokenStandard> = new Set([
@@ -317,6 +333,9 @@ export const TOKEN_HYP_STANDARDS = [
   TokenStandard.TronHypCrossCollateralRouter,
   TokenStandard.TronHypEverclearCollateral,
   TokenStandard.TronHypEverclearEth,
+  TokenStandard.AeternityHypNative,
+  TokenStandard.AeternityHypCollateral,
+  TokenStandard.AeternityHypSynthetic,
 ];
 
 export const TOKEN_MULTI_CHAIN_STANDARDS = [
@@ -395,6 +414,20 @@ export const tokenTypeToStandard = (
     }
     case ProtocolType.Tron: {
       return TRON_TOKEN_TYPE_TO_STANDARD[tokenType];
+    }
+    case ProtocolType.Aeternity: {
+      if (
+        AETERNITY_SUPPORTED_TOKEN_TYPES.includes(
+          tokenType as AeternitySupportedTokenTypes,
+        )
+      ) {
+        return AETERNITY_TOKEN_TYPE_TO_STANDARD[
+          tokenType as AeternitySupportedTokenTypes
+        ];
+      }
+      throw new Error(
+        `token type ${tokenType} not available on protocol ${protocolType}`,
+      );
     }
     case ProtocolType.Sealevel: {
       const sealevelTokenStandard =
@@ -581,6 +614,7 @@ export const PROTOCOL_TO_NATIVE_STANDARD: Record<
   [ProtocolType.Radix]: TokenStandard.RadixNative,
   [ProtocolType.Aleo]: TokenStandard.AleoNative,
   [ProtocolType.Tron]: TokenStandard.TronNative,
+  [ProtocolType.Aeternity]: TokenStandard.AeternityNative,
 };
 
 export const PROTOCOL_TO_HYP_NATIVE_STANDARD: Record<
@@ -596,4 +630,23 @@ export const PROTOCOL_TO_HYP_NATIVE_STANDARD: Record<
   [ProtocolType.CosmosNative]: TokenStandard.CosmNativeHypCollateral,
   [ProtocolType.Aleo]: TokenStandard.AleoHypNative,
   [ProtocolType.Tron]: TokenStandard.TronHypNative,
+  [ProtocolType.Aeternity]: TokenStandard.AeternityHypNative,
+};
+
+export const AETERNITY_SUPPORTED_TOKEN_TYPES = [
+  TokenType.native,
+  TokenType.collateral,
+  TokenType.synthetic,
+] as const;
+
+type AeternitySupportedTokenTypes =
+  (typeof AETERNITY_SUPPORTED_TOKEN_TYPES)[number];
+
+export const AETERNITY_TOKEN_TYPE_TO_STANDARD: Record<
+  AeternitySupportedTokenTypes,
+  TokenStandard
+> = {
+  [TokenType.native]: TokenStandard.AeternityHypNative,
+  [TokenType.collateral]: TokenStandard.AeternityHypCollateral,
+  [TokenType.synthetic]: TokenStandard.AeternityHypSynthetic,
 };

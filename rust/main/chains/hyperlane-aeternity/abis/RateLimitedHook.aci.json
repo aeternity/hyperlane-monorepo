@@ -1,0 +1,350 @@
+[
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "TypeCasts",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "MessageLib",
+      "typedefs": [
+        {
+          "name": "message",
+          "typedef": {
+            "record": [
+              {
+                "name": "version",
+                "type": "int"
+              },
+              {
+                "name": "nonce",
+                "type": "int"
+              },
+              {
+                "name": "origin",
+                "type": "int"
+              },
+              {
+                "name": "sender",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "destination",
+                "type": "int"
+              },
+              {
+                "name": "recipient",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "body",
+                "type": {
+                  "bytes": "any"
+                }
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "TokenMessage",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "RateLimitLib",
+      "typedefs": [
+        {
+          "name": "bucket",
+          "typedef": {
+            "record": [
+              {
+                "name": "max_capacity",
+                "type": "int"
+              },
+              {
+                "name": "filled_level",
+                "type": "int"
+              },
+              {
+                "name": "last_updated",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "RateLimitSet": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "ConsumedFilledLevel": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "mailbox",
+              "type": "address"
+            },
+            {
+              "name": "max_capacity",
+              "type": "int"
+            },
+            {
+              "name": "sender_addr",
+              "type": "address"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "RateLimitedHook.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_refund_addr",
+              "type": "address"
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "current_level",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_max_capacity",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_mailbox",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_sender",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_capacity",
+              "type": "int"
+            }
+          ],
+          "name": "set_max_capacity",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "RateLimitedHook",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "mailbox",
+            "type": "address"
+          },
+          {
+            "name": "sender",
+            "type": "address"
+          },
+          {
+            "name": "bucket",
+            "type": "RateLimitLib.bucket"
+          },
+          {
+            "name": "validated_messages",
+            "type": {
+              "map": [
+                {
+                  "bytes": 32
+                },
+                "bool"
+              ]
+            }
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

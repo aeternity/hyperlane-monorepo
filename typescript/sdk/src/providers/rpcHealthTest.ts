@@ -5,6 +5,7 @@ import { ChainMetadata } from '../metadata/chainMetadataTypes.js';
 
 import {
   AleoProvider,
+  AeternityTypedProvider,
   CosmJsNativeProvider,
   CosmJsProvider,
   CosmJsWasmProvider,
@@ -46,6 +47,8 @@ export async function isRpcHealthy(
     return isAleoProviderHealthy(provider.provider, metadata);
   else if (provider.type === ProviderType.Tron)
     return isEthersV5ProviderHealthy(provider.provider, metadata);
+  else if (provider.type === ProviderType.Aeternity)
+    return isAeternityProviderHealthy(provider.provider, metadata);
   else
     throw new Error(
       `Unsupported provider type ${provider.type}, new health check required`,
@@ -147,6 +150,25 @@ export async function isAleoProviderHealthy(
   } catch (err) {
     rootLogger.warn(
       `Aleo rpc health check threw for ${metadata.name}`,
+      err as Error,
+    );
+    return false;
+  }
+}
+
+export async function isAeternityProviderHealthy(
+  provider: AeternityTypedProvider['provider'],
+  metadata: ChainMetadata,
+): Promise<boolean> {
+  try {
+    const healthy = await provider.isHealthy();
+    if (healthy) {
+      rootLogger.debug(`Node is healthy for ${metadata.name}`);
+    }
+    return healthy;
+  } catch (err) {
+    rootLogger.warn(
+      `Aeternity health check threw for ${metadata.name}`,
       err as Error,
     );
     return false;

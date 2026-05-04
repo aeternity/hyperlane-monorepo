@@ -1,0 +1,298 @@
+[
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "StandardHookMetadata",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "ProtocolFeeSet": [
+              "int"
+            ]
+          },
+          {
+            "BeneficiarySet": [
+              "address"
+            ]
+          },
+          {
+            "ProtocolFeePaid": [
+              "address",
+              "int"
+            ]
+          },
+          {
+            "FeesCollected": [
+              "address",
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "protocol_fee",
+              "type": "int"
+            },
+            {
+              "name": "max_protocol_fee",
+              "type": "int"
+            },
+            {
+              "name": "beneficiary",
+              "type": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "ProtocolFee.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_message",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "refund_addr",
+              "type": "address"
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "metadata",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_message",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "fee",
+              "type": "int"
+            }
+          ],
+          "name": "set_protocol_fee",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            }
+          ],
+          "name": "set_beneficiary",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "collect_protocol_fees",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "get_protocol_fee",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_max_protocol_fee",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_beneficiary",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_collected_fees",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "ProtocolFee",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "name": "protocol_fee",
+            "type": "int"
+          },
+          {
+            "name": "max_protocol_fee",
+            "type": "int"
+          },
+          {
+            "name": "collected_fees",
+            "type": "int"
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

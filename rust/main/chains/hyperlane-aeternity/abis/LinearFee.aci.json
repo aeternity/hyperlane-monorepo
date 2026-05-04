@@ -1,0 +1,205 @@
+[
+  {
+    "contract": {
+      "event": {
+        "variant": [
+          {
+            "FeeConfigured": [
+              "int",
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "ConfigurationFrozen": []
+          }
+        ]
+      },
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "max_fee",
+              "type": "int"
+            },
+            {
+              "name": "half_amount",
+              "type": "int"
+            }
+          ],
+          "name": "init",
+          "payable": false,
+          "returns": "LinearFee.state",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_destination",
+              "type": "int"
+            },
+            {
+              "name": "_recipient",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "amount",
+              "type": "int"
+            }
+          ],
+          "name": "quote_transfer_fee",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_max_fee",
+              "type": "int"
+            },
+            {
+              "name": "new_half_amount",
+              "type": "int"
+            }
+          ],
+          "name": "set_fee_config",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "freeze",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_frozen",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_max_fee",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_half_amount",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "LinearFee",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
+            "name": "max_fee",
+            "type": "int"
+          },
+          {
+            "name": "half_amount",
+            "type": "int"
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
+          }
+        ]
+      },
+      "typedefs": []
+    }
+  }
+]

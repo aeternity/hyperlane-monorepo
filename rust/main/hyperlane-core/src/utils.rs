@@ -7,13 +7,35 @@ use std::time::Duration;
 
 use crate::{KnownHyperlaneDomain, H160, H256, U256};
 
-/// Converts a hex or base58 string to an H256.
+/// Converts a hex, base58, bech32, or AE base58check string to an H256.
+///
+/// Supported formats:
+/// - `0x...` hex (20 or 32 bytes)
+/// - bech32
+/// - plain base58 (32 bytes or 25-byte Tron)
+/// - AE base58check: `prefix_<base58(payload ++ checksum)>` where payload is
+///   32 bytes and checksum is 4 bytes (e.g. `ct_...`, `ak_...`, `sk_...`)
 pub fn hex_or_base58_or_bech32_to_h256(string: &str) -> Result<H256> {
     let h256 = if string.starts_with("0x") {
         match string.len() {
             66 => H256::from_str(string)?,
             42 => H160::from_str(string)?.into(),
             _ => eyre::bail!("Invalid hex string"),
+        }
+    } else if let Some((_prefix, body)) = string.split_once('_') {
+        // AE base58check: prefix_<base58(payload ++ 4-byte checksum)>
+        // Addresses (ak_, ct_) have 32-byte payload.
+        // Secret keys (sk_) have 64-byte payload (32 private + 32 public);
+        // we take only the first 32 bytes.
+        let bytes = bs58::decode(body).into_vec()?;
+        if bytes.len() < 4 {
+            eyre::bail!("AE base58check payload too short");
+        }
+        let payload = &bytes[..bytes.len() - 4];
+        match payload.len() {
+            32 => H256::from_slice(payload),
+            64 => H256::from_slice(&payload[..32]),
+            n => eyre::bail!("expected 32 or 64-byte AE payload, got {n} bytes"),
         }
     } else {
         let bytes = bech32::decode(string);

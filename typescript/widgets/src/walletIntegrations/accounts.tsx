@@ -17,6 +17,7 @@ import { useSolanaAccount } from './solanaWallet.js';
 import { useStarknetAccount } from './starknetWallet.js';
 import { type AccountInfo } from './types.js';
 import { useTronAccount } from './tronWallet.js';
+import { useAeternityAccount } from './aeternityWallet.js';
 
 export function useAccounts(
   multiProvider: MinimalProviderRegistry,
@@ -32,6 +33,7 @@ export function useAccounts(
   const radixAccountInfo = useRadixAccount(multiProvider);
   const aleoAccountInfo = useAleoAccount(multiProvider);
   const tronAccountInfo = useTronAccount(multiProvider);
+  const aeternityAccountInfo = useAeternityAccount(multiProvider);
 
   const readyAccounts = useMemo(
     () =>
@@ -43,6 +45,7 @@ export function useAccounts(
         radixAccountInfo,
         aleoAccountInfo,
         tronAccountInfo,
+        aeternityAccountInfo,
       ].filter((a) => a.isReady),
     [
       evmAccountInfo,
@@ -52,6 +55,7 @@ export function useAccounts(
       radixAccountInfo,
       aleoAccountInfo,
       tronAccountInfo,
+      aeternityAccountInfo,
     ],
   );
 
@@ -77,6 +81,7 @@ export function useAccounts(
         [ProtocolType.Radix]: radixAccountInfo,
         [ProtocolType.Aleo]: aleoAccountInfo,
         [ProtocolType.Tron]: tronAccountInfo,
+        [ProtocolType.Aeternity]: aeternityAccountInfo,
       },
       readyAccounts,
     }),
@@ -88,6 +93,7 @@ export function useAccounts(
       radixAccountInfo,
       aleoAccountInfo,
       tronAccountInfo,
+      aeternityAccountInfo,
       readyAccounts,
     ],
   );

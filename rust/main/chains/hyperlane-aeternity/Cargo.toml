@@ -1,0 +1,47 @@
+[package]
+name = "hyperlane-aeternity"
+documentation.workspace = true
+edition.workspace = true
+homepage.workspace = true
+license-file.workspace = true
+publish.workspace = true
+version.workspace = true
+
+[dependencies]
+async-trait = { workspace = true }
+base64 = { workspace = true }
+bs58 = { workspace = true }
+chrono = { workspace = true }
+derive-new = { workspace = true }
+ed25519-dalek = { workspace = true, features = ["rand_core"] }
+hex = { workspace = true }
+reqwest = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+sha3 = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["rt", "macros", "parking_lot", "rt-multi-thread"] }
+tokio-metrics = { workspace = true }
+tracing = { workspace = true }
+tracing-futures = { workspace = true }
+url = { workspace = true }
+rand = { workspace = true }
+num-bigint = { workspace = true }
+num-traits = { workspace = true }
+
+hyperlane-core = { path = "../../hyperlane-core", features = ["async"] }
+hyperlane-metric = { path = "../../hyperlane-metric" }
+hyperlane-operation-verifier = { path = "../../applications/hyperlane-operation-verifier" }
+hyperlane-warp-route = { path = "../../applications/hyperlane-warp-route" }
+reqwest-utils = { path = "../../utils/reqwest-utils" }
+crypto = { path = "../../utils/crypto" }
+
+once_cell = { workspace = true }
+rlp = { workspace = true }
+
+blake2 = "0.10"
+
+[dev-dependencies]
+tracing-test = { workspace = true }
+tokio-test = { workspace = true }

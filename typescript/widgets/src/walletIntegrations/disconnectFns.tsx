@@ -11,6 +11,7 @@ import { useRadixDisconnectFn } from './radixWallet.js';
 import { useSolanaDisconnectFn } from './solanaWallet.js';
 import { useStarknetDisconnectFn } from './starknetWallet.js';
 import { useTronDisconnectFn } from './tronWallet.js';
+import { useAeternityDisconnectFn } from './aeternityWallet.js';
 
 const logger = widgetLogger.child({
   module: 'walletIntegrations/disconnectFns',
@@ -27,6 +28,7 @@ export function useDisconnectFns(): Record<
   const disconnectRadix = useRadixDisconnectFn();
   const disconnectAleo = useAleoDisconnectFn();
   const disconnectTron = useTronDisconnectFn();
+  const disconnectAeternity = useAeternityDisconnectFn();
 
   const onClickDisconnect =
     (env: ProtocolType, disconnectFn?: () => Promise<void> | void) =>
@@ -67,6 +69,7 @@ export function useDisconnectFns(): Record<
       ),
       [ProtocolType.Aleo]: onClickDisconnect(ProtocolType.Aleo, disconnectAleo),
       [ProtocolType.Tron]: onClickDisconnect(ProtocolType.Tron, disconnectTron),
+      [ProtocolType.Aeternity]: onClickDisconnect(ProtocolType.Aeternity, disconnectAeternity),
     }),
     [
       disconnectEvm,
@@ -76,6 +79,7 @@ export function useDisconnectFns(): Record<
       disconnectRadix,
       disconnectAleo,
       disconnectTron,
+      disconnectAeternity,
     ],
   );
 }

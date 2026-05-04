@@ -109,14 +109,51 @@ impl ForwardBackwardIterator {
                     return Ok(Some(low_nonce_message));
                 }
 
-                // If both iterators give us unindexed messages, there are no messages at the moment
-                (MessageStatus::Unindexed, MessageStatus::Unindexed) => return Ok(None),
+                // If both iterators give us unindexed messages, check if the
+                // indexer has stored new messages with higher nonces since we
+                // last checked. This handles shared Mailboxes where the first
+                // relevant message nonce is far above 0.
+                (MessageStatus::Unindexed, MessageStatus::Unindexed) => {
+                    if self.try_jump_to_latest_nonce() {
+                        continue;
+                    }
+                    return Ok(None);
+                }
             }
             // This loop may iterate through millions of processed messages, blocking the runtime.
             // So, to avoid starving other futures in this task, yield to the runtime
             // on each iteration
             tokio::task::yield_now().await;
         }
+    }
+
+    /// Re-check the DB for the latest highest-seen nonce. If the indexer has
+    /// stored a message with a nonce higher than our current position, jump
+    /// the iterators forward so we don't get stuck scanning empty nonces on
+    /// shared Mailboxes.
+    fn try_jump_to_latest_nonce(&mut self) -> bool {
+        let db_highest = self
+            .high_nonce_iter
+            .db
+            .retrieve_highest_seen_message_nonce()
+            .ok()
+            .flatten();
+
+        if let Some(db_nonce) = db_highest {
+            let current = self.high_nonce_iter.nonce.unwrap_or(0);
+            if db_nonce > current {
+                debug!(
+                    current_nonce = current,
+                    db_nonce,
+                    domain = %self._domain,
+                    "Jumping nonce iterator to latest DB nonce"
+                );
+                self.high_nonce_iter.nonce = Some(db_nonce);
+                self.low_nonce_iter.nonce = db_nonce.checked_sub(1);
+                return true;
+            }
+        }
+        false
     }
 }
 

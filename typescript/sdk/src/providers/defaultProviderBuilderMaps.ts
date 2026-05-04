@@ -2,6 +2,7 @@ import { ProtocolType } from '@hyperlane-xyz/utils';
 
 import type { KnownProtocolType, TypedProvider } from './ProviderType.js';
 import { ProviderType } from './ProviderType.js';
+import { defaultAeternityProviderBuilder } from './builders/aeternity.js';
 import { defaultAleoProviderBuilder } from './builders/aleo.js';
 import {
   defaultCosmJsNativeProviderBuilder,
@@ -38,6 +39,7 @@ export const defaultProviderBuilderMap: ProviderBuilderMap = {
   [ProviderType.Radix]: defaultRadixProviderBuilder,
   [ProviderType.Aleo]: defaultAleoProviderBuilder,
   [ProviderType.Tron]: defaultTronProviderBuilder,
+  [ProviderType.Aeternity]: defaultAeternityProviderBuilder,
 };
 
 export const protocolToDefaultProviderBuilder: Record<
@@ -52,4 +54,5 @@ export const protocolToDefaultProviderBuilder: Record<
   [ProtocolType.Radix]: defaultRadixProviderBuilder,
   [ProtocolType.Aleo]: defaultAleoProviderBuilder,
   [ProtocolType.Tron]: defaultTronProviderBuilder,
+  [ProtocolType.Aeternity]: defaultAeternityProviderBuilder,
 };

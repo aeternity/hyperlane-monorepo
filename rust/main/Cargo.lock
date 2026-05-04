@@ -5811,6 +5811,44 @@ dependencies = [
 ]
 
 [[package]]
+name = "hyperlane-aeternity"
+version = "2.2.0"
+dependencies = [
+ "async-trait",
+ "base64 0.21.7",
+ "blake2",
+ "bs58 0.5.1",
+ "chrono",
+ "crypto",
+ "derive-new",
+ "ed25519-dalek",
+ "hex 0.4.3",
+ "hyperlane-core",
+ "hyperlane-metric",
+ "hyperlane-operation-verifier",
+ "hyperlane-warp-route",
+ "num-bigint 0.4.6",
+ "num-traits",
+ "once_cell",
+ "rand 0.8.5",
+ "reqwest 0.11.27",
+ "reqwest-utils",
+ "rlp 0.5.2",
+ "serde",
+ "serde_json",
+ "sha2 0.10.8",
+ "sha3",
+ "thiserror 1.0.63",
+ "tokio",
+ "tokio-metrics",
+ "tokio-test",
+ "tracing",
+ "tracing-futures",
+ "tracing-test",
+ "url",
+]
+
+[[package]]
 name = "hyperlane-aleo"
 version = "2.2.0"
 dependencies = [
@@ -5883,6 +5921,7 @@ dependencies = [
  "fuels",
  "futures",
  "futures-util",
+ "hyperlane-aeternity",
  "hyperlane-aleo",
  "hyperlane-core",
  "hyperlane-cosmos",

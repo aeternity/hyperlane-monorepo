@@ -777,6 +777,59 @@ pub fn build_aleo_connection_conf(
     }
 }
 
+pub fn build_aeternity_connection_conf(
+    rpcs: &[Url],
+    chain: &ValueParser,
+    err: &mut ConfigParsingError,
+    _operation_batch: OpSubmissionConfig,
+) -> Option<ChainConnectionConf> {
+    let mut local_err = ConfigParsingError::default();
+    let mdw_urls = parse_base_and_override_urls(
+        chain,
+        "mdwUrls",
+        "customMdwUrls",
+        "http",
+        &mut local_err,
+        false,
+    );
+
+    let compiler_urls = parse_base_and_override_urls(
+        chain,
+        "compilerUrls",
+        "customCompilerUrls",
+        "http",
+        &mut local_err,
+        false,
+    );
+
+    let network_id = chain
+        .chain(&mut local_err)
+        .get_key("networkId")
+        .parse_string()
+        .end()
+        .or_else(|| {
+            local_err.push(
+                (&chain.cwp).add("network_id"),
+                eyre!("Missing network ID for Aeternity chain"),
+            );
+            None
+        });
+
+    if !local_err.is_ok() {
+        err.merge(local_err);
+        None
+    } else {
+        Some(ChainConnectionConf::Aeternity(
+            hyperlane_aeternity::ConnectionConf::new(
+                rpcs.to_vec(),
+                mdw_urls,
+                compiler_urls,
+                network_id?.to_string(),
+            ),
+        ))
+    }
+}
+
 pub fn build_connection_conf(
     domain_protocol: HyperlaneDomainProtocol,
     rpcs: &[Url],
@@ -817,6 +870,9 @@ pub fn build_connection_conf(
         HyperlaneDomainProtocol::Aleo => {
             build_aleo_connection_conf(rpcs, chain, err, operation_batch)
         }
+        HyperlaneDomainProtocol::Aeternity => {
+            build_aeternity_connection_conf(rpcs, chain, err, operation_batch)
+        }
         #[allow(unreachable_patterns)]
         _ => unreachable!("Unsupported protocol chains are pre-filtered"),
     }
@@ -827,7 +883,8 @@ pub fn build_connection_conf(
 pub fn is_protocol_supported(protocol: HyperlaneDomainProtocol) -> bool {
     use HyperlaneDomainProtocol::*;
     match protocol {
-        Ethereum | Fuel | Sealevel | Cosmos | CosmosNative | Starknet | Radix | Tron => true,
+        Ethereum | Fuel | Sealevel | Cosmos | CosmosNative | Starknet | Radix | Tron
+        | Aeternity => true,
         // Aleo is feature-gated - only supported when the "aleo" feature is enabled
         Aleo => cfg!(feature = "aleo"),
     }
