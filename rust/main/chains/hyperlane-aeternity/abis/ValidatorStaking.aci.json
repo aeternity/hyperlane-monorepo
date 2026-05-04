@@ -1,6 +1,23 @@
 [
   {
     "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "ISlasherProbe",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
       "event": {
         "variant": [
           {
@@ -51,6 +68,11 @@
             "OwnershipTransferred": [
               "address",
               "address"
+            ]
+          },
+          {
+            "ThresholdWeightUpdated": [
+              "int"
             ]
           }
         ]
@@ -122,6 +144,117 @@
             }
           ],
           "name": "slash",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "validator",
+              "type": "address"
+            }
+          ],
+          "name": "freeze",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "validator",
+              "type": "address"
+            }
+          ],
+          "name": "unfreeze",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "name": "block",
+              "type": "int"
+            }
+          ],
+          "name": "get_weight_at_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "name": "block",
+              "type": "int"
+            }
+          ],
+          "name": "get_key_at_block",
+          "payable": false,
+          "returns": {
+            "option": [
+              {
+                "bytes": 20
+              }
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "block",
+              "type": "int"
+            }
+          ],
+          "name": "get_total_weight_at_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "block",
+              "type": "int"
+            }
+          ],
+          "name": "get_threshold_at_block",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_threshold_weight",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "threshold",
+              "type": "int"
+            }
+          ],
+          "name": "set_threshold_weight",
           "payable": false,
           "returns": {
             "tuple": []
@@ -245,6 +378,20 @@
         {
           "arguments": [
             {
+              "name": "recipient",
+              "type": "address"
+            }
+          ],
+          "name": "emergency_withdraw_excess",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
               "name": "new_owner",
               "type": "address"
             }
@@ -323,6 +470,36 @@
           {
             "name": "deployed_block",
             "type": "int"
+          },
+          {
+            "name": "weight_history",
+            "type": {
+              "map": [
+                "address",
+                "ValidatorStaking.checkpoint_array"
+              ]
+            }
+          },
+          {
+            "name": "key_history",
+            "type": {
+              "map": [
+                "address",
+                "ValidatorStaking.key_checkpoint_array"
+              ]
+            }
+          },
+          {
+            "name": "total_weight_history",
+            "type": "ValidatorStaking.checkpoint_array"
+          },
+          {
+            "name": "threshold_weight",
+            "type": "int"
+          },
+          {
+            "name": "threshold_history",
+            "type": "ValidatorStaking.checkpoint_array"
           }
         ]
       },
@@ -348,6 +525,82 @@
                 "type": {
                   "bytes": 20
                 }
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "checkpoint_entry",
+          "typedef": {
+            "record": [
+              {
+                "name": "value",
+                "type": "int"
+              },
+              {
+                "name": "block_height",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "key_checkpoint",
+          "typedef": {
+            "record": [
+              {
+                "name": "signing_key",
+                "type": {
+                  "bytes": 20
+                }
+              },
+              {
+                "name": "block_height",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "checkpoint_array",
+          "typedef": {
+            "record": [
+              {
+                "name": "entries",
+                "type": {
+                  "map": [
+                    "int",
+                    "ValidatorStaking.checkpoint_entry"
+                  ]
+                }
+              },
+              {
+                "name": "length",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "key_checkpoint_array",
+          "typedef": {
+            "record": [
+              {
+                "name": "entries",
+                "type": {
+                  "map": [
+                    "int",
+                    "ValidatorStaking.key_checkpoint"
+                  ]
+                }
+              },
+              {
+                "name": "length",
+                "type": "int"
               }
             ]
           },

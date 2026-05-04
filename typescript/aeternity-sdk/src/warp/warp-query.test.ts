@@ -45,12 +45,12 @@ describe('Warp query functions', () => {
   });
 
   describe('quoteTransferRemote', () => {
-    it('returns the transfer fee as bigint', async () => {
+    it('returns the transfer fee as a structured quote', async () => {
       mockContractInitialize({
         quote_transfer_remote: mockMethod(BigInt(1500)),
       });
 
-      const fee = await quoteTransferRemote(
+      const quote = await quoteTransferRemote(
         createMockSdk(),
         'ct_router',
         11155111,
@@ -58,7 +58,9 @@ describe('Warp query functions', () => {
         BigInt(1000000),
       );
 
-      expect(fee).to.equal(BigInt(1500));
+      expect(quote.dispatchCost).to.equal(BigInt(1500));
+      expect(quote.feeAmount).to.equal(BigInt(0));
+      expect(quote.totalToken).to.equal(BigInt(1500));
     });
 
     it('returns zero for fee-free transfers', async () => {
@@ -66,7 +68,7 @@ describe('Warp query functions', () => {
         quote_transfer_remote: mockMethod(0),
       });
 
-      const fee = await quoteTransferRemote(
+      const quote = await quoteTransferRemote(
         createMockSdk(),
         'ct_router',
         457,
@@ -74,7 +76,31 @@ describe('Warp query functions', () => {
         BigInt(500),
       );
 
-      expect(fee).to.equal(BigInt(0));
+      expect(quote.dispatchCost).to.equal(BigInt(0));
+      expect(quote.feeAmount).to.equal(BigInt(0));
+      expect(quote.totalToken).to.equal(BigInt(0));
+    });
+
+    it('returns a structured quote when the router responds with a record', async () => {
+      mockContractInitialize({
+        quote_transfer_remote: mockMethod({
+          dispatch_cost: BigInt(1200),
+          fee_amount: BigInt(50),
+          total_token: BigInt(1250),
+        }),
+      });
+
+      const quote = await quoteTransferRemote(
+        createMockSdk(),
+        'ct_router',
+        11155111,
+        '0xrecipient',
+        BigInt(1000000),
+      );
+
+      expect(quote.dispatchCost).to.equal(BigInt(1200));
+      expect(quote.feeAmount).to.equal(BigInt(50));
+      expect(quote.totalToken).to.equal(BigInt(1250));
     });
   });
 

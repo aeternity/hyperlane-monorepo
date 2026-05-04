@@ -77,6 +77,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_3",
+              "type": "address"
             }
           ],
           "name": "post_dispatch",
@@ -219,6 +223,14 @@
                   "IPostDispatchHook"
                 ]
               }
+            },
+            {
+              "name": "_6",
+              "type": {
+                "option": [
+                  "address"
+                ]
+              }
             }
           ],
           "name": "dispatch",
@@ -309,6 +321,66 @@
           "payable": false,
           "returns": "unit",
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "recipient_ism_for",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_default_ism",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_default_hook",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_required_hook",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
         }
       ],
       "kind": "contract_interface",
@@ -383,6 +455,26 @@
           ],
           "name": "send_ae",
           "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            },
+            {
+              "name": "_2",
+              "type": "address"
+            },
+            {
+              "name": "_3",
+              "type": "int"
+            }
+          ],
+          "name": "send_aex9",
+          "payable": false,
           "returns": "unit",
           "stateful": false
         },
@@ -489,11 +581,6 @@
             ]
           },
           {
-            "RemoteRouterUnenrolled": [
-              "int"
-            ]
-          },
-          {
             "CustomHookSet": [
               "address"
             ]
@@ -582,6 +669,44 @@
         {
           "arguments": [
             {
+              "name": "token_bytes",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "token_addr",
+              "type": "address"
+            }
+          ],
+          "name": "register_token",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "token_bytes",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "get_token",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
               "name": "origin",
               "type": "int"
             },
@@ -650,9 +775,21 @@
             {
               "name": "domain",
               "type": "int"
+            },
+            {
+              "name": "router",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "ism",
+              "type": {
+                "bytes": 32
+              }
             }
           ],
-          "name": "unenroll_remote_router",
+          "name": "enroll_remote_router_and_ism",
           "payable": false,
           "returns": {
             "tuple": []
@@ -667,6 +804,24 @@
             }
           ],
           "name": "get_remote_router",
+          "payable": false,
+          "returns": {
+            "option": [
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "domain",
+              "type": "int"
+            }
+          ],
+          "name": "get_remote_ism",
           "payable": false,
           "returns": {
             "option": [
@@ -777,6 +932,17 @@
             }
           },
           {
+            "name": "remote_isms",
+            "type": {
+              "map": [
+                "int",
+                {
+                  "bytes": 32
+                }
+              ]
+            }
+          },
+          {
             "name": "custom_hook",
             "type": {
               "option": [
@@ -797,6 +963,17 @@
                   ]
                 },
                 "IInterchainAccount"
+              ]
+            }
+          },
+          {
+            "name": "token_registry",
+            "type": {
+              "map": [
+                {
+                  "bytes": 32
+                },
+                "address"
               ]
             }
           },

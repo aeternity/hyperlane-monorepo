@@ -2,12475 +2,13256 @@
 // Regenerate with: make generate-aci
 
 export const AGGREGATION_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ModulesAndThresholdSet": [
-            "int",
-            "int"
-          ]
+          ModulesAndThresholdSet: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          ConfigurationFrozen: [],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
-        ],
-        "name": "init",
-        "payable": false,
-        "returns": "AggregationIsm.state",
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "mods",
-            "type": {
-              "list": [
-                "IInterchainSecurityModule"
-              ]
-            }
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "threshold",
-            "type": "int"
-          }
-        ],
-        "name": "set_modules_and_threshold",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "get_modules",
-        "payable": false,
-        "returns": {
-          "list": [
-            "IInterchainSecurityModule"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_threshold",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'mods',
+            type: {
+              list: ['IInterchainSecurityModule'],
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'threshold',
+            type: 'int',
+          },
+        ],
+        name: 'init',
+        payable: false,
+        returns: 'AggregationIsm.state',
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'mods',
+            type: {
+              list: ['IInterchainSecurityModule'],
+            },
           },
           {
-            "name": "sender",
-            "type": "address"
-          }
+            name: 'threshold',
+            type: 'int',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'set_modules_and_threshold',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_modules',
+        payable: false,
+        returns: {
+          list: ['IInterchainSecurityModule'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_threshold',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'sender',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'freeze',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        arguments: [],
+        name: 'is_frozen',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "AggregationIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'AggregationIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "modules",
-          "type": {
-            "list": [
-              "IInterchainSecurityModule"
-            ]
-          }
+          name: 'modules',
+          type: {
+            list: ['IInterchainSecurityModule'],
+          },
         },
         {
-          "name": "threshold",
-          "type": "int"
-        }
-      ]
+          name: 'threshold',
+          type: 'int',
+        },
+        {
+          name: 'frozen',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const AMOUNT_ROUTING_HOOK_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ThresholdUpdated": [
-            "int",
-            "int"
-          ]
+          ThresholdUpdated: ['int', 'int'],
         },
         {
-          "HooksUpdated": [
-            "address",
-            "address"
-          ]
+          HooksUpdated: ['address', 'address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "lower_hook",
-            "type": "IPostDispatchHook"
+            name: 'lower_hook',
+            type: 'IPostDispatchHook',
           },
           {
-            "name": "upper_hook",
-            "type": "IPostDispatchHook"
+            name: 'upper_hook',
+            type: 'IPostDispatchHook',
           },
           {
-            "name": "threshold",
-            "type": "int"
-          }
+            name: 'threshold',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "AmountRoutingHook.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'AmountRoutingHook.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_threshold",
-            "type": "int"
-          }
-        ],
-        "name": "set_threshold",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "lower",
-            "type": "IPostDispatchHook"
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "upper",
-            "type": "IPostDispatchHook"
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "set_hooks",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_threshold",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_lower_hook",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_upper_hook",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_threshold',
+            type: 'int',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_threshold',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: 'lower',
+            type: 'IPostDispatchHook',
+          },
+          {
+            name: 'upper',
+            type: 'IPostDispatchHook',
+          },
+        ],
+        name: 'set_hooks',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'get_threshold',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_lower_hook',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_upper_hook',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": true
-      }
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "AmountRoutingHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'AmountRoutingHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "lower_hook",
-          "type": "IPostDispatchHook"
+          name: 'lower_hook',
+          type: 'IPostDispatchHook',
         },
         {
-          "name": "upper_hook",
-          "type": "IPostDispatchHook"
+          name: 'upper_hook',
+          type: 'IPostDispatchHook',
         },
         {
-          "name": "threshold",
-          "type": "int"
-        }
-      ]
+          name: 'threshold',
+          type: 'int',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const AMOUNT_ROUTING_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ThresholdSet": [
-            "int",
-            "int"
-          ]
+          ThresholdSet: ['int', 'int'],
         },
         {
-          "LowerIsmSet": [
-            "address"
-          ]
+          LowerIsmSet: ['address'],
         },
         {
-          "UpperIsmSet": [
-            "address"
-          ]
+          UpperIsmSet: ['address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "lower_ism",
-            "type": "IInterchainSecurityModule"
+            name: 'lower_ism',
+            type: 'IInterchainSecurityModule',
           },
           {
-            "name": "upper_ism",
-            "type": "IInterchainSecurityModule"
+            name: 'upper_ism',
+            type: 'IInterchainSecurityModule',
           },
           {
-            "name": "threshold",
-            "type": "int"
-          }
+            name: 'threshold',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "AmountRoutingIsm.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'AmountRoutingIsm.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "route",
-        "payable": false,
-        "returns": "IInterchainSecurityModule",
-        "stateful": false
+        name: 'route',
+        payable: false,
+        returns: 'IInterchainSecurityModule',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "sender",
-            "type": "address"
-          }
+            name: 'sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_threshold",
-            "type": "int"
-          }
+            name: 'new_threshold',
+            type: 'int',
+          },
         ],
-        "name": "set_threshold",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_threshold',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_lower_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_lower_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_upper_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_upper_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_lower_ism",
-        "payable": false,
-        "returns": "IInterchainSecurityModule",
-        "stateful": false
+        arguments: [],
+        name: 'get_lower_ism',
+        payable: false,
+        returns: 'IInterchainSecurityModule',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_upper_ism",
-        "payable": false,
-        "returns": "IInterchainSecurityModule",
-        "stateful": false
+        arguments: [],
+        name: 'get_upper_ism',
+        payable: false,
+        returns: 'IInterchainSecurityModule',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_threshold",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_threshold',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "AmountRoutingIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'AmountRoutingIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "lower_ism",
-          "type": "IInterchainSecurityModule"
+          name: 'lower_ism',
+          type: 'IInterchainSecurityModule',
         },
         {
-          "name": "upper_ism",
-          "type": "IInterchainSecurityModule"
+          name: 'upper_ism',
+          type: 'IInterchainSecurityModule',
         },
         {
-          "name": "threshold",
-          "type": "int"
-        }
-      ]
+          name: 'threshold',
+          type: 'int',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const ATTRIBUTE_CHECKPOINT_FRAUD_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "FraudAttributed": [
+          FraudAttributed: [
             {
-              "bytes": 20
+              bytes: 20,
             },
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "MerkleTreeWhitelisted": [
-            "address"
-          ]
+          MerkleTreeWhitelisted: ['address'],
         },
         {
-          "MerkleTreeRemovedFromWhitelist": [
-            "address"
-          ]
+          MerkleTreeRemovedFromWhitelist: ['address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "fraud_proofs",
-            "type": "ICheckpointFraudProofs"
-          }
+            name: 'fraud_proofs',
+            type: 'ICheckpointFraudProofs',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "AttributeCheckpointFraud.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'AttributeCheckpointFraud.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "merkle_tree",
-            "type": "address"
-          }
+            name: 'merkle_tree',
+            type: 'address',
+          },
         ],
-        "name": "whitelist_merkle_tree",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'whitelist_merkle_tree',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "merkle_tree",
-            "type": "address"
-          }
+            name: 'merkle_tree',
+            type: 'address',
+          },
         ],
-        "name": "remove_from_whitelist",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_from_whitelist',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "cp",
-            "type": "AttributeCheckpointFraud.checkpoint"
+            name: 'cp',
+            type: 'AttributeCheckpointFraud.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "signature",
-            "type": {
-              "bytes": 65
-            }
-          }
+            name: 'signature',
+            type: {
+              bytes: 65,
+            },
+          },
         ],
-        "name": "attribute_whitelist",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'attribute_whitelist',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "cp",
-            "type": "AttributeCheckpointFraud.checkpoint"
+            name: 'cp',
+            type: 'AttributeCheckpointFraud.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "signature",
-            "type": {
-              "bytes": 65
-            }
-          }
+            name: 'signature',
+            type: {
+              bytes: 65,
+            },
+          },
         ],
-        "name": "attribute_premature",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'attribute_premature',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "cp",
-            "type": "AttributeCheckpointFraud.checkpoint"
+            name: 'cp',
+            type: 'AttributeCheckpointFraud.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "proof",
-            "type": {
-              "map": [
-                "int",
+            name: 'proof',
+            type: {
+              map: [
+                'int',
                 {
-                  "bytes": 32
-                }
-              ]
-            }
+                  bytes: 32,
+                },
+              ],
+            },
           },
           {
-            "name": "actual_message_id",
-            "type": {
-              "bytes": 32
-            }
+            name: 'actual_message_id',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "signature",
-            "type": {
-              "bytes": 65
-            }
-          }
+            name: 'signature',
+            type: {
+              bytes: 65,
+            },
+          },
         ],
-        "name": "attribute_message_id",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'attribute_message_id',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "cp",
-            "type": "AttributeCheckpointFraud.checkpoint"
+            name: 'cp',
+            type: 'AttributeCheckpointFraud.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "proof",
-            "type": {
-              "map": [
-                "int",
+            name: 'proof',
+            type: {
+              map: [
+                'int',
                 {
-                  "bytes": 32
-                }
-              ]
-            }
+                  bytes: 32,
+                },
+              ],
+            },
           },
           {
-            "name": "signature",
-            "type": {
-              "bytes": 65
-            }
-          }
+            name: 'signature',
+            type: {
+              bytes: 65,
+            },
+          },
         ],
-        "name": "attribute_root",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'attribute_root',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "cp",
-            "type": "AttributeCheckpointFraud.checkpoint"
+            name: 'cp',
+            type: 'AttributeCheckpointFraud.checkpoint',
           },
           {
-            "name": "signature",
-            "type": {
-              "bytes": 65
-            }
-          }
+            name: 'signature',
+            type: {
+              bytes: 65,
+            },
+          },
         ],
-        "name": "get_attribution",
-        "payable": false,
-        "returns": {
-          "option": [
-            "AttributeCheckpointFraud.attribution"
-          ]
+        name: 'get_attribution',
+        payable: false,
+        returns: {
+          option: ['AttributeCheckpointFraud.attribution'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "merkle_tree",
-            "type": "address"
-          }
+            name: 'merkle_tree',
+            type: 'address',
+          },
         ],
-        "name": "is_whitelisted",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'is_whitelisted',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
-      }
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "AttributeCheckpointFraud",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'AttributeCheckpointFraud',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "fraud_proofs",
-          "type": "ICheckpointFraudProofs"
+          name: 'fraud_proofs',
+          type: 'ICheckpointFraudProofs',
         },
         {
-          "name": "merkle_tree_whitelist",
-          "type": {
-            "map": [
-              "address",
-              "bool"
-            ]
-          }
+          name: 'merkle_tree_whitelist',
+          type: {
+            map: ['address', 'bool'],
+          },
         },
         {
-          "name": "attributions",
-          "type": {
-            "map": [
+          name: 'attributions',
+          type: {
+            map: [
               {
-                "tuple": [
+                tuple: [
                   {
-                    "bytes": 20
+                    bytes: 20,
                   },
                   {
-                    "bytes": 32
-                  }
-                ]
+                    bytes: 32,
+                  },
+                ],
               },
-              "AttributeCheckpointFraud.attribution"
-            ]
-          }
-        }
-      ]
+              'AttributeCheckpointFraud.attribution',
+            ],
+          },
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "checkpoint",
-        "typedef": {
-          "record": [
+        name: 'checkpoint',
+        typedef: {
+          record: [
             {
-              "name": "origin",
-              "type": "int"
+              name: 'origin',
+              type: 'int',
             },
             {
-              "name": "merkle_tree",
-              "type": {
-                "bytes": 32
-              }
+              name: 'merkle_tree',
+              type: {
+                bytes: 32,
+              },
             },
             {
-              "name": "root",
-              "type": {
-                "bytes": 32
-              }
+              name: 'root',
+              type: {
+                bytes: 32,
+              },
             },
             {
-              "name": "index",
-              "type": "int"
+              name: 'index',
+              type: 'int',
             },
             {
-              "name": "message_id",
-              "type": {
-                "bytes": 32
-              }
-            }
-          ]
+              name: 'message_id',
+              type: {
+                bytes: 32,
+              },
+            },
+          ],
         },
-        "vars": []
+        vars: [],
       },
       {
-        "name": "fraud_type",
-        "typedef": {
-          "variant": [
+        name: 'fraud_type',
+        typedef: {
+          variant: [
             {
-              "Whitelist": []
+              Whitelist: [],
             },
             {
-              "Premature": []
+              Premature: [],
             },
             {
-              "MessageId": []
+              MessageId: [],
             },
             {
-              "Root": []
-            }
-          ]
+              Root: [],
+            },
+          ],
         },
-        "vars": []
+        vars: [],
       },
       {
-        "name": "attribution",
-        "typedef": {
-          "record": [
+        name: 'attribution',
+        typedef: {
+          record: [
             {
-              "name": "fraud_type",
-              "type": "AttributeCheckpointFraud.fraud_type"
+              name: 'fraud_type',
+              type: 'AttributeCheckpointFraud.fraud_type',
             },
             {
-              "name": "timestamp",
-              "type": "int"
-            }
-          ]
+              name: 'timestamp',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const CHECKPOINT_FRAUD_PROOFS_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "CheckpointStored": [
-            "address",
+          CheckpointStored: [
+            'address',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
-        }
-      ]
+            'int',
+          ],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [],
-        "name": "init",
-        "payable": false,
-        "returns": "CheckpointFraudProofs.state",
-        "stateful": true
+        arguments: [],
+        name: 'init',
+        payable: false,
+        returns: 'CheckpointFraudProofs.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "merkle_tree",
-            "type": "IMerkleTreeHook"
-          }
+            name: 'merkle_tree',
+            type: 'IMerkleTreeHook',
+          },
         ],
-        "name": "store_latest_checkpoint",
-        "payable": false,
-        "returns": {
-          "tuple": [
+        name: 'store_latest_checkpoint',
+        payable: false,
+        returns: {
+          tuple: [
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "index",
-            "type": "int"
+            name: 'index',
+            type: 'int',
           },
           {
-            "name": "message_id",
-            "type": {
-              "bytes": 32
-            }
+            name: 'message_id',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "proof",
-            "type": {
-              "map": [
-                "int",
+            name: 'proof',
+            type: {
+              map: [
+                'int',
                 {
-                  "bytes": 32
-                }
-              ]
-            }
-          }
+                  bytes: 32,
+                },
+              ],
+            },
+          },
         ],
-        "name": "stored_checkpoint_contains_message",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'stored_checkpoint_contains_message',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "cp",
-            "type": "CheckpointFraudProofs.checkpoint"
+            name: 'cp',
+            type: 'CheckpointFraudProofs.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
-          }
+            name: 'merkle_tree_addr',
+            type: 'address',
+          },
         ],
-        "name": "is_premature",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'is_premature',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "cp",
-            "type": "CheckpointFraudProofs.checkpoint"
+            name: 'cp',
+            type: 'CheckpointFraudProofs.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "proof",
-            "type": {
-              "map": [
-                "int",
+            name: 'proof',
+            type: {
+              map: [
+                'int',
                 {
-                  "bytes": 32
-                }
-              ]
-            }
+                  bytes: 32,
+                },
+              ],
+            },
           },
           {
-            "name": "actual_message_id",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'actual_message_id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "is_fraudulent_message_id",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'is_fraudulent_message_id',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "cp",
-            "type": "CheckpointFraudProofs.checkpoint"
+            name: 'cp',
+            type: 'CheckpointFraudProofs.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "proof",
-            "type": {
-              "map": [
-                "int",
+            name: 'proof',
+            type: {
+              map: [
+                'int',
                 {
-                  "bytes": 32
-                }
-              ]
-            }
-          }
+                  bytes: 32,
+                },
+              ],
+            },
+          },
         ],
-        "name": "is_fraudulent_root",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'is_fraudulent_root',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "tree_addr",
-            "type": "address"
+            name: 'tree_addr',
+            type: 'address',
           },
           {
-            "name": "ckpt_root",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'ckpt_root',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "get_stored_checkpoint",
-        "payable": false,
-        "returns": {
-          "option": [
-            "CheckpointFraudProofs.stored_index"
-          ]
+        name: 'get_stored_checkpoint',
+        payable: false,
+        returns: {
+          option: ['CheckpointFraudProofs.stored_index'],
         },
-        "stateful": false
-      }
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "CheckpointFraudProofs",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'CheckpointFraudProofs',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "stored_checkpoints",
-          "type": {
-            "map": [
+          name: 'stored_checkpoints',
+          type: {
+            map: [
               {
-                "tuple": [
-                  "address",
+                tuple: [
+                  'address',
                   {
-                    "bytes": 32
-                  }
-                ]
+                    bytes: 32,
+                  },
+                ],
               },
-              "CheckpointFraudProofs.stored_index"
-            ]
-          }
-        }
-      ]
-    },
-    "typedefs": [
-      {
-        "name": "checkpoint",
-        "typedef": {
-          "record": [
-            {
-              "name": "origin",
-              "type": "int"
-            },
-            {
-              "name": "merkle_tree",
-              "type": {
-                "bytes": 32
-              }
-            },
-            {
-              "name": "root",
-              "type": {
-                "bytes": 32
-              }
-            },
-            {
-              "name": "index",
-              "type": "int"
-            },
-            {
-              "name": "message_id",
-              "type": {
-                "bytes": 32
-              }
-            }
-          ]
+              'CheckpointFraudProofs.stored_index',
+            ],
+          },
         },
-        "vars": []
+      ],
+    },
+    typedefs: [
+      {
+        name: 'checkpoint',
+        typedef: {
+          record: [
+            {
+              name: 'origin',
+              type: 'int',
+            },
+            {
+              name: 'merkle_tree',
+              type: {
+                bytes: 32,
+              },
+            },
+            {
+              name: 'root',
+              type: {
+                bytes: 32,
+              },
+            },
+            {
+              name: 'index',
+              type: 'int',
+            },
+            {
+              name: 'message_id',
+              type: {
+                bytes: 32,
+              },
+            },
+          ],
+        },
+        vars: [],
       },
       {
-        "name": "stored_index",
-        "typedef": {
-          "record": [
+        name: 'stored_index',
+        typedef: {
+          record: [
             {
-              "name": "index",
-              "type": "int"
+              name: 'index',
+              type: 'int',
             },
             {
-              "name": "exists",
-              "type": "bool"
-            }
-          ]
+              name: 'exists',
+              type: 'bool',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const DESTINATION_RECIPIENT_ROUTING_HOOK_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "DomainHookSet": [
-            "int",
-            "address"
-          ]
+          DomainHookSet: ['int', 'address'],
         },
         {
-          "DomainHookRemoved": [
-            "int"
-          ]
+          DomainHookRemoved: ['int'],
         },
         {
-          "CustomHookSet": [
-            "int",
+          CustomHookSet: [
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "address"
-          ]
+            'address',
+          ],
         },
         {
-          "CustomHookRemoved": [
-            "int",
+          CustomHookRemoved: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "DestinationRecipientRoutingHook.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'DestinationRecipientRoutingHook.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "set_domain_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
-          }
-        ],
-        "name": "remove_domain_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
+        ],
+        name: 'set_domain_hook',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'destination',
+            type: 'int',
+          },
+        ],
+        name: 'remove_domain_hook',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
-        ],
-        "name": "set_custom_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "destination",
-            "type": "int"
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "remove_custom_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_custom_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
-          }
-        ],
-        "name": "get_domain_hook",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "get_custom_hook",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        name: 'remove_custom_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": false
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'destination',
+            type: 'int',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'get_domain_hook',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: 'destination',
+            type: 'int',
+          },
+          {
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'get_custom_hook',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'get_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": true
-      }
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "DestinationRecipientRoutingHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'DestinationRecipientRoutingHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "domain_hooks",
-          "type": {
-            "map": [
-              "int",
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'domain_hooks',
+          type: {
+            map: ['int', 'IPostDispatchHook'],
+          },
         },
         {
-          "name": "custom_hooks",
-          "type": {
-            "map": [
+          name: 'custom_hooks',
+          type: {
+            map: [
               {
-                "tuple": [
-                  "int",
+                tuple: [
+                  'int',
                   {
-                    "bytes": 32
-                  }
-                ]
+                    bytes: 32,
+                  },
+                ],
               },
-              "IPostDispatchHook"
-            ]
-          }
+              'IPostDispatchHook',
+            ],
+          },
         },
         {
-          "name": "domains",
-          "type": {
-            "list": [
-              "int"
-            ]
-          }
-        }
-      ]
+          name: 'domains',
+          type: {
+            list: ['int'],
+          },
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const DOMAIN_ROUTING_HOOK_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "HookSet": [
-            "int",
-            "address"
-          ]
+          HookSet: ['int', 'address'],
         },
         {
-          "HookRemoved": [
-            "int"
-          ]
-        }
-      ]
+          HookRemoved: ['int'],
+        },
+        {
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "DomainRoutingHook.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'DomainRoutingHook.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "set_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
-          }
+            name: 'destination',
+            type: 'int',
+          },
         ],
-        "name": "remove_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
-                "DomainRoutingHook.hook_config"
-              ]
-            }
-          }
+            name: 'configs',
+            type: {
+              list: ['DomainRoutingHook.hook_config'],
+            },
+          },
         ],
-        "name": "set_hooks",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_hooks',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "get_hook",
-        "payable": false,
-        "returns": {
-          "option": [
-            "IPostDispatchHook"
-          ]
-        },
-        "stateful": false
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [
+          {
+            name: 'destination',
+            type: 'int',
+          },
+        ],
+        name: 'get_hook',
+        payable: false,
+        returns: {
+          option: ['IPostDispatchHook'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "DomainRoutingHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'DomainRoutingHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "hooks",
-          "type": {
-            "map": [
-              "int",
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "domains",
-          "type": {
-            "list": [
-              "int"
-            ]
-          }
-        }
-      ]
+          name: 'hooks',
+          type: {
+            map: ['int', 'IPostDispatchHook'],
+          },
+        },
+        {
+          name: 'domains',
+          type: {
+            list: ['int'],
+          },
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "hook_config",
-        "typedef": {
-          "record": [
+        name: 'hook_config',
+        typedef: {
+          record: [
             {
-              "name": "destination",
-              "type": "int"
+              name: 'destination',
+              type: 'int',
             },
             {
-              "name": "hook",
-              "type": "IPostDispatchHook"
-            }
-          ]
+              name: 'hook',
+              type: 'IPostDispatchHook',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const DOMAIN_ROUTING_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "IsmSet": [
-            "int"
-          ]
+          IsmSet: ['int'],
         },
         {
-          "IsmRemoved": [
-            "int"
-          ]
+          IsmRemoved: ['int'],
         },
         {
-          "DefaultIsmSet": [
-            "address"
-          ]
+          DefaultIsmSet: ['address'],
         },
         {
-          "MailboxSet": [
-            "address"
-          ]
+          MailboxSet: ['address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          IsmResolved: ['int', 'int'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          ConfigurationFrozen: [],
+        },
+        {
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "DomainRoutingIsm.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'DomainRoutingIsm.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
-                "DomainRoutingIsm.ism_config"
-              ]
-            }
-          }
+            name: 'configs',
+            type: {
+              list: ['DomainRoutingIsm.ism_config'],
+            },
+          },
         ],
-        "name": "set_isms",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_isms',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "remove_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_default_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_default_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mb",
-            "type": "IMailbox"
-          }
+            name: 'mb',
+            type: 'IMailbox',
+          },
         ],
-        "name": "set_mailbox",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_mailbox',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_mailbox",
-        "payable": false,
-        "returns": {
-          "option": [
-            "IMailbox"
-          ]
+        arguments: [],
+        name: 'get_mailbox',
+        payable: false,
+        returns: {
+          option: ['IMailbox'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "sender",
-            "type": "address"
-          }
+            name: 'sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "route",
-        "payable": false,
-        "returns": "IInterchainSecurityModule",
-        "stateful": false
+        name: 'route',
+        payable: false,
+        returns: 'IInterchainSecurityModule',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'route_with_level',
+        payable: false,
+        returns: {
+          tuple: ['IInterchainSecurityModule', 'int'],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'freeze',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        arguments: [],
+        name: 'is_frozen',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "DomainRoutingIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'DomainRoutingIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "isms",
-          "type": {
-            "map": [
-              "int",
-              "IInterchainSecurityModule"
-            ]
-          }
+          name: 'isms',
+          type: {
+            map: ['int', 'IInterchainSecurityModule'],
+          },
         },
         {
-          "name": "domains",
-          "type": {
-            "list": [
-              "int"
-            ]
-          }
+          name: 'domains',
+          type: {
+            list: ['int'],
+          },
         },
         {
-          "name": "default_ism",
-          "type": {
-            "option": [
-              "IInterchainSecurityModule"
-            ]
-          }
+          name: 'default_ism',
+          type: {
+            option: ['IInterchainSecurityModule'],
+          },
         },
         {
-          "name": "mailbox",
-          "type": {
-            "option": [
-              "IMailbox"
-            ]
-          }
-        }
-      ]
+          name: 'mailbox',
+          type: {
+            option: ['IMailbox'],
+          },
+        },
+        {
+          name: 'frozen',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "ism_config",
-        "typedef": {
-          "record": [
+        name: 'ism_config',
+        typedef: {
+          record: [
             {
-              "name": "domain",
-              "type": "int"
+              name: 'domain',
+              type: 'int',
             },
             {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ]
+              name: 'ism',
+              type: 'IInterchainSecurityModule',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const FALLBACK_DOMAIN_ROUTING_HOOK_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "HookSet": [
-            "int",
-            "address"
-          ]
+          HookSet: ['int', 'address'],
         },
         {
-          "HookRemoved": [
-            "int"
-          ]
-        }
-      ]
+          HookRemoved: ['int'],
+        },
+        {
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "fallback_hook",
-            "type": "IPostDispatchHook"
-          }
+            name: 'fallback_hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "FallbackDomainRoutingHook.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'FallbackDomainRoutingHook.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "set_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
-          }
+            name: 'destination',
+            type: 'int',
+          },
         ],
-        "name": "remove_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
-                "FallbackDomainRoutingHook.hook_config"
-              ]
-            }
-          }
+            name: 'configs',
+            type: {
+              list: ['FallbackDomainRoutingHook.hook_config'],
+            },
+          },
         ],
-        "name": "set_hooks",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_hooks',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "get_hook",
-        "payable": false,
-        "returns": {
-          "option": [
-            "IPostDispatchHook"
-          ]
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'destination',
+            type: 'int',
+          },
+        ],
+        name: 'get_hook',
+        payable: false,
+        returns: {
+          option: ['IPostDispatchHook'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_fallback_hook",
-        "payable": false,
-        "returns": "IPostDispatchHook",
-        "stateful": false
+        arguments: [],
+        name: 'get_fallback_hook',
+        payable: false,
+        returns: 'IPostDispatchHook',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "FallbackDomainRoutingHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'FallbackDomainRoutingHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "hooks",
-          "type": {
-            "map": [
-              "int",
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "domains",
-          "type": {
-            "list": [
-              "int"
-            ]
-          }
+          name: 'hooks',
+          type: {
+            map: ['int', 'IPostDispatchHook'],
+          },
         },
         {
-          "name": "fallback_hook",
-          "type": "IPostDispatchHook"
-        }
-      ]
+          name: 'domains',
+          type: {
+            list: ['int'],
+          },
+        },
+        {
+          name: 'fallback_hook',
+          type: 'IPostDispatchHook',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "hook_config",
-        "typedef": {
-          "record": [
+        name: 'hook_config',
+        typedef: {
+          record: [
             {
-              "name": "destination",
-              "type": "int"
+              name: 'destination',
+              type: 'int',
             },
             {
-              "name": "hook",
-              "type": "IPostDispatchHook"
-            }
-          ]
+              name: 'hook',
+              type: 'IPostDispatchHook',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const FRAUD_SLASHER_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "FraudSlashExecuted": [
-            "address",
+          FraudSlashExecuted: [
+            'address',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "SlashAmountUpdated": [
-            "int",
-            "int"
-          ]
+          SlashAmountUpdated: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+        {
+          ValidatorFrozen: [
+            'address',
+            {
+              bytes: 32,
+            },
+          ],
+        },
+        {
+          SlashCancelled: [
+            {
+              bytes: 32,
+            },
+            'address',
+          ],
+        },
+        {
+          FraudProofSubmitted: [
+            'address',
+            {
+              bytes: 32,
+            },
+            'int',
+          ],
+        },
+        {
+          DisputeWindowUpdated: ['int', 'int'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "staking",
-            "type": "IValidatorStaking"
+            name: 'staking',
+            type: 'IValidatorStaking',
           },
           {
-            "name": "fraud_proofs",
-            "type": "ICheckpointFraudProofsForSlasher"
+            name: 'fraud_proofs',
+            type: 'ICheckpointFraudProofsForSlasher',
           },
           {
-            "name": "slash_amount",
-            "type": "int"
-          }
+            name: 'slash_amount',
+            type: 'int',
+          },
+          {
+            name: 'dispute_window',
+            type: 'int',
+          },
+          {
+            name: 'min_dispute_window',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "FraudSlasher.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'FraudSlasher.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "validator",
-            "type": "address"
+            name: 'validator',
+            type: 'address',
           },
           {
-            "name": "cp",
-            "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            name: 'cp',
+            type: 'ICheckpointFraudProofsForSlasher.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
-          }
+            name: 'merkle_tree_addr',
+            type: 'address',
+          },
         ],
-        "name": "slash_premature",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'slash_premature',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "validator",
-            "type": "address"
+            name: 'validator',
+            type: 'address',
           },
           {
-            "name": "cp",
-            "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            name: 'cp',
+            type: 'ICheckpointFraudProofsForSlasher.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "proof",
-            "type": {
-              "map": [
-                "int",
+            name: 'proof',
+            type: {
+              map: [
+                'int',
                 {
-                  "bytes": 32
-                }
-              ]
-            }
+                  bytes: 32,
+                },
+              ],
+            },
           },
           {
-            "name": "actual_message_id",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'actual_message_id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "slash_fraudulent_message_id",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'slash_fraudulent_message_id',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "validator",
-            "type": "address"
+            name: 'validator',
+            type: 'address',
           },
           {
-            "name": "cp",
-            "type": "ICheckpointFraudProofsForSlasher.checkpoint"
+            name: 'cp',
+            type: 'ICheckpointFraudProofsForSlasher.checkpoint',
           },
           {
-            "name": "merkle_tree_addr",
-            "type": "address"
+            name: 'merkle_tree_addr',
+            type: 'address',
           },
           {
-            "name": "proof",
-            "type": {
-              "map": [
-                "int",
+            name: 'proof',
+            type: {
+              map: [
+                'int',
                 {
-                  "bytes": 32
-                }
-              ]
-            }
-          }
+                  bytes: 32,
+                },
+              ],
+            },
+          },
         ],
-        "name": "slash_fraudulent_root",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'slash_fraudulent_root',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_amount",
-            "type": "int"
-          }
+            name: 'proof_id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "set_slash_amount",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'finalize_slash',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_slash_amount",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "proof_id",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'proof_id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "is_proof_slashed",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'cancel_slash',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_amount',
+            type: 'int',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_slash_amount',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: 'window',
+            type: 'int',
+          },
+        ],
+        name: 'set_dispute_window',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_slash_amount',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_dispute_window',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_min_dispute_window',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'proof_id',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'is_proof_slashed',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'addr',
+            type: 'address',
+          },
+        ],
+        name: 'is_validator_frozen',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "FraudSlasher",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'FraudSlasher',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "staking",
-          "type": "IValidatorStaking"
+          name: 'staking',
+          type: 'IValidatorStaking',
         },
         {
-          "name": "fraud_proofs",
-          "type": "ICheckpointFraudProofsForSlasher"
+          name: 'fraud_proofs',
+          type: 'ICheckpointFraudProofsForSlasher',
         },
         {
-          "name": "slash_amount",
-          "type": "int"
+          name: 'slash_amount',
+          type: 'int',
         },
         {
-          "name": "slashed_proofs",
-          "type": {
-            "map": [
+          name: 'slashed_proofs',
+          type: {
+            map: [
               {
-                "bytes": 32
+                bytes: 32,
               },
-              "bool"
-            ]
-          }
+              'bool',
+            ],
+          },
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'deployed_block',
+          type: 'int',
+        },
+        {
+          name: 'min_dispute_window',
+          type: 'int',
+        },
+        {
+          name: 'dispute_window',
+          type: 'int',
+        },
+        {
+          name: 'pending_slashes',
+          type: {
+            map: [
+              {
+                bytes: 32,
+              },
+              'FraudSlasher.pending_slash',
+            ],
+          },
+        },
+        {
+          name: 'frozen_validators',
+          type: {
+            map: ['address', 'bool'],
+          },
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [
+      {
+        name: 'pending_slash',
+        typedef: {
+          record: [
+            {
+              name: 'validator',
+              type: 'address',
+            },
+            {
+              name: 'reporter',
+              type: 'address',
+            },
+            {
+              name: 'proof_id',
+              type: {
+                bytes: 32,
+              },
+            },
+            {
+              name: 'fraud_type',
+              type: 'int',
+            },
+            {
+              name: 'amount',
+              type: 'int',
+            },
+            {
+              name: 'frozen_at',
+              type: 'int',
+            },
+            {
+              name: 'finalize_after',
+              type: 'int',
+            },
+            {
+              name: 'finalized',
+              type: 'bool',
+            },
+            {
+              name: 'cancelled',
+              type: 'bool',
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const HYP_AEX9_COLLATERAL_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "SentTransferRemote": [
-            "int",
+          SentTransferRemote: [
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "ReceivedTransferRemote": [
-            "int",
+          ReceivedTransferRemote: [
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "RemoteRouterEnrolled": [
-            "int",
+          RemoteRouterEnrolled: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "RemoteRouterUnenrolled": [
-            "int"
-          ]
+          RemoteRouterUnenrolled: ['int'],
         },
         {
-          "GasSet": [
-            "int",
-            "int"
-          ]
+          GasSet: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferred: ['address', 'address'],
         },
         {
-          "Paused": [
-            "address"
-          ]
+          Paused: ['address'],
         },
         {
-          "Unpaused": [
-            "address"
-          ]
+          Unpaused: ['address'],
         },
         {
-          "FeeRecipientSet": [
-            "address"
-          ]
+          FeeRecipientSet: ['address'],
         },
         {
-          "FeeCharged": [
-            "address",
-            "int"
-          ]
+          FeeCharged: ['address', 'int'],
         },
         {
-          "FeeClaimed": [
-            "address",
-            "int"
-          ]
+          NativeRescued: ['address', 'int'],
         },
         {
-          "NativeRescued": [
-            "address",
-            "int"
-          ]
+          CustomHookSet: ['address'],
         },
-        {
-          "CustomHookSet": [
-            "address"
-          ]
-        }
-      ]
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox",
-            "type": "IMailbox"
+            name: 'mailbox',
+            type: 'IMailbox',
           },
           {
-            "name": "token",
-            "type": "MintableAEX9"
+            name: 'token',
+            type: 'MintableAEX9',
           },
           {
-            "name": "scale_numerator",
-            "type": "int"
+            name: 'scale_numerator',
+            type: 'int',
           },
           {
-            "name": "scale_denominator",
-            "type": "int"
-          }
+            name: 'scale_denominator',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "HypAEX9Collateral.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'HypAEX9Collateral.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "router",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'router',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "enroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'enroll_remote_router',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "entries",
-            "type": {
-              "list": [
+            name: 'entries',
+            type: {
+              list: [
                 {
-                  "tuple": [
-                    "int",
+                  tuple: [
+                    'int',
                     {
-                      "bytes": 32
-                    }
-                  ]
-                }
-              ]
-            }
-          }
+                      bytes: 32,
+                    },
+                  ],
+                },
+              ],
+            },
+          },
         ],
-        "name": "enroll_remote_routers",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'enroll_remote_routers',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "unenroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'unenroll_remote_router',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domains",
-            "type": {
-              "list": [
-                "int"
-              ]
-            }
-          }
+            name: 'domains',
+            type: {
+              list: ['int'],
+            },
+          },
         ],
-        "name": "unenroll_remote_routers",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'unenroll_remote_routers',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "gas",
-            "type": "int"
-          }
+            name: 'gas',
+            type: 'int',
+          },
         ],
-        "name": "set_destination_gas",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
+            name: 'configs',
+            type: {
+              list: [
                 {
-                  "tuple": [
-                    "int",
-                    "int"
-                  ]
-                }
-              ]
-            }
-          }
+                  tuple: ['int', 'int'],
+                },
+              ],
+            },
+          },
         ],
-        "name": "set_destination_gas_batch",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas_batch',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "set_custom_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_custom_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_interchain_security_module",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_interchain_security_module',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "pause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'pause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "unpause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'unpause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "is_paused",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        arguments: [],
+        name: 'is_paused',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "fee_contract",
-            "type": "ITokenFee"
-          }
+            name: 'fee_contract',
+            type: 'ITokenFee',
+          },
         ],
-        "name": "set_fee_recipient",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_fee_recipient',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "clear_fee_recipient",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'clear_fee_recipient',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_fee_recipient",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_fee_recipient',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_fee_balance",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_remote_router",
-        "payable": false,
-        "returns": {
-          "option": [
+        name: 'get_remote_router',
+        payable: false,
+        returns: {
+          option: [
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_destination_gas",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'get_destination_gas',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_decimal_scaling",
-        "payable": false,
-        "returns": {
-          "tuple": [
-            "int",
-            "int"
-          ]
+        arguments: [],
+        name: 'get_decimal_scaling',
+        payable: false,
+        returns: {
+          tuple: ['int', 'int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_local_domain",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_local_domain',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_enrolled_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_token',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
-          {
-            "name": "destination",
-            "type": "int"
-          },
-          {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
-          },
-          {
-            "name": "amount",
-            "type": "int"
-          }
-        ],
-        "name": "transfer_remote",
-        "payable": true,
-        "returns": {
-          "bytes": 32
+        arguments: [],
+        name: 'get_enrolled_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'min_transfer_amount',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "origin",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "sender",
-            "type": {
-              "bytes": 32
-            }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "body",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'amount',
+            type: 'int',
           },
-          {
-            "name": "body_recipient",
-            "type": "address"
-          }
         ],
-        "name": "handle",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'transfer_remote',
+        payable: true,
+        returns: {
+          bytes: 32,
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'origin',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
+            name: 'sender',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
-        ],
-        "name": "quote_transfer_remote",
-        "payable": false,
-        "returns": "HypAEX9Collateral.transfer_quote",
-        "stateful": false
-      },
-      {
-        "arguments": [
+            name: 'body',
+            type: {
+              bytes: 'any',
+            },
+          },
           {
-            "name": "destination",
-            "type": "int"
-          }
+            name: 'body_recipient',
+            type: 'address',
+          },
         ],
-        "name": "quote_gas_payment",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "beneficiary",
-            "type": "address"
-          }
-        ],
-        "name": "claim_fees",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'handle',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "amount",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": "address"
-          }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
+          },
+          {
+            name: 'amount',
+            type: 'int',
+          },
         ],
-        "name": "rescue_native",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'quote_transfer_remote',
+        payable: false,
+        returns: 'HypAEX9Collateral.transfer_quote',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "token",
-            "type": "MintableAEX9"
+            name: 'destination',
+            type: 'int',
           },
-          {
-            "name": "amount",
-            "type": "int"
-          },
-          {
-            "name": "recipient",
-            "type": "address"
-          }
         ],
-        "name": "rescue_token",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'quote_gas_payment',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'amount',
+            type: 'int',
+          },
+          {
+            name: 'recipient',
+            type: 'address',
+          },
+        ],
+        name: 'rescue_native',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'token',
+            type: 'MintableAEX9',
+          },
+          {
+            name: 'amount',
+            type: 'int',
+          },
+          {
+            name: 'recipient',
+            type: 'address',
+          },
+        ],
+        name: 'rescue_token',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "HypAEX9Collateral",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'HypAEX9Collateral',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "mailbox",
-          "type": "IMailbox"
+          name: 'mailbox',
+          type: 'IMailbox',
         },
         {
-          "name": "token",
-          "type": "MintableAEX9"
+          name: 'token',
+          type: 'MintableAEX9',
         },
         {
-          "name": "local_domain",
-          "type": "int"
+          name: 'local_domain',
+          type: 'int',
         },
         {
-          "name": "remote_routers",
-          "type": {
-            "map": [
-              "int",
+          name: 'remote_routers',
+          type: {
+            map: [
+              'int',
               {
-                "bytes": 32
-              }
-            ]
-          }
+                bytes: 32,
+              },
+            ],
+          },
         },
         {
-          "name": "destination_gas",
-          "type": {
-            "map": [
-              "int",
-              "int"
-            ]
-          }
+          name: 'destination_gas',
+          type: {
+            map: ['int', 'int'],
+          },
         },
         {
-          "name": "custom_hook",
-          "type": {
-            "option": [
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'custom_hook',
+          type: {
+            option: ['IPostDispatchHook'],
+          },
         },
         {
-          "name": "scale_numerator",
-          "type": "int"
+          name: 'scale_numerator',
+          type: 'int',
         },
         {
-          "name": "scale_denominator",
-          "type": "int"
+          name: 'scale_denominator',
+          type: 'int',
         },
         {
-          "name": "paused",
-          "type": "bool"
+          name: 'paused',
+          type: 'bool',
         },
         {
-          "name": "fee_recipient",
-          "type": {
-            "option": [
-              "ITokenFee"
-            ]
-          }
+          name: 'fee_recipient',
+          type: {
+            option: ['ITokenFee'],
+          },
         },
         {
-          "name": "fee_balance",
-          "type": "int"
+          name: 'deployed_block',
+          type: 'int',
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'reentrancy_lock',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "transfer_quote",
-        "typedef": {
-          "record": [
+        name: 'transfer_quote',
+        typedef: {
+          record: [
             {
-              "name": "dispatch_cost",
-              "type": "int"
+              name: 'dispatch_cost',
+              type: 'int',
             },
             {
-              "name": "fee_amount",
-              "type": "int"
+              name: 'fee_amount',
+              type: 'int',
             },
             {
-              "name": "total_token",
-              "type": "int"
-            }
-          ]
+              name: 'total_token',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const HYP_AEX9_SYNTHETIC_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "SentTransferRemote": [
-            "int",
+          SentTransferRemote: [
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "ReceivedTransferRemote": [
-            "int",
+          ReceivedTransferRemote: [
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "RemoteRouterEnrolled": [
-            "int",
+          RemoteRouterEnrolled: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "RemoteRouterUnenrolled": [
-            "int"
-          ]
+          RemoteRouterUnenrolled: ['int'],
         },
         {
-          "GasSet": [
-            "int",
-            "int"
-          ]
+          GasSet: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferred: ['address', 'address'],
         },
         {
-          "Paused": [
-            "address"
-          ]
+          Paused: ['address'],
         },
         {
-          "Unpaused": [
-            "address"
-          ]
+          Unpaused: ['address'],
         },
         {
-          "FeeRecipientSet": [
-            "address"
-          ]
+          FeeRecipientSet: ['address'],
         },
         {
-          "FeeCharged": [
-            "address",
-            "int"
-          ]
+          FeeCharged: ['address', 'int'],
         },
         {
-          "FeeClaimed": [
-            "address",
-            "int"
-          ]
+          FeeClaimed: ['address', 'int'],
         },
         {
-          "NativeRescued": [
-            "address",
-            "int"
-          ]
+          NativeRescued: ['address', 'int'],
         },
         {
-          "CustomHookSet": [
-            "address"
-          ]
-        }
-      ]
+          CustomHookSet: ['address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox",
-            "type": "IMailbox"
+            name: 'mailbox',
+            type: 'IMailbox',
           },
           {
-            "name": "token",
-            "type": "MintableAEX9"
+            name: 'token',
+            type: 'MintableAEX9',
           },
           {
-            "name": "scale_numerator",
-            "type": "int"
+            name: 'scale_numerator',
+            type: 'int',
           },
           {
-            "name": "scale_denominator",
-            "type": "int"
-          }
+            name: 'scale_denominator',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "HypAEX9Synthetic.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'HypAEX9Synthetic.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "router",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'router',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "enroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'enroll_remote_router',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "entries",
-            "type": {
-              "list": [
+            name: 'entries',
+            type: {
+              list: [
                 {
-                  "tuple": [
-                    "int",
+                  tuple: [
+                    'int',
                     {
-                      "bytes": 32
-                    }
-                  ]
-                }
-              ]
-            }
-          }
+                      bytes: 32,
+                    },
+                  ],
+                },
+              ],
+            },
+          },
         ],
-        "name": "enroll_remote_routers",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'enroll_remote_routers',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "unenroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'unenroll_remote_router',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domains",
-            "type": {
-              "list": [
-                "int"
-              ]
-            }
-          }
+            name: 'domains',
+            type: {
+              list: ['int'],
+            },
+          },
         ],
-        "name": "unenroll_remote_routers",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'unenroll_remote_routers',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "gas",
-            "type": "int"
-          }
+            name: 'gas',
+            type: 'int',
+          },
         ],
-        "name": "set_destination_gas",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
+            name: 'configs',
+            type: {
+              list: [
                 {
-                  "tuple": [
-                    "int",
-                    "int"
-                  ]
-                }
-              ]
-            }
-          }
+                  tuple: ['int', 'int'],
+                },
+              ],
+            },
+          },
         ],
-        "name": "set_destination_gas_batch",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas_batch',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "set_custom_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_custom_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_interchain_security_module",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_interchain_security_module',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "pause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'pause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "unpause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'unpause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "is_paused",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        arguments: [],
+        name: 'is_paused',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "fee_contract",
-            "type": "ITokenFee"
-          }
+            name: 'fee_contract',
+            type: 'ITokenFee',
+          },
         ],
-        "name": "set_fee_recipient",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_fee_recipient',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "clear_fee_recipient",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'clear_fee_recipient',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_fee_recipient",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_fee_recipient',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_fee_balance",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_fee_balance',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_remote_router",
-        "payable": false,
-        "returns": {
-          "option": [
+        name: 'get_remote_router',
+        payable: false,
+        returns: {
+          option: [
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_destination_gas",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'get_destination_gas',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_decimal_scaling",
-        "payable": false,
-        "returns": {
-          "tuple": [
-            "int",
-            "int"
-          ]
+        arguments: [],
+        name: 'get_decimal_scaling',
+        payable: false,
+        returns: {
+          tuple: ['int', 'int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_local_domain",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_local_domain',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_enrolled_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_token',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "verify_setup",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "destination",
-            "type": "int"
-          },
-          {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
-          },
-          {
-            "name": "amount",
-            "type": "int"
-          }
-        ],
-        "name": "transfer_remote",
-        "payable": true,
-        "returns": {
-          "bytes": 32
+        arguments: [],
+        name: 'get_enrolled_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'verify_setup',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "origin",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "sender",
-            "type": {
-              "bytes": 32
-            }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "body",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'amount',
+            type: 'int',
           },
-          {
-            "name": "body_recipient",
-            "type": "address"
-          }
         ],
-        "name": "handle",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'transfer_remote',
+        payable: true,
+        returns: {
+          bytes: 32,
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'origin',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
+            name: 'sender',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
-        ],
-        "name": "quote_transfer_remote",
-        "payable": false,
-        "returns": "HypAEX9Synthetic.transfer_quote",
-        "stateful": false
-      },
-      {
-        "arguments": [
+            name: 'body',
+            type: {
+              bytes: 'any',
+            },
+          },
           {
-            "name": "destination",
-            "type": "int"
-          }
+            name: 'body_recipient',
+            type: 'address',
+          },
         ],
-        "name": "quote_gas_payment",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "beneficiary",
-            "type": "address"
-          }
-        ],
-        "name": "claim_fees",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'handle',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "amount",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": "address"
-          }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
+          },
+          {
+            name: 'amount',
+            type: 'int',
+          },
         ],
-        "name": "rescue_native",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'quote_transfer_remote',
+        payable: false,
+        returns: 'HypAEX9Synthetic.transfer_quote',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "token",
-            "type": "MintableAEX9"
+            name: 'destination',
+            type: 'int',
           },
-          {
-            "name": "amount",
-            "type": "int"
-          },
-          {
-            "name": "recipient",
-            "type": "address"
-          }
         ],
-        "name": "rescue_token",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'quote_gas_payment',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'beneficiary',
+            type: 'address',
+          },
+        ],
+        name: 'claim_fees',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'amount',
+            type: 'int',
+          },
+          {
+            name: 'recipient',
+            type: 'address',
+          },
+        ],
+        name: 'rescue_native',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'token',
+            type: 'MintableAEX9',
+          },
+          {
+            name: 'amount',
+            type: 'int',
+          },
+          {
+            name: 'recipient',
+            type: 'address',
+          },
+        ],
+        name: 'rescue_token',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "HypAEX9Synthetic",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'HypAEX9Synthetic',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "mailbox",
-          "type": "IMailbox"
+          name: 'mailbox',
+          type: 'IMailbox',
         },
         {
-          "name": "token",
-          "type": "MintableAEX9"
+          name: 'token',
+          type: 'MintableAEX9',
         },
         {
-          "name": "local_domain",
-          "type": "int"
+          name: 'local_domain',
+          type: 'int',
         },
         {
-          "name": "remote_routers",
-          "type": {
-            "map": [
-              "int",
+          name: 'remote_routers',
+          type: {
+            map: [
+              'int',
               {
-                "bytes": 32
-              }
-            ]
-          }
+                bytes: 32,
+              },
+            ],
+          },
         },
         {
-          "name": "destination_gas",
-          "type": {
-            "map": [
-              "int",
-              "int"
-            ]
-          }
+          name: 'destination_gas',
+          type: {
+            map: ['int', 'int'],
+          },
         },
         {
-          "name": "custom_hook",
-          "type": {
-            "option": [
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'custom_hook',
+          type: {
+            option: ['IPostDispatchHook'],
+          },
         },
         {
-          "name": "scale_numerator",
-          "type": "int"
+          name: 'scale_numerator',
+          type: 'int',
         },
         {
-          "name": "scale_denominator",
-          "type": "int"
+          name: 'scale_denominator',
+          type: 'int',
         },
         {
-          "name": "paused",
-          "type": "bool"
+          name: 'paused',
+          type: 'bool',
         },
         {
-          "name": "fee_recipient",
-          "type": {
-            "option": [
-              "ITokenFee"
-            ]
-          }
+          name: 'fee_recipient',
+          type: {
+            option: ['ITokenFee'],
+          },
         },
         {
-          "name": "fee_balance",
-          "type": "int"
+          name: 'fee_balance',
+          type: 'int',
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'deployed_block',
+          type: 'int',
+        },
+        {
+          name: 'reentrancy_lock',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "transfer_quote",
-        "typedef": {
-          "record": [
+        name: 'transfer_quote',
+        typedef: {
+          record: [
             {
-              "name": "dispatch_cost",
-              "type": "int"
+              name: 'dispatch_cost',
+              type: 'int',
             },
             {
-              "name": "fee_amount",
-              "type": "int"
+              name: 'fee_amount',
+              type: 'int',
             },
             {
-              "name": "total_token",
-              "type": "int"
-            }
-          ]
+              name: 'total_token',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const HYP_NATIVE_AE_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "SentTransferRemote": [
-            "int",
+          SentTransferRemote: [
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "ReceivedTransferRemote": [
-            "int",
+          ReceivedTransferRemote: [
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "RemoteRouterEnrolled": [
-            "int",
+          RemoteRouterEnrolled: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "RemoteRouterUnenrolled": [
-            "int"
-          ]
+          RemoteRouterUnenrolled: ['int'],
         },
         {
-          "GasSet": [
-            "int",
-            "int"
-          ]
+          GasSet: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferred: ['address', 'address'],
         },
         {
-          "Paused": [
-            "address"
-          ]
+          Paused: ['address'],
         },
         {
-          "Unpaused": [
-            "address"
-          ]
+          Unpaused: ['address'],
         },
         {
-          "FeeRecipientSet": [
-            "address"
-          ]
+          FeeRecipientSet: ['address'],
         },
         {
-          "FeeCharged": [
-            "address",
-            "int"
-          ]
+          FeeCharged: ['address', 'int'],
         },
         {
-          "FeeClaimed": [
-            "address",
-            "int"
-          ]
+          FeeClaimed: ['address', 'int'],
         },
         {
-          "NativeRescued": [
-            "address",
-            "int"
-          ]
+          CustomHookSet: ['address'],
         },
-        {
-          "CustomHookSet": [
-            "address"
-          ]
-        }
-      ]
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox",
-            "type": "IMailbox"
+            name: 'mailbox',
+            type: 'IMailbox',
           },
           {
-            "name": "scale_numerator",
-            "type": "int"
+            name: 'scale_numerator',
+            type: 'int',
           },
           {
-            "name": "scale_denominator",
-            "type": "int"
-          }
+            name: 'scale_denominator',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "HypNativeAE.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'HypNativeAE.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "router",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'router',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "enroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'enroll_remote_router',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "entries",
-            "type": {
-              "list": [
+            name: 'entries',
+            type: {
+              list: [
                 {
-                  "tuple": [
-                    "int",
+                  tuple: [
+                    'int',
                     {
-                      "bytes": 32
-                    }
-                  ]
-                }
-              ]
-            }
-          }
+                      bytes: 32,
+                    },
+                  ],
+                },
+              ],
+            },
+          },
         ],
-        "name": "enroll_remote_routers",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'enroll_remote_routers',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "unenroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'unenroll_remote_router',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domains",
-            "type": {
-              "list": [
-                "int"
-              ]
-            }
-          }
+            name: 'domains',
+            type: {
+              list: ['int'],
+            },
+          },
         ],
-        "name": "unenroll_remote_routers",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'unenroll_remote_routers',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "gas",
-            "type": "int"
-          }
+            name: 'gas',
+            type: 'int',
+          },
         ],
-        "name": "set_destination_gas",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
+            name: 'configs',
+            type: {
+              list: [
                 {
-                  "tuple": [
-                    "int",
-                    "int"
-                  ]
-                }
-              ]
-            }
-          }
+                  tuple: ['int', 'int'],
+                },
+              ],
+            },
+          },
         ],
-        "name": "set_destination_gas_batch",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas_batch',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "set_custom_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_custom_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_interchain_security_module",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_interchain_security_module',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "pause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'pause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "unpause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'unpause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "is_paused",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        arguments: [],
+        name: 'is_paused',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "fee_contract",
-            "type": "ITokenFee"
-          }
+            name: 'fee_contract',
+            type: 'ITokenFee',
+          },
         ],
-        "name": "set_fee_recipient",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_fee_recipient',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "clear_fee_recipient",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'clear_fee_recipient',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_fee_recipient",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_fee_recipient',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_fee_balance",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_fee_balance',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_remote_router",
-        "payable": false,
-        "returns": {
-          "option": [
+        name: 'get_remote_router',
+        payable: false,
+        returns: {
+          option: [
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_destination_gas",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'get_destination_gas',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_decimal_scaling",
-        "payable": false,
-        "returns": {
-          "tuple": [
-            "int",
-            "int"
-          ]
+        arguments: [],
+        name: 'get_decimal_scaling',
+        payable: false,
+        returns: {
+          tuple: ['int', 'int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_local_domain",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_local_domain',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_enrolled_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_token',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_enrolled_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'min_transfer_amount',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
+            name: 'amount',
+            type: 'int',
+          },
         ],
-        "name": "transfer_remote",
-        "payable": true,
-        "returns": {
-          "bytes": 32
+        name: 'transfer_remote',
+        payable: true,
+        returns: {
+          bytes: 32,
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "origin",
-            "type": "int"
+            name: 'origin',
+            type: 'int',
           },
           {
-            "name": "sender",
-            "type": {
-              "bytes": 32
-            }
+            name: 'sender',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "body",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'body',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "body_recipient",
-            "type": "address"
-          }
+            name: 'body_recipient',
+            type: 'address',
+          },
         ],
-        "name": "handle",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'handle',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "deposit",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'deposit',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
-        ],
-        "name": "quote_transfer_remote",
-        "payable": false,
-        "returns": "HypNativeAE.transfer_quote",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "destination",
-            "type": "int"
-          }
-        ],
-        "name": "quote_gas_payment",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "beneficiary",
-            "type": "address"
-          }
-        ],
-        "name": "claim_fees",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "amount",
-            "type": "int"
+            name: 'amount',
+            type: 'int',
           },
-          {
-            "name": "recipient",
-            "type": "address"
-          }
         ],
-        "name": "rescue_native",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'quote_transfer_remote',
+        payable: false,
+        returns: 'HypNativeAE.transfer_quote',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'destination',
+            type: 'int',
+          },
+        ],
+        name: 'quote_gas_payment',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'beneficiary',
+            type: 'address',
+          },
+        ],
+        name: 'claim_fees',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "HypNativeAE",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'HypNativeAE',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "mailbox",
-          "type": "IMailbox"
+          name: 'mailbox',
+          type: 'IMailbox',
         },
         {
-          "name": "local_domain",
-          "type": "int"
+          name: 'local_domain',
+          type: 'int',
         },
         {
-          "name": "remote_routers",
-          "type": {
-            "map": [
-              "int",
+          name: 'remote_routers',
+          type: {
+            map: [
+              'int',
               {
-                "bytes": 32
-              }
-            ]
-          }
+                bytes: 32,
+              },
+            ],
+          },
         },
         {
-          "name": "destination_gas",
-          "type": {
-            "map": [
-              "int",
-              "int"
-            ]
-          }
+          name: 'destination_gas',
+          type: {
+            map: ['int', 'int'],
+          },
         },
         {
-          "name": "custom_hook",
-          "type": {
-            "option": [
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'custom_hook',
+          type: {
+            option: ['IPostDispatchHook'],
+          },
         },
         {
-          "name": "scale_numerator",
-          "type": "int"
+          name: 'scale_numerator',
+          type: 'int',
         },
         {
-          "name": "scale_denominator",
-          "type": "int"
+          name: 'scale_denominator',
+          type: 'int',
         },
         {
-          "name": "paused",
-          "type": "bool"
+          name: 'paused',
+          type: 'bool',
         },
         {
-          "name": "fee_recipient",
-          "type": {
-            "option": [
-              "ITokenFee"
-            ]
-          }
+          name: 'fee_recipient',
+          type: {
+            option: ['ITokenFee'],
+          },
         },
         {
-          "name": "fee_balance",
-          "type": "int"
+          name: 'fee_balance',
+          type: 'int',
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'deployed_block',
+          type: 'int',
+        },
+        {
+          name: 'reentrancy_lock',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "transfer_quote",
-        "typedef": {
-          "record": [
+        name: 'transfer_quote',
+        typedef: {
+          record: [
             {
-              "name": "dispatch_cost",
-              "type": "int"
+              name: 'dispatch_cost',
+              type: 'int',
             },
             {
-              "name": "fee_amount",
-              "type": "int"
+              name: 'fee_amount',
+              type: 'int',
             },
             {
-              "name": "total_token",
-              "type": "int"
-            }
-          ]
+              name: 'total_token',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const INCREMENTAL_DOMAIN_ROUTING_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "IsmSet": [
-            "int"
-          ]
+          IsmSet: ['int'],
         },
         {
-          "DefaultIsmSet": [
-            "address"
-          ]
+          DefaultIsmSet: ['address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          ConfigurationFrozen: [],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "IncrementalDomainRoutingIsm.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'IncrementalDomainRoutingIsm.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
-                "IncrementalDomainRoutingIsm.ism_config"
-              ]
-            }
-          }
+            name: 'configs',
+            type: {
+              list: ['IncrementalDomainRoutingIsm.ism_config'],
+            },
+          },
         ],
-        "name": "set_isms",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_isms',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_default_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_default_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "sender",
-            "type": "address"
-          }
+            name: 'sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "route",
-        "payable": false,
-        "returns": "IInterchainSecurityModule",
-        "stateful": false
+        name: 'route',
+        payable: false,
+        returns: 'IInterchainSecurityModule',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'freeze',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'is_frozen',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "IncrementalDomainRoutingIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'IncrementalDomainRoutingIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "isms",
-          "type": {
-            "map": [
-              "int",
-              "IInterchainSecurityModule"
-            ]
-          }
+          name: 'isms',
+          type: {
+            map: ['int', 'IInterchainSecurityModule'],
+          },
         },
         {
-          "name": "domains",
-          "type": {
-            "list": [
-              "int"
-            ]
-          }
+          name: 'domains',
+          type: {
+            list: ['int'],
+          },
         },
         {
-          "name": "default_ism",
-          "type": {
-            "option": [
-              "IInterchainSecurityModule"
-            ]
-          }
-        }
-      ]
+          name: 'default_ism',
+          type: {
+            option: ['IInterchainSecurityModule'],
+          },
+        },
+        {
+          name: 'frozen',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "ism_config",
-        "typedef": {
-          "record": [
+        name: 'ism_config',
+        typedef: {
+          record: [
             {
-              "name": "domain",
-              "type": "int"
+              name: 'domain',
+              type: 'int',
             },
             {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ]
+              name: 'ism',
+              type: 'IInterchainSecurityModule',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const INTERCHAIN_ACCOUNT_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "CallExecuted": [
-            "address",
-            "int"
-          ]
-        }
-      ]
+          CallExecuted: ['address', 'int'],
+        },
+        {
+          CommitmentSet: [
+            {
+              bytes: 32,
+            },
+          ],
+        },
+        {
+          CommitmentRevealed: [
+            {
+              bytes: 32,
+            },
+          ],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "origin_domain",
-            "type": "int"
+            name: 'origin_domain',
+            type: 'int',
           },
           {
-            "name": "origin_sender",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'origin_sender',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "InterchainAccount.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'InterchainAccount.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_origin_domain",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_origin_domain',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_origin_sender",
-        "payable": false,
-        "returns": {
-          "bytes": 32
+        arguments: [],
+        name: 'get_origin_sender',
+        payable: false,
+        returns: {
+          bytes: 32,
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_commitment',
+        payable: false,
+        returns: {
+          option: [
+            {
+              bytes: 32,
+            },
+          ],
+        },
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_executor',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "recipient",
-            "type": "address"
+            name: 'recipient',
+            type: 'address',
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
+            name: 'amount',
+            type: 'int',
+          },
         ],
-        "name": "send_ae",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'send_ae',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "recipients",
-            "type": {
-              "list": [
+            name: 'token_addr',
+            type: 'address',
+          },
+          {
+            name: 'recipient',
+            type: 'address',
+          },
+          {
+            name: 'amount',
+            type: 'int',
+          },
+        ],
+        name: 'send_aex9',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'recipients',
+            type: {
+              list: [
                 {
-                  "tuple": [
-                    "address",
-                    "int"
-                  ]
-                }
-              ]
-            }
-          }
+                  tuple: ['address', 'int'],
+                },
+              ],
+            },
+          },
         ],
-        "name": "send_ae_batch",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'send_ae_batch',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "deposit",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'deposit',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'hash',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'set_commitment',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'hash',
+            type: {
+              bytes: 32,
+            },
+          },
+          {
+            name: 'designated_executor',
+            type: 'address',
+          },
+        ],
+        name: 'set_commitment_with_executor',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'ops',
+            type: {
+              list: ['InterchainAccount.call_op'],
+            },
+          },
+          {
+            name: 'salt',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'reveal_and_execute',
+        payable: true,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "InterchainAccount",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'InterchainAccount',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "origin_domain",
-          "type": "int"
+          name: 'origin_domain',
+          type: 'int',
         },
         {
-          "name": "origin_sender",
-          "type": {
-            "bytes": 32
-          }
+          name: 'origin_sender',
+          type: {
+            bytes: 32,
+          },
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'commitment',
+          type: {
+            option: [
+              {
+                bytes: 32,
+              },
+            ],
+          },
+        },
+        {
+          name: 'executor',
+          type: {
+            option: ['address'],
+          },
+        },
+        {
+          name: 'deployed_block',
+          type: 'int',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [
+      {
+        name: 'call_op',
+        typedef: {
+          variant: [
+            {
+              SendAE: ['address', 'int'],
+            },
+            {
+              SendAEX9: ['address', 'address', 'int'],
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const INTERCHAIN_ACCOUNT_ROUTER_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "InterchainAccountCreated": [
-            "int",
+          InterchainAccountCreated: [
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "address"
-          ]
+            'address',
+          ],
         },
         {
-          "RemoteCallDispatched": [
-            "int",
+          RemoteCallDispatched: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "RemoteCallExecuted": [
-            "int",
+          RemoteCallExecuted: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "RemoteRouterEnrolled": [
-            "int",
+          RemoteRouterEnrolled: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "RemoteRouterUnenrolled": [
-            "int"
-          ]
+          CustomHookSet: ['address'],
         },
         {
-          "CustomHookSet": [
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferred: ['address', 'address'],
         },
-        {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox",
-            "type": "IMailbox"
-          }
+            name: 'mailbox',
+            type: 'IMailbox',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "InterchainAccountRouter.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'InterchainAccountRouter.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
+            name: 'amount',
+            type: 'int',
+          },
         ],
-        "name": "call_remote_ae",
-        "payable": true,
-        "returns": {
-          "bytes": 32
+        name: 'call_remote_ae',
+        payable: true,
+        returns: {
+          bytes: 32,
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "origin",
-            "type": "int"
+            name: 'origin',
+            type: 'int',
           },
           {
-            "name": "sender",
-            "type": {
-              "bytes": 32
-            }
+            name: 'sender',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "body",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'body',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "body_recipient",
-            "type": "address"
-          }
+            name: 'body_recipient',
+            type: 'address',
+          },
         ],
-        "name": "handle",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'handle',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "origin",
-            "type": "int"
+            name: 'token_bytes',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "owner",
-            "type": {
-              "bytes": 32
-            }
+            name: 'token_addr',
+            type: 'address',
+          },
+        ],
+        name: 'register_token',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'token_bytes',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'get_token',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'origin',
+            type: 'int',
           },
           {
-            "name": "ica",
-            "type": "IInterchainAccount"
-          }
-        ],
-        "name": "register_ica",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "origin",
-            "type": "int"
+            name: 'owner',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "owner",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'ica',
+            type: 'IInterchainAccount',
+          },
         ],
-        "name": "get_local_ica",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        name: 'register_ica',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": false
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'origin',
+            type: 'int',
           },
           {
-            "name": "router",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'owner',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "enroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'get_local_ica',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
+          {
+            name: 'router',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "unenroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'enroll_remote_router',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
+          {
+            name: 'router',
+            type: {
+              bytes: 32,
+            },
+          },
+          {
+            name: 'ism',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "get_remote_router",
-        "payable": false,
-        "returns": {
-          "option": [
+        name: 'enroll_remote_router_and_ism',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'domain',
+            type: 'int',
+          },
+        ],
+        name: 'get_remote_router',
+        payable: false,
+        returns: {
+          option: [
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_enrolled_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "set_custom_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'get_remote_ism',
+        payable: false,
+        returns: {
+          option: [
+            {
+              bytes: 32,
+            },
+          ],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_enrolled_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_custom_hook',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "InterchainAccountRouter",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'InterchainAccountRouter',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "mailbox",
-          "type": "IMailbox"
+          name: 'mailbox',
+          type: 'IMailbox',
         },
         {
-          "name": "local_domain",
-          "type": "int"
+          name: 'local_domain',
+          type: 'int',
         },
         {
-          "name": "remote_routers",
-          "type": {
-            "map": [
-              "int",
+          name: 'remote_routers',
+          type: {
+            map: [
+              'int',
               {
-                "bytes": 32
-              }
-            ]
-          }
-        },
-        {
-          "name": "custom_hook",
-          "type": {
-            "option": [
-              "IPostDispatchHook"
-            ]
-          }
-        },
-        {
-          "name": "ica_registry",
-          "type": {
-            "map": [
-              {
-                "tuple": [
-                  "int",
-                  {
-                    "bytes": 32
-                  }
-                ]
+                bytes: 32,
               },
-              "IInterchainAccount"
-            ]
-          }
+            ],
+          },
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'remote_isms',
+          type: {
+            map: [
+              'int',
+              {
+                bytes: 32,
+              },
+            ],
+          },
+        },
+        {
+          name: 'custom_hook',
+          type: {
+            option: ['IPostDispatchHook'],
+          },
+        },
+        {
+          name: 'ica_registry',
+          type: {
+            map: [
+              {
+                tuple: [
+                  'int',
+                  {
+                    bytes: 32,
+                  },
+                ],
+              },
+              'IInterchainAccount',
+            ],
+          },
+        },
+        {
+          name: 'token_registry',
+          type: {
+            map: [
+              {
+                bytes: 32,
+              },
+              'address',
+            ],
+          },
+        },
+        {
+          name: 'deployed_block',
+          type: 'int',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const IGP_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "GasPayment": [
+          GasPayment: [
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int",
-            "string",
-            "int"
-          ]
+            'int',
+            'string',
+            'int',
+          ],
         },
         {
-          "BeneficiarySet": [
-            "address"
-          ]
+          BeneficiarySet: ['address'],
         },
         {
-          "DestinationGasOverheadSet": [
-            "int",
-            "int"
-          ]
+          DestinationGasOverheadSet: ['int', 'int'],
         },
         {
-          "DomainOracleSet": [
-            "int",
-            "address"
-          ]
+          DomainOracleSet: ['int', 'address'],
         },
         {
-          "DomainOracleRemoved": [
-            "int"
-          ]
-        }
-      ]
+          DomainOracleRemoved: ['int'],
+        },
+        {
+          Claimed: ['address', 'int'],
+        },
+        {
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "beneficiary",
-            "type": "address"
+            name: 'beneficiary',
+            type: 'address',
           },
           {
-            "name": "oracle",
-            "type": "IGasOracle"
-          }
+            name: 'oracle',
+            type: 'IGasOracle',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "InterchainGasPaymaster.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'InterchainGasPaymaster.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "message_id",
-            "type": {
-              "bytes": 32
-            }
+            name: 'message_id',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "gas_limit",
-            "type": "int"
+            name: 'gas_limit',
+            type: 'int',
           },
           {
-            "name": "refund_address",
-            "type": "address"
-          }
+            name: 'refund_address',
+            type: 'address',
+          },
         ],
-        "name": "pay_for_gas",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
+        name: 'pay_for_gas',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "gas_limit",
-            "type": "int"
-          }
+            name: 'gas_limit',
+            type: 'int',
+          },
         ],
-        "name": "quote_gas_payment",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'quote_gas_payment',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "overhead",
-            "type": "int"
-          }
+            name: 'overhead',
+            type: 'int',
+          },
         ],
-        "name": "set_destination_gas_overhead",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas_overhead',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
-                "InterchainGasPaymaster.gas_overhead_config"
-              ]
-            }
-          }
+            name: 'configs',
+            type: {
+              list: ['InterchainGasPaymaster.gas_overhead_config'],
+            },
+          },
         ],
-        "name": "set_destination_gas_overheads",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas_overheads',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "set_beneficiary",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_beneficiary',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "oracle",
-            "type": "IGasOracle"
-          }
+            name: 'oracle',
+            type: 'IGasOracle',
+          },
         ],
-        "name": "set_domain_oracle",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_domain_oracle',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "remove_domain_oracle",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_domain_oracle',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_domain_oracle",
-        "payable": false,
-        "returns": {
-          "option": [
-            "IGasOracle"
-          ]
+        name: 'get_domain_oracle',
+        payable: false,
+        returns: {
+          option: ['IGasOracle'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "claim",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'claim',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_beneficiary",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_beneficiary',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_collected_fees',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "destination_gas_overhead",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      }
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'domain',
+            type: 'int',
+          },
+        ],
+        name: 'destination_gas_overhead',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "InterchainGasPaymaster",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'InterchainGasPaymaster',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "beneficiary",
-          "type": "address"
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "oracle",
-          "type": "IGasOracle"
+          name: 'beneficiary',
+          type: 'address',
         },
         {
-          "name": "domain_oracles",
-          "type": {
-            "map": [
-              "int",
-              "IGasOracle"
-            ]
-          }
+          name: 'oracle',
+          type: 'IGasOracle',
         },
         {
-          "name": "gas_overhead",
-          "type": {
-            "map": [
-              "int",
-              "int"
-            ]
-          }
+          name: 'domain_oracles',
+          type: {
+            map: ['int', 'IGasOracle'],
+          },
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'gas_overhead',
+          type: {
+            map: ['int', 'int'],
+          },
+        },
+        {
+          name: 'deployed_block',
+          type: 'int',
+        },
+        {
+          name: 'collected_fees',
+          type: 'int',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "gas_overhead_config",
-        "typedef": {
-          "record": [
+        name: 'gas_overhead_config',
+        typedef: {
+          record: [
             {
-              "name": "domain",
-              "type": "int"
+              name: 'domain',
+              type: 'int',
             },
             {
-              "name": "overhead",
-              "type": "int"
-            }
-          ]
+              name: 'overhead',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const INTERCHAIN_QUERY_ROUTER_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "QueryDispatched": [
-            "int",
+          QueryDispatched: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "ResponseDispatched": [
-            "int",
+          ResponseDispatched: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "ResponseDelivered": [
-            "int",
-            "address"
-          ]
+          ResponseDelivered: ['int', 'address'],
         },
         {
-          "RemoteRouterEnrolled": [
-            "int",
+          RemoteRouterEnrolled: [
+            'int',
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "RemoteRouterUnenrolled": [
-            "int"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferred: ['address', 'address'],
         },
-        {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox",
-            "type": "IMailbox"
-          }
+            name: 'mailbox',
+            type: 'IMailbox',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "InterchainQueryRouter.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'InterchainQueryRouter.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "query_data",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'query_data',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "query",
-        "payable": true,
-        "returns": {
-          "bytes": 32
+        name: 'query',
+        payable: true,
+        returns: {
+          bytes: 32,
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "origin",
-            "type": "int"
+            name: 'origin',
+            type: 'int',
           },
           {
-            "name": "sender",
-            "type": {
-              "bytes": 32
-            }
+            name: 'sender',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "body",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'body',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "body_recipient",
-            "type": "address"
-          }
+            name: 'body_recipient',
+            type: 'address',
+          },
         ],
-        "name": "handle",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'handle',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "router",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'router',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "enroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'enroll_remote_router',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "unenroll_remote_router",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "domain",
-            "type": "int"
-          }
-        ],
-        "name": "get_remote_router",
-        "payable": false,
-        "returns": {
-          "option": [
+        name: 'get_remote_router',
+        payable: false,
+        returns: {
+          option: [
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_enrolled_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_enrolled_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "InterchainQueryRouter",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'InterchainQueryRouter',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "mailbox",
-          "type": "IMailbox"
+          name: 'mailbox',
+          type: 'IMailbox',
         },
         {
-          "name": "local_domain",
-          "type": "int"
+          name: 'local_domain',
+          type: 'int',
         },
         {
-          "name": "remote_routers",
-          "type": {
-            "map": [
-              "int",
+          name: 'remote_routers',
+          type: {
+            map: [
+              'int',
               {
-                "bytes": 32
-              }
-            ]
-          }
+                bytes: 32,
+              },
+            ],
+          },
         },
         {
-          "name": "custom_hook",
-          "type": {
-            "option": [
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'custom_hook',
+          type: {
+            option: ['IPostDispatchHook'],
+          },
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'deployed_block',
+          type: 'int',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const ISM_DEPLOYMENT_HELPER_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "IsmDeployed": [
-            "address",
-            "int",
-            "int"
-          ]
+          IsmDeployed: ['address', 'int', 'int'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "IsmDeploymentHelper.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'IsmDeploymentHelper.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
           },
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "record_deployment",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'record_deployment',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_deployments",
-        "payable": false,
-        "returns": {
-          "list": [
-            "IsmDeploymentHelper.deployment_record"
-          ]
+        arguments: [],
+        name: 'get_deployments',
+        payable: false,
+        returns: {
+          list: ['IsmDeploymentHelper.deployment_record'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_deployments_for_domain",
-        "payable": false,
-        "returns": {
-          "list": [
-            "IsmDeploymentHelper.deployment_record"
-          ]
+        name: 'get_deployments_for_domain',
+        payable: false,
+        returns: {
+          list: ['IsmDeploymentHelper.deployment_record'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "deployment_count",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'deployment_count',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "IsmDeploymentHelper",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'IsmDeploymentHelper',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "deployments",
-          "type": {
-            "list": [
-              "IsmDeploymentHelper.deployment_record"
-            ]
-          }
-        }
-      ]
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
+        },
+        {
+          name: 'deployments',
+          type: {
+            list: ['IsmDeploymentHelper.deployment_record'],
+          },
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "deployment_record",
-        "typedef": {
-          "record": [
+        name: 'deployment_record',
+        typedef: {
+          record: [
             {
-              "name": "ism_address",
-              "type": "address"
+              name: 'ism_address',
+              type: 'address',
             },
             {
-              "name": "ism_type",
-              "type": "int"
+              name: 'ism_type',
+              type: 'int',
             },
             {
-              "name": "domain",
-              "type": "int"
+              name: 'domain',
+              type: 'int',
             },
             {
-              "name": "timestamp",
-              "type": "int"
-            }
-          ]
+              name: 'timestamp',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const LINEAR_FEE_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "FeeConfigured": [
-            "int",
-            "int"
-          ]
+          FeeConfigured: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+        {
+          ConfigurationFrozen: [],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "max_fee",
-            "type": "int"
+            name: 'max_fee',
+            type: 'int',
           },
           {
-            "name": "half_amount",
-            "type": "int"
-          }
+            name: 'half_amount',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "LinearFee.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'LinearFee.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_destination",
-            "type": "int"
+            name: '_destination',
+            type: 'int',
           },
           {
-            "name": "_recipient",
-            "type": {
-              "bytes": 32
-            }
+            name: '_recipient',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
+            name: 'amount',
+            type: 'int',
+          },
         ],
-        "name": "quote_transfer_fee",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'quote_transfer_fee',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_max_fee",
-            "type": "int"
+            name: 'new_max_fee',
+            type: 'int',
           },
           {
-            "name": "new_half_amount",
-            "type": "int"
-          }
+            name: 'new_half_amount',
+            type: 'int',
+          },
         ],
-        "name": "set_fee_config",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_fee_config',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_max_fee",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_half_amount",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'freeze',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": false
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'is_frozen',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_max_fee',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_half_amount',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "LinearFee",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'LinearFee',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "max_fee",
-          "type": "int"
+          name: 'max_fee',
+          type: 'int',
         },
         {
-          "name": "half_amount",
-          "type": "int"
-        }
-      ]
+          name: 'half_amount',
+          type: 'int',
+        },
+        {
+          name: 'frozen',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const MAILBOX_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "Dispatch": [
-            "address",
-            "int",
+          Dispatch: [
+            'address',
+            'int',
             {
-              "bytes": 32
+              bytes: 32,
             },
             {
-              "bytes": "any"
-            }
-          ]
-        },
-        {
-          "DispatchId": [
-            {
-              "bytes": 32
-            }
-          ]
-        },
-        {
-          "Process": [
-            "int",
-            {
-              "bytes": 32
+              bytes: 'any',
             },
-            "address"
-          ]
+          ],
         },
         {
-          "ProcessId": [
+          DispatchId: [
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "DefaultIsmSet": [
-            "address"
-          ]
+          Process: [
+            'int',
+            {
+              bytes: 32,
+            },
+            'address',
+          ],
         },
         {
-          "DefaultHookSet": [
-            "address"
-          ]
+          ProcessId: [
+            {
+              bytes: 32,
+            },
+          ],
         },
         {
-          "RequiredHookSet": [
-            "address"
-          ]
+          DefaultIsmSet: ['address'],
         },
         {
-          "MaxMessageBodyBytesSet": [
-            "int"
-          ]
-        }
-      ]
+          DefaultHookSet: ['address'],
+        },
+        {
+          RequiredHookSet: ['address'],
+        },
+        {
+          MaxMessageBodyBytesSet: ['int'],
+        },
+        {
+          Paused: ['address'],
+        },
+        {
+          Unpaused: ['address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "local_domain",
-            "type": "int"
+            name: 'local_domain',
+            type: 'int',
           },
           {
-            "name": "owner",
-            "type": "address"
-          }
-        ],
-        "name": "init",
-        "payable": false,
-        "returns": "Mailbox.state",
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "version",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "package_version",
-        "payable": false,
-        "returns": "string",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "local_domain",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "nonce",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "latest_dispatched_id",
-        "payable": false,
-        "returns": {
-          "bytes": 32
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "default_ism",
-        "payable": false,
-        "returns": {
-          "option": [
-            "IInterchainSecurityModule"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "default_hook",
-        "payable": false,
-        "returns": {
-          "option": [
-            "IPostDispatchHook"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "required_hook",
-        "payable": false,
-        "returns": {
-          "option": [
-            "IPostDispatchHook"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "delivered",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "get_delivery",
-        "payable": false,
-        "returns": {
-          "option": [
-            "Mailbox.delivery"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "processor",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "processed_at",
-        "payable": false,
-        "returns": {
-          "option": [
-            "int"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "recipient",
-            "type": "address"
-          }
-        ],
-        "name": "get_recipient_ism",
-        "payable": false,
-        "returns": {
-          "option": [
-            "IInterchainSecurityModule"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "recipient",
-            "type": "address"
-          }
-        ],
-        "name": "recipient_ism_for",
-        "payable": false,
-        "returns": "IInterchainSecurityModule",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "default_ism",
-            "type": "IInterchainSecurityModule"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "default_hook",
-            "type": "IPostDispatchHook"
+            name: 'default_ism',
+            type: 'IInterchainSecurityModule',
           },
           {
-            "name": "required_hook",
-            "type": "IPostDispatchHook"
-          }
-        ],
-        "name": "initialize",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
-        ],
-        "name": "set_default_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
-        ],
-        "name": "set_default_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "hook",
-            "type": "IPostDispatchHook"
-          }
-        ],
-        "name": "set_required_hook",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "new_owner",
-            "type": "address"
-          }
-        ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "recipient",
-            "type": "address"
+            name: 'default_hook',
+            type: 'IPostDispatchHook',
           },
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'required_hook',
+            type: 'IPostDispatchHook',
+          },
         ],
-        "name": "set_recipient_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'Mailbox.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'version',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'package_version',
+        payable: false,
+        returns: 'string',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'local_domain',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'nonce',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'latest_dispatched_id',
+        payable: false,
+        returns: {
+          bytes: 32,
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'default_ism',
+        payable: false,
+        returns: {
+          option: ['IInterchainSecurityModule'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'default_hook',
+        payable: false,
+        returns: {
+          option: ['IPostDispatchHook'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'required_hook',
+        payable: false,
+        returns: {
+          option: ['IPostDispatchHook'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "set_own_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'delivered',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "max_bytes",
-            "type": "int"
-          }
+            name: 'id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "set_max_message_body_bytes",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'get_delivery',
+        payable: false,
+        returns: {
+          option: ['Mailbox.delivery'],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_max_message_body_bytes",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination_domain",
-            "type": "int"
+            name: 'id',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'processor',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'id',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'processed_at',
+        payable: false,
+        returns: {
+          option: ['int'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'recipient',
+            type: 'address',
+          },
+        ],
+        name: 'get_recipient_ism',
+        payable: false,
+        returns: {
+          option: ['IInterchainSecurityModule'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'recipient',
+            type: 'address',
+          },
+        ],
+        name: 'recipient_ism_for',
+        payable: false,
+        returns: 'IInterchainSecurityModule',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'pause',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'unpause',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'is_paused',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'default_ism',
+            type: 'IInterchainSecurityModule',
           },
           {
-            "name": "recipient_address",
-            "type": {
-              "bytes": 32
-            }
+            name: 'default_hook',
+            type: 'IPostDispatchHook',
           },
           {
-            "name": "message_body",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'required_hook',
+            type: 'IPostDispatchHook',
+          },
+        ],
+        name: 'initialize',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
+        ],
+        name: 'set_default_ism',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
+        ],
+        name: 'set_default_hook',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'hook',
+            type: 'IPostDispatchHook',
+          },
+        ],
+        name: 'set_required_hook',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
+        ],
+        name: 'set_own_ism',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'max_bytes',
+            type: 'int',
+          },
+        ],
+        name: 'set_max_message_body_bytes',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_max_message_body_bytes',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'destination_domain',
+            type: 'int',
           },
           {
-            "name": "hook_metadata",
-            "type": {
-              "option": [
+            name: 'recipient_address',
+            type: {
+              bytes: 32,
+            },
+          },
+          {
+            name: 'message_body',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'hook_metadata',
+            type: {
+              option: [
                 {
-                  "bytes": "any"
-                }
-              ]
-            }
+                  bytes: 'any',
+                },
+              ],
+            },
           },
           {
-            "name": "custom_hook",
-            "type": {
-              "option": [
-                "IPostDispatchHook"
-              ]
-            }
-          }
+            name: 'custom_hook',
+            type: {
+              option: ['IPostDispatchHook'],
+            },
+          },
+          {
+            name: 'refund_address',
+            type: {
+              option: ['address'],
+            },
+          },
         ],
-        "name": "dispatch",
-        "payable": true,
-        "returns": {
-          "bytes": 32
+        name: 'dispatch',
+        payable: true,
+        returns: {
+          bytes: 32,
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination_domain",
-            "type": "int"
+            name: 'destination_domain',
+            type: 'int',
           },
           {
-            "name": "recipient_address",
-            "type": {
-              "bytes": 32
-            }
+            name: 'recipient_address',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "message_body",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message_body',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "hook_metadata",
-            "type": {
-              "option": [
+            name: 'hook_metadata',
+            type: {
+              option: [
                 {
-                  "bytes": "any"
-                }
-              ]
-            }
+                  bytes: 'any',
+                },
+              ],
+            },
           },
           {
-            "name": "custom_hook",
-            "type": {
-              "option": [
-                "IPostDispatchHook"
-              ]
-            }
-          }
+            name: 'custom_hook',
+            type: {
+              option: ['IPostDispatchHook'],
+            },
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "recipient_addr",
-            "type": "address"
+            name: 'recipient_addr',
+            type: 'address',
           },
           {
-            "name": "body_recipient_addr",
-            "type": "address"
-          }
+            name: 'body_recipient_addr',
+            type: 'address',
+          },
         ],
-        "name": "process",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'process',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'to',
+            type: 'address',
+          },
+          {
+            name: 'amount',
+            type: 'int',
+          },
+        ],
+        name: 'rescue_funds',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "Mailbox",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'Mailbox',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "local_domain",
-          "type": "int"
+          name: 'local_domain',
+          type: 'int',
         },
         {
-          "name": "nonce",
-          "type": "int"
+          name: 'nonce',
+          type: 'int',
         },
         {
-          "name": "latest_dispatched_id",
-          "type": {
-            "bytes": 32
-          }
+          name: 'latest_dispatched_id',
+          type: {
+            bytes: 32,
+          },
         },
         {
-          "name": "default_ism",
-          "type": {
-            "option": [
-              "IInterchainSecurityModule"
-            ]
-          }
+          name: 'default_ism',
+          type: {
+            option: ['IInterchainSecurityModule'],
+          },
         },
         {
-          "name": "default_hook",
-          "type": {
-            "option": [
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'default_hook',
+          type: {
+            option: ['IPostDispatchHook'],
+          },
         },
         {
-          "name": "required_hook",
-          "type": {
-            "option": [
-              "IPostDispatchHook"
-            ]
-          }
+          name: 'required_hook',
+          type: {
+            option: ['IPostDispatchHook'],
+          },
         },
         {
-          "name": "deliveries",
-          "type": {
-            "map": [
+          name: 'deliveries',
+          type: {
+            map: [
               {
-                "bytes": 32
+                bytes: 32,
               },
-              "Mailbox.delivery"
-            ]
-          }
+              'Mailbox.delivery',
+            ],
+          },
         },
         {
-          "name": "recipient_isms",
-          "type": {
-            "map": [
-              "address",
-              "IInterchainSecurityModule"
-            ]
-          }
+          name: 'recipient_isms',
+          type: {
+            map: ['address', 'IInterchainSecurityModule'],
+          },
         },
         {
-          "name": "deployed_block",
-          "type": "int"
+          name: 'deployed_block',
+          type: 'int',
         },
         {
-          "name": "initialized",
-          "type": "bool"
+          name: 'initialized',
+          type: 'bool',
         },
         {
-          "name": "max_message_body_bytes",
-          "type": "int"
-        }
-      ]
+          name: 'max_message_body_bytes',
+          type: 'int',
+        },
+        {
+          name: 'paused',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "delivery",
-        "typedef": {
-          "record": [
+        name: 'delivery',
+        typedef: {
+          record: [
             {
-              "name": "processor",
-              "type": "address"
+              name: 'processor',
+              type: 'address',
             },
             {
-              "name": "block_number",
-              "type": "int"
-            }
-          ]
+              name: 'block_number',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const MERKLE_ROOT_MULTISIG_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ValidatorsAndThresholdSet": [
-            "int",
-            "int"
-          ]
+          ValidatorsAndThresholdSet: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          ConfigurationFrozen: [],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "vals",
-            "type": {
-              "list": [
+            name: 'vals',
+            type: {
+              list: [
                 {
-                  "bytes": 20
-                }
-              ]
-            }
-          },
-          {
-            "name": "threshold",
-            "type": "int"
-          }
-        ],
-        "name": "init",
-        "payable": false,
-        "returns": "MerkleRootMultisigIsm.state",
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "vals",
-            "type": {
-              "list": [
-                {
-                  "bytes": 20
-                }
-              ]
-            }
-          },
-          {
-            "name": "threshold",
-            "type": "int"
-          }
-        ],
-        "name": "set_validators_and_threshold",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "get_validators",
-        "payable": false,
-        "returns": {
-          "list": [
-            {
-              "bytes": 20
-            }
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_threshold",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "validators_and_threshold",
-        "payable": false,
-        "returns": {
-          "tuple": [
-            {
-              "list": [
-                {
-                  "bytes": 20
-                }
-              ]
+                  bytes: 20,
+                },
+              ],
             },
-            "int"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "new_owner",
-            "type": "address"
-          }
-        ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'threshold',
+            type: 'int',
+          },
+        ],
+        name: 'init',
+        payable: false,
+        returns: 'MerkleRootMultisigIsm.state',
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'vals',
+            type: {
+              list: [
+                {
+                  bytes: 20,
+                },
+              ],
+            },
           },
           {
-            "name": "_sender",
-            "type": "address"
-          }
+            name: 'threshold',
+            type: 'int',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      }
+        name: 'set_validators_and_threshold',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_validators',
+        payable: false,
+        returns: {
+          list: [
+            {
+              bytes: 20,
+            },
+          ],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_threshold',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_max_validators',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
+          },
+        ],
+        name: 'validators_and_threshold',
+        payable: false,
+        returns: {
+          tuple: [
+            {
+              list: [
+                {
+                  bytes: 20,
+                },
+              ],
+            },
+            'int',
+          ],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'freeze',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'is_frozen',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: '_sender',
+            type: 'address',
+          },
+        ],
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "MerkleRootMultisigIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'MerkleRootMultisigIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "validators",
-          "type": {
-            "list": [
+          name: 'validators',
+          type: {
+            list: [
               {
-                "bytes": 20
-              }
-            ]
-          }
+                bytes: 20,
+              },
+            ],
+          },
         },
         {
-          "name": "threshold",
-          "type": "int"
-        }
-      ]
+          name: 'threshold',
+          type: 'int',
+        },
+        {
+          name: 'frozen',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const MERKLE_TREE_HOOK_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "InsertedIntoTree": [
+          InsertedIntoTree: [
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
-        }
-      ]
+            'int',
+          ],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox",
-            "type": "address"
-          }
-        ],
-        "name": "init",
-        "payable": false,
-        "returns": "MerkleTreeHook.state",
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'mailbox',
+            type: 'address',
           },
-          {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
         ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'MerkleTreeHook.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
-          },
-          {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "count",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "root",
-        "payable": false,
-        "returns": {
-          "bytes": 32
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "latest_checkpoint",
-        "payable": false,
-        "returns": {
-          "tuple": [
-            {
-              "bytes": 32
+            name: '_metadata',
+            type: {
+              bytes: 'any',
             },
-            "int"
-          ]
+          },
+        ],
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: '_refund_addr',
+            type: 'address',
+          },
+        ],
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
+          },
+        ],
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'count',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'root',
+        payable: false,
+        returns: {
+          bytes: 32,
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "tree",
-        "payable": false,
-        "returns": "MerkleLib.merkle_tree",
-        "stateful": false
+        arguments: [],
+        name: 'latest_checkpoint',
+        payable: false,
+        returns: {
+          tuple: [
+            {
+              bytes: 32,
+            },
+            'int',
+          ],
+        },
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_mailbox",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'tree',
+        payable: false,
+        returns: 'MerkleLib.merkle_tree',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_mailbox',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "MerkleTreeHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'MerkleTreeHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "mailbox",
-          "type": "address"
+          name: 'mailbox',
+          type: 'address',
         },
         {
-          "name": "tree",
-          "type": "MerkleLib.merkle_tree"
-        }
-      ]
+          name: 'tree',
+          type: 'MerkleLib.merkle_tree',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const MULTISIG_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ValidatorsAndThresholdSet": [
-            "int",
-            "int"
-          ]
+          ValidatorsAndThresholdSet: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          ConfigurationFrozen: [],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "vals",
-            "type": {
-              "list": [
+            name: 'vals',
+            type: {
+              list: [
                 {
-                  "bytes": 20
-                }
-              ]
-            }
-          },
-          {
-            "name": "threshold",
-            "type": "int"
-          }
-        ],
-        "name": "init",
-        "payable": false,
-        "returns": "MessageIdMultisigIsm.state",
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "vals",
-            "type": {
-              "list": [
-                {
-                  "bytes": 20
-                }
-              ]
-            }
-          },
-          {
-            "name": "threshold",
-            "type": "int"
-          }
-        ],
-        "name": "set_validators_and_threshold",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "get_validators",
-        "payable": false,
-        "returns": {
-          "list": [
-            {
-              "bytes": 20
-            }
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_threshold",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "validators_and_threshold",
-        "payable": false,
-        "returns": {
-          "tuple": [
-            {
-              "list": [
-                {
-                  "bytes": 20
-                }
-              ]
+                  bytes: 20,
+                },
+              ],
             },
-            "int"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "new_owner",
-            "type": "address"
-          }
-        ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'threshold',
+            type: 'int',
+          },
+        ],
+        name: 'init',
+        payable: false,
+        returns: 'MessageIdMultisigIsm.state',
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'vals',
+            type: {
+              list: [
+                {
+                  bytes: 20,
+                },
+              ],
+            },
           },
           {
-            "name": "_sender",
-            "type": "address"
-          }
+            name: 'threshold',
+            type: 'int',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      }
+        name: 'set_validators_and_threshold',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_validators',
+        payable: false,
+        returns: {
+          list: [
+            {
+              bytes: 20,
+            },
+          ],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_threshold',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_max_validators',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
+          },
+        ],
+        name: 'validators_and_threshold',
+        payable: false,
+        returns: {
+          tuple: [
+            {
+              list: [
+                {
+                  bytes: 20,
+                },
+              ],
+            },
+            'int',
+          ],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'freeze',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'is_frozen',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: '_sender',
+            type: 'address',
+          },
+        ],
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "MessageIdMultisigIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'MessageIdMultisigIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "validators",
-          "type": {
-            "list": [
+          name: 'validators',
+          type: {
+            list: [
               {
-                "bytes": 20
-              }
-            ]
-          }
+                bytes: 20,
+              },
+            ],
+          },
         },
         {
-          "name": "threshold",
-          "type": "int"
-        }
-      ]
+          name: 'threshold',
+          type: 'int',
+        },
+        {
+          name: 'frozen',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const MINTABLE_AEX9_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "Transfer": [
-            "address",
-            "address",
-            "int"
-          ]
+          Transfer: ['address', 'address', 'int'],
         },
         {
-          "Allowance": [
-            "address",
-            "address",
-            "int"
-          ]
+          Allowance: ['address', 'address', 'int'],
         },
         {
-          "Mint": [
-            "address",
-            "int"
-          ]
+          Mint: ['address', 'int'],
         },
         {
-          "Burn": [
-            "address",
-            "int"
-          ]
+          Burn: ['address', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+        {
+          MinterChangeQueued: ['address', 'int'],
+        },
+        {
+          MinterChanged: ['address', 'address'],
+        },
+        {
+          MinterChangeCancelled: [],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "name",
-            "type": "string"
+            name: 'name',
+            type: 'string',
           },
           {
-            "name": "symbol",
-            "type": "string"
+            name: 'symbol',
+            type: 'string',
           },
           {
-            "name": "decimals",
-            "type": "int"
-          }
+            name: 'decimals',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "MintableAEX9.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'MintableAEX9.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "aex9_extensions",
-        "payable": false,
-        "returns": {
-          "list": [
-            "string"
-          ]
+        arguments: [],
+        name: 'aex9_extensions',
+        payable: false,
+        returns: {
+          list: ['string'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "meta_info",
-        "payable": false,
-        "returns": "MintableAEX9.meta_info",
-        "stateful": false
+        arguments: [],
+        name: 'meta_info',
+        payable: false,
+        returns: 'MintableAEX9.meta_info',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "total_supply",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'total_supply',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "balances",
-        "payable": false,
-        "returns": {
-          "map": [
-            "address",
-            "int"
-          ]
+        arguments: [],
+        name: 'balances',
+        payable: false,
+        returns: {
+          map: ['address', 'int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "account",
-            "type": "address"
-          }
+            name: 'account',
+            type: 'address',
+          },
         ],
-        "name": "balance",
-        "payable": false,
-        "returns": {
-          "option": [
-            "int"
-          ]
+        name: 'balance',
+        payable: false,
+        returns: {
+          option: ['int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "name",
-        "payable": false,
-        "returns": "string",
-        "stateful": false
+        arguments: [],
+        name: 'name',
+        payable: false,
+        returns: 'string',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "symbol",
-        "payable": false,
-        "returns": "string",
-        "stateful": false
+        arguments: [],
+        name: 'symbol',
+        payable: false,
+        returns: 'string',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "decimals",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'decimals',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "spender",
-            "type": "address"
-          }
+            name: 'spender',
+            type: 'address',
+          },
         ],
-        "name": "allowance",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'allowance',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "to",
-            "type": "address"
+            name: 'to',
+            type: 'address',
           },
           {
-            "name": "value",
-            "type": "int"
-          }
+            name: 'value',
+            type: 'int',
+          },
         ],
-        "name": "transfer",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "spender",
-            "type": "address"
+            name: 'spender',
+            type: 'address',
           },
           {
-            "name": "value",
-            "type": "int"
-          }
+            name: 'value',
+            type: 'int',
+          },
         ],
-        "name": "create_allowance",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'create_allowance',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "from",
-            "type": "address"
+            name: 'from',
+            type: 'address',
           },
           {
-            "name": "to",
-            "type": "address"
+            name: 'to',
+            type: 'address',
           },
           {
-            "name": "value",
-            "type": "int"
-          }
+            name: 'value',
+            type: 'int',
+          },
         ],
-        "name": "transfer_allowance",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_allowance',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "spender",
-            "type": "address"
+            name: 'spender',
+            type: 'address',
           },
           {
-            "name": "added_value",
-            "type": "int"
-          }
+            name: 'added_value',
+            type: 'int',
+          },
         ],
-        "name": "increase_allowance",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'increase_allowance',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "spender",
-            "type": "address"
+            name: 'spender',
+            type: 'address',
           },
           {
-            "name": "subtracted_value",
-            "type": "int"
-          }
+            name: 'subtracted_value',
+            type: 'int',
+          },
         ],
-        "name": "decrease_allowance",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'decrease_allowance',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_minter",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_minter',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_pending_minter',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_minter_change_ready_at',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "minter",
-            "type": "address"
-          }
+            name: 'minter',
+            type: 'address',
+          },
         ],
-        "name": "set_minter",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_minter',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "to",
-            "type": "address"
+            name: 'new_minter',
+            type: 'address',
+          },
+        ],
+        name: 'queue_set_minter',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'execute_set_minter',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'cancel_set_minter',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'to',
+            type: 'address',
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
+            name: 'amount',
+            type: 'int',
+          },
         ],
-        "name": "mint",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'mint',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "from",
-            "type": "address"
+            name: 'from',
+            type: 'address',
           },
           {
-            "name": "amount",
-            "type": "int"
-          }
+            name: 'amount',
+            type: 'int',
+          },
         ],
-        "name": "burn",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'burn',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "MintableAEX9",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'MintableAEX9',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "minter",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'minter',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "name",
-          "type": "string"
+          name: 'pending_minter',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "symbol",
-          "type": "string"
+          name: 'minter_change_ready_at',
+          type: 'int',
         },
         {
-          "name": "decimals",
-          "type": "int"
+          name: 'name',
+          type: 'string',
         },
         {
-          "name": "total_supply",
-          "type": "int"
+          name: 'symbol',
+          type: 'string',
         },
         {
-          "name": "balances",
-          "type": {
-            "map": [
-              "address",
-              "int"
-            ]
-          }
+          name: 'decimals',
+          type: 'int',
         },
         {
-          "name": "allowances",
-          "type": {
-            "map": [
-              "address",
+          name: 'total_supply',
+          type: 'int',
+        },
+        {
+          name: 'balances',
+          type: {
+            map: ['address', 'int'],
+          },
+        },
+        {
+          name: 'allowances',
+          type: {
+            map: [
+              'address',
               {
-                "map": [
-                  "address",
-                  "int"
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "typedefs": [
-      {
-        "name": "meta_info",
-        "typedef": {
-          "record": [
-            {
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "name": "symbol",
-              "type": "string"
-            },
-            {
-              "name": "decimals",
-              "type": "int"
-            }
-          ]
+                map: ['address', 'int'],
+              },
+            ],
+          },
         },
-        "vars": []
-      }
-    ]
-  }
+      ],
+    },
+    typedefs: [
+      {
+        name: 'meta_info',
+        typedef: {
+          record: [
+            {
+              name: 'name',
+              type: 'string',
+            },
+            {
+              name: 'symbol',
+              type: 'string',
+            },
+            {
+              name: 'decimals',
+              type: 'int',
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const MULTISIG_WALLET_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "TransactionSubmitted": [
-            "int",
-            "address",
-            "int"
-          ]
+          TxProposed: ['hash', 'address', 'int'],
         },
         {
-          "TransactionConfirmed": [
-            "int",
-            "address"
-          ]
+          TxConfirmed: ['hash', 'address'],
         },
         {
-          "TransactionRevoked": [
-            "int",
-            "address"
-          ]
+          TxRefused: ['hash', 'address'],
         },
         {
-          "TransactionExecuted": [
-            "int"
-          ]
+          TxConsensusReached: ['hash'],
         },
         {
-          "OwnerAdded": [
-            "address"
-          ]
+          TxConsensusLost: ['hash'],
         },
         {
-          "OwnerRemoved": [
-            "address"
-          ]
+          TxRevoked: ['hash', 'address'],
         },
         {
-          "ThresholdChanged": [
-            "int",
-            "int"
-          ]
-        }
-      ]
+          TxAuthorized: ['hash'],
+        },
+        {
+          FeeProtectionUpdated: ['address', 'int', 'int'],
+        },
+        {
+          FeeProtectionDisabled: ['address'],
+        },
+        {
+          SignerAdded: ['address'],
+        },
+        {
+          SignerRemoved: ['address'],
+        },
+        {
+          ThresholdChanged: ['int', 'int'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owners",
-            "type": {
-              "list": [
-                "address"
-              ]
-            }
+            name: 'confirmations_required',
+            type: 'int',
           },
           {
-            "name": "threshold",
-            "type": "int"
-          }
+            name: 'signers',
+            type: {
+              'Set.set': ['address'],
+            },
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "MultiSigWallet.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'MultiSigWallet.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "target",
-            "type": "address"
+            name: 'nonce',
+            type: 'int',
+          },
+        ],
+        name: 'authorize',
+        payable: false,
+        returns: 'bool',
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'tx_hash',
+            type: 'hash',
           },
           {
-            "name": "value",
-            "type": "int"
+            name: 'ttl',
+            type: 'Chain.ttl',
           },
-          {
-            "name": "data",
-            "type": {
-              "bytes": "any"
-            }
-          }
         ],
-        "name": "submit",
-        "payable": false,
-        "returns": "int",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "tx_id",
-            "type": "int"
-          }
-        ],
-        "name": "confirm",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'propose',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "tx_id",
-            "type": "int"
-          }
-        ],
-        "name": "revoke",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "tx_id",
-            "type": "int"
-          }
-        ],
-        "name": "execute",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "tx_id",
-            "type": "int"
-          }
-        ],
-        "name": "get_transaction",
-        "payable": false,
-        "returns": {
-          "option": [
-            "MultiSigWallet.transaction"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "tx_id",
-            "type": "int"
+            name: 'tx_hash',
+            type: 'hash',
           },
-          {
-            "name": "owner",
-            "type": "address"
-          }
         ],
-        "name": "is_confirmed",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "is_owner",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_threshold",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_owners",
-        "payable": false,
-        "returns": {
-          "list": [
-            "address"
-          ]
+        name: 'confirm',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": false
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_tx_count",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      }
+        arguments: [
+          {
+            name: 'tx_hash',
+            type: 'hash',
+          },
+        ],
+        name: 'refuse',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'tx_hash',
+            type: 'hash',
+          },
+        ],
+        name: 'revoke',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'fee_protection',
+            type: 'MultiSigWallet.fee_protection',
+          },
+        ],
+        name: 'update_fee_protection',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'disable_fee_protection',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_version',
+        payable: false,
+        returns: 'string',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'is_fee_protection_enabled',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_fee_protection',
+        payable: false,
+        returns: {
+          option: ['MultiSigWallet.fee_protection'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_nonce',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_signers',
+        payable: false,
+        returns: {
+          list: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_consensus_info',
+        payable: false,
+        returns: 'MultiSigWallet.consensus_info',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_signer',
+            type: 'address',
+          },
+        ],
+        name: 'add_signer',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'signer',
+            type: 'address',
+          },
+        ],
+        name: 'remove_signer',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_threshold',
+            type: 'int',
+          },
+        ],
+        name: 'change_threshold',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "MultiSigWallet",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'MultiSigWallet',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owners",
-          "type": {
-            "map": [
-              "address",
-              "bool"
-            ]
-          }
+          name: 'signers',
+          type: {
+            'Set.set': ['address'],
+          },
         },
         {
-          "name": "owner_list",
-          "type": {
-            "list": [
-              "address"
-            ]
-          }
+          name: 'confirmations_required',
+          type: 'int',
         },
         {
-          "name": "threshold",
-          "type": "int"
+          name: 'current_tx',
+          type: {
+            option: ['MultiSigWallet.transaction'],
+          },
         },
         {
-          "name": "tx_count",
-          "type": "int"
+          name: 'fee_protection',
+          type: {
+            option: ['MultiSigWallet.fee_protection'],
+          },
         },
         {
-          "name": "transactions",
-          "type": {
-            "map": [
-              "int",
-              "MultiSigWallet.transaction"
-            ]
-          }
-        }
-      ]
+          name: 'fee_protection_enabled',
+          type: 'bool',
+        },
+        {
+          name: 'nonce',
+          type: 'int',
+        },
+        {
+          name: 'version',
+          type: 'string',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "transaction",
-        "typedef": {
-          "record": [
+        name: 'transaction',
+        typedef: {
+          record: [
             {
-              "name": "target",
-              "type": "address"
+              name: 'tx_hash',
+              type: 'hash',
             },
             {
-              "name": "value",
-              "type": "int"
+              name: 'expires_at',
+              type: 'int',
             },
             {
-              "name": "data",
-              "type": {
-                "bytes": "any"
-              }
+              name: 'proposed_by',
+              type: 'address',
             },
             {
-              "name": "executed",
-              "type": "bool"
+              name: 'confirmed_by',
+              type: {
+                'Set.set': ['address'],
+              },
             },
             {
-              "name": "confirmations",
-              "type": {
-                "map": [
-                  "address",
-                  "bool"
-                ]
-              }
+              name: 'refused_by',
+              type: {
+                'Set.set': ['address'],
+              },
             },
-            {
-              "name": "confirm_count",
-              "type": "int"
-            }
-          ]
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+      {
+        name: 'consensus_info',
+        typedef: {
+          record: [
+            {
+              name: 'tx_hash',
+              type: {
+                option: ['hash'],
+              },
+            },
+            {
+              name: 'confirmations_required',
+              type: 'int',
+            },
+            {
+              name: 'confirmed_by',
+              type: {
+                list: ['address'],
+              },
+            },
+            {
+              name: 'refused_by',
+              type: {
+                list: ['address'],
+              },
+            },
+            {
+              name: 'has_consensus',
+              type: 'bool',
+            },
+            {
+              name: 'expiration_height',
+              type: 'int',
+            },
+            {
+              name: 'expired',
+              type: 'bool',
+            },
+            {
+              name: 'proposed_by',
+              type: {
+                option: ['address'],
+              },
+            },
+          ],
+        },
+        vars: [],
+      },
+      {
+        name: 'fee_protection',
+        typedef: {
+          record: [
+            {
+              name: 'max_fee',
+              type: 'int',
+            },
+            {
+              name: 'max_gasprice',
+              type: 'int',
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const NOOP_HOOK_ACI = {
-  "contract": {
-    "functions": [
+  contract: {
+    functions: [
       {
-        "arguments": [],
-        "name": "init",
-        "payable": false,
-        "returns": "NoopHook.state",
-        "stateful": true
+        arguments: [],
+        name: 'init',
+        payable: false,
+        returns: 'NoopHook.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: '_refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      }
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
+          },
+        ],
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "NoopHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'NoopHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "dummy",
-          "type": "bool"
-        }
-      ]
+          name: 'dummy',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const NOOP_ISM_ACI = {
-  "contract": {
-    "functions": [
+  contract: {
+    functions: [
       {
-        "arguments": [],
-        "name": "init",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'init',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_sender",
-            "type": "address"
-          }
+            name: '_sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      }
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "NoopIsm",
-    "payable": false,
-    "typedefs": []
-  }
+    kind: 'contract_main',
+    name: 'NoopIsm',
+    payable: false,
+    typedefs: [],
+  },
 };
 
 export const OFFCHAIN_QUOTED_IGP_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "GasPayment": [
+          GasPayment: [
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int",
-            "string",
-            "int"
-          ]
+            'int',
+            'string',
+            'int',
+          ],
         },
         {
-          "BeneficiarySet": [
-            "address"
-          ]
+          BeneficiarySet: ['address'],
         },
         {
-          "DestinationGasOverheadSet": [
-            "int",
-            "int"
-          ]
+          DestinationGasOverheadSet: ['int', 'int'],
         },
         {
-          "DomainOracleSet": [
-            "int",
-            "address"
-          ]
+          DomainOracleSet: ['int', 'address'],
         },
         {
-          "SignerAdded": [
-            "address"
-          ]
+          SignerAdded: ['address'],
         },
         {
-          "SignerRemoved": [
-            "address"
-          ]
+          SignerRemoved: ['address'],
         },
         {
-          "OffchainQuoteStored": [
-            "int",
-            "int",
-            "int"
-          ]
+          OffchainQuoteStored: ['int', 'int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "beneficiary",
-            "type": "address"
+            name: 'beneficiary',
+            type: 'address',
           },
           {
-            "name": "oracle",
-            "type": "IGasOracle"
-          }
+            name: 'oracle',
+            type: 'IGasOracle',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "OffchainQuotedIGP.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'OffchainQuotedIGP.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "destination",
-            "type": "int"
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "exchange_rate",
-            "type": "int"
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
+        ],
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "gas_price",
-            "type": "int"
+            name: 'exchange_rate',
+            type: 'int',
           },
           {
-            "name": "expiry",
-            "type": "int"
-          }
-        ],
-        "name": "submit_offchain_quote",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "signer",
-            "type": "address"
-          }
-        ],
-        "name": "add_signer",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "signer",
-            "type": "address"
-          }
-        ],
-        "name": "remove_signer",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "is_signer",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "destination",
-            "type": "int"
-          }
-        ],
-        "name": "get_standing_quote",
-        "payable": false,
-        "returns": {
-          "option": [
-            "OffchainQuotedIGP.stored_gas_quote"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "message_id",
-            "type": {
-              "bytes": 32
-            }
+            name: 'gas_price',
+            type: 'int',
           },
           {
-            "name": "destination",
-            "type": "int"
+            name: 'expiry',
+            type: 'int',
+          },
+        ],
+        name: 'submit_offchain_quote',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'signer',
+            type: 'address',
+          },
+        ],
+        name: 'add_signer',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'signer',
+            type: 'address',
+          },
+        ],
+        name: 'remove_signer',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'addr',
+            type: 'address',
+          },
+        ],
+        name: 'is_signer',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'destination',
+            type: 'int',
+          },
+        ],
+        name: 'get_standing_quote',
+        payable: false,
+        returns: {
+          option: ['OffchainQuotedIGP.stored_gas_quote'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'message_id',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "gas_limit",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "refund_address",
-            "type": "address"
-          }
-        ],
-        "name": "pay_for_gas",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "destination",
-            "type": "int"
+            name: 'gas_limit',
+            type: 'int',
           },
           {
-            "name": "gas_limit",
-            "type": "int"
-          }
+            name: 'refund_address',
+            type: 'address',
+          },
         ],
-        "name": "quote_gas_payment",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'pay_for_gas',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'destination',
+            type: 'int',
           },
           {
-            "name": "overhead",
-            "type": "int"
-          }
+            name: 'gas_limit',
+            type: 'int',
+          },
         ],
-        "name": "set_destination_gas_overhead",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'quote_gas_payment',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
-                "OffchainQuotedIGP.gas_overhead_config"
-              ]
-            }
-          }
-        ],
-        "name": "set_destination_gas_overheads",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "set_beneficiary",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "oracle",
-            "type": "IGasOracle"
-          }
+            name: 'overhead',
+            type: 'int',
+          },
         ],
-        "name": "set_domain_oracle",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_destination_gas_overhead',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "claim",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "get_beneficiary",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'configs',
+            type: {
+              list: ['OffchainQuotedIGP.gas_overhead_config'],
+            },
+          },
         ],
-        "name": "destination_gas_overhead",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'set_destination_gas_overheads',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_beneficiary',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: 'domain',
+            type: 'int',
+          },
+          {
+            name: 'oracle',
+            type: 'IGasOracle',
+          },
+        ],
+        name: 'set_domain_oracle',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'claim',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_beneficiary',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'domain',
+            type: 'int',
+          },
+        ],
+        name: 'destination_gas_overhead',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "OffchainQuotedIGP",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'OffchainQuotedIGP',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "beneficiary",
-          "type": "address"
+          name: 'beneficiary',
+          type: 'address',
         },
         {
-          "name": "oracle",
-          "type": "IGasOracle"
+          name: 'oracle',
+          type: 'IGasOracle',
         },
         {
-          "name": "domain_oracles",
-          "type": {
-            "map": [
-              "int",
-              "IGasOracle"
-            ]
-          }
+          name: 'domain_oracles',
+          type: {
+            map: ['int', 'IGasOracle'],
+          },
         },
         {
-          "name": "gas_overhead",
-          "type": {
-            "map": [
-              "int",
-              "int"
-            ]
-          }
+          name: 'gas_overhead',
+          type: {
+            map: ['int', 'int'],
+          },
         },
         {
-          "name": "signers",
-          "type": {
-            "map": [
-              "address",
-              "bool"
-            ]
-          }
+          name: 'signers',
+          type: {
+            map: ['address', 'bool'],
+          },
         },
         {
-          "name": "standing_quotes",
-          "type": {
-            "map": [
-              "int",
-              "OffchainQuotedIGP.stored_gas_quote"
-            ]
-          }
-        }
-      ]
+          name: 'standing_quotes',
+          type: {
+            map: ['int', 'OffchainQuotedIGP.stored_gas_quote'],
+          },
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "stored_gas_quote",
-        "typedef": {
-          "record": [
+        name: 'stored_gas_quote',
+        typedef: {
+          record: [
             {
-              "name": "exchange_rate",
-              "type": "int"
+              name: 'exchange_rate',
+              type: 'int',
             },
             {
-              "name": "gas_price",
-              "type": "int"
+              name: 'gas_price',
+              type: 'int',
             },
             {
-              "name": "issued_at",
-              "type": "int"
+              name: 'issued_at',
+              type: 'int',
             },
             {
-              "name": "expiry",
-              "type": "int"
-            }
-          ]
+              name: 'expiry',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
+        vars: [],
       },
       {
-        "name": "gas_overhead_config",
-        "typedef": {
-          "record": [
+        name: 'gas_overhead_config',
+        typedef: {
+          record: [
             {
-              "name": "domain",
-              "type": "int"
+              name: 'domain',
+              type: 'int',
             },
             {
-              "name": "overhead",
-              "type": "int"
-            }
-          ]
+              name: 'overhead',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const PAUSABLE_HOOK_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "Paused": [
-            "address"
-          ]
+          Paused: ['address'],
         },
         {
-          "Unpaused": [
-            "address"
-          ]
-        }
-      ]
+          Unpaused: ['address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "PausableHook.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'PausableHook.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: '_refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "pause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
+          },
+        ],
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'pause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "unpause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'unpause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "is_paused",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        arguments: [],
+        name: 'is_paused',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "PausableHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'PausableHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "paused",
-          "type": "bool"
-        }
-      ]
+          name: 'paused',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const PAUSABLE_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "Paused": [
-            "address"
-          ]
+          Paused: ['address'],
         },
         {
-          "Unpaused": [
-            "address"
-          ]
+          Unpaused: ['address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "PausableIsm.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'PausableIsm.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_sender",
-            "type": "address"
-          }
+            name: '_sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "pause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'pause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "unpause",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'unpause',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "is_paused",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        arguments: [],
+        name: 'is_paused',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "PausableIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'PausableIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "paused",
-          "type": "bool"
-        }
-      ]
+          name: 'paused',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const PROTOCOL_FEE_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ProtocolFeeSet": [
-            "int"
-          ]
+          ProtocolFeeSet: ['int'],
         },
         {
-          "BeneficiarySet": [
-            "address"
-          ]
+          BeneficiarySet: ['address'],
         },
         {
-          "ProtocolFeePaid": [
-            "address",
-            "int"
-          ]
-        }
-      ]
+          ProtocolFeePaid: ['address', 'int'],
+        },
+        {
+          FeesCollected: ['address', 'int'],
+        },
+        {
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "protocol_fee",
-            "type": "int"
+            name: 'protocol_fee',
+            type: 'int',
           },
           {
-            "name": "max_protocol_fee",
-            "type": "int"
+            name: 'max_protocol_fee',
+            type: 'int',
           },
           {
-            "name": "beneficiary",
-            "type": "address"
+            name: 'beneficiary',
+            type: 'address',
           },
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "ProtocolFee.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'ProtocolFee.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "fee",
-            "type": "int"
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "set_protocol_fee",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'fee',
+            type: 'int',
+          },
+        ],
+        name: 'set_protocol_fee',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "set_beneficiary",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_beneficiary',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "collect_protocol_fees",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'collect_protocol_fees',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_protocol_fee",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_protocol_fee',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_max_protocol_fee",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_max_protocol_fee',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_beneficiary",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_beneficiary',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_collected_fees',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "ProtocolFee",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'ProtocolFee',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "beneficiary",
-          "type": "address"
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "protocol_fee",
-          "type": "int"
+          name: 'beneficiary',
+          type: 'address',
         },
         {
-          "name": "max_protocol_fee",
-          "type": "int"
-        }
-      ]
+          name: 'protocol_fee',
+          type: 'int',
+        },
+        {
+          name: 'max_protocol_fee',
+          type: 'int',
+        },
+        {
+          name: 'collected_fees',
+          type: 'int',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const RATE_LIMITED_HOOK_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "RateLimitSet": [
-            "int",
-            "int"
-          ]
+          RateLimitSet: ['int', 'int'],
         },
         {
-          "ConsumedFilledLevel": [
-            "int",
-            "int"
-          ]
+          ConsumedFilledLevel: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox",
-            "type": "address"
+            name: 'mailbox',
+            type: 'address',
           },
           {
-            "name": "max_capacity",
-            "type": "int"
+            name: 'max_capacity',
+            type: 'int',
           },
           {
-            "name": "sender_addr",
-            "type": "address"
-          }
+            name: 'sender_addr',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "RateLimitedHook.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'RateLimitedHook.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: '_refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "current_level",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_max_capacity",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_mailbox",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_sender",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_capacity",
-            "type": "int"
-          }
-        ],
-        "name": "set_max_capacity",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        arguments: [],
+        name: 'current_level',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'get_max_capacity',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": true
-      }
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_mailbox',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_sender',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_capacity',
+            type: 'int',
+          },
+        ],
+        name: 'set_max_capacity',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "RateLimitedHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'RateLimitedHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "mailbox",
-          "type": "address"
+          name: 'mailbox',
+          type: 'address',
         },
         {
-          "name": "sender",
-          "type": "address"
+          name: 'sender',
+          type: 'address',
         },
         {
-          "name": "bucket",
-          "type": "RateLimitLib.bucket"
+          name: 'bucket',
+          type: 'RateLimitLib.bucket',
         },
         {
-          "name": "validated_messages",
-          "type": {
-            "map": [
+          name: 'validated_messages',
+          type: {
+            map: [
               {
-                "bytes": 32
+                bytes: 32,
               },
-              "bool"
-            ]
-          }
-        }
-      ]
+              'bool',
+            ],
+          },
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const RATE_LIMITED_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "RateLimitSet": [
-            "int",
-            "int"
-          ]
+          RateLimitSet: ['int', 'int'],
         },
         {
-          "ConsumedFilledLevel": [
-            "int",
-            "int"
-          ]
+          ConsumedFilledLevel: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "mailbox",
-            "type": "IMailbox"
+            name: 'mailbox',
+            type: 'IMailbox',
           },
           {
-            "name": "recipient",
-            "type": {
-              "bytes": 32
-            }
+            name: 'recipient',
+            type: {
+              bytes: 32,
+            },
           },
           {
-            "name": "max_capacity",
-            "type": "int"
-          }
+            name: 'max_capacity',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "RateLimitedIsm.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'RateLimitedIsm.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_sender",
-            "type": "address"
-          }
+            name: '_sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": true
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "current_level",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'current_level',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_max_capacity",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_max_capacity',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_capacity",
-            "type": "int"
-          }
+            name: 'new_capacity',
+            type: 'int',
+          },
         ],
-        "name": "set_max_capacity",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_max_capacity',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_mailbox",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_mailbox',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "RateLimitedIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'RateLimitedIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "mailbox",
-          "type": "IMailbox"
+          name: 'mailbox',
+          type: 'IMailbox',
         },
         {
-          "name": "recipient",
-          "type": {
-            "bytes": 32
-          }
+          name: 'recipient',
+          type: {
+            bytes: 32,
+          },
         },
         {
-          "name": "bucket",
-          "type": "RateLimitLib.bucket"
+          name: 'bucket',
+          type: 'RateLimitLib.bucket',
         },
         {
-          "name": "validated",
-          "type": {
-            "map": [
+          name: 'validated',
+          type: {
+            map: [
               {
-                "bytes": 32
+                bytes: 32,
               },
-              "bool"
-            ]
-          }
-        }
-      ]
+              'bool',
+            ],
+          },
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const STATIC_AGGREGATION_HOOK_ACI = {
-  "contract": {
-    "functions": [
+  contract: {
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "hooks",
-            "type": {
-              "list": [
-                "IPostDispatchHook"
-              ]
-            }
-          }
+            name: 'hooks',
+            type: {
+              list: ['IPostDispatchHook'],
+            },
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "StaticAggregationHook.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'StaticAggregationHook.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "hook_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'hook_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "supports_metadata",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'supports_metadata',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
-        ],
-        "name": "post_dispatch",
-        "payable": true,
-        "returns": "unit",
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'refund_addr',
+            type: 'address',
+          },
         ],
-        "name": "quote_dispatch",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        name: 'post_dispatch',
+        payable: true,
+        returns: 'unit',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_hooks",
-        "payable": false,
-        "returns": {
-          "list": [
-            "IPostDispatchHook"
-          ]
+        arguments: [
+          {
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
+          },
+          {
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
+        ],
+        name: 'quote_dispatch',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_hooks',
+        payable: false,
+        returns: {
+          list: ['IPostDispatchHook'],
         },
-        "stateful": false
-      }
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "StaticAggregationHook",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'StaticAggregationHook',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "hooks",
-          "type": {
-            "list": [
-              "IPostDispatchHook"
-            ]
-          }
-        }
-      ]
+          name: 'hooks',
+          type: {
+            list: ['IPostDispatchHook'],
+          },
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const STORAGE_GAS_ORACLE_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "RemoteGasDataSet": [
-            "int",
-            "int",
-            "int"
-          ]
+          RemoteGasDataSet: ['int', 'int', 'int'],
         },
         {
-          "RemoteGasDataRemoved": [
-            "int"
-          ]
-        }
-      ]
+          RemoteGasDataRemoved: ['int'],
+        },
+        {
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
-          }
+            name: 'owner',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "StorageGasOracle.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'StorageGasOracle.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "exchange_rate",
-            "type": "int"
+            name: 'exchange_rate',
+            type: 'int',
           },
           {
-            "name": "gas_price",
-            "type": "int"
-          }
+            name: 'gas_price',
+            type: 'int',
+          },
         ],
-        "name": "set_remote_gas_data",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_remote_gas_data',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "configs",
-            "type": {
-              "list": [
-                "StorageGasOracle.gas_config"
-              ]
-            }
-          }
+            name: 'configs',
+            type: {
+              list: ['StorageGasOracle.gas_config'],
+            },
+          },
         ],
-        "name": "set_remote_gas_data_batch",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_remote_gas_data_batch',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "remove_remote_gas_data",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_remote_gas_data',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_exchange_rate_and_gas_price",
-        "payable": false,
-        "returns": {
-          "tuple": [
-            "int",
-            "int"
-          ]
+        name: 'get_exchange_rate_and_gas_price',
+        payable: false,
+        returns: {
+          tuple: ['int', 'int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "StorageGasOracle",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'StorageGasOracle',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "remote_gas_data",
-          "type": {
-            "map": [
-              "int",
-              "StorageGasOracle.remote_gas_data"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "domains",
-          "type": {
-            "list": [
-              "int"
-            ]
-          }
-        }
-      ]
+          name: 'remote_gas_data',
+          type: {
+            map: ['int', 'StorageGasOracle.remote_gas_data'],
+          },
+        },
+        {
+          name: 'domains',
+          type: {
+            list: ['int'],
+          },
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "remote_gas_data",
-        "typedef": {
-          "record": [
+        name: 'remote_gas_data',
+        typedef: {
+          record: [
             {
-              "name": "token_exchange_rate",
-              "type": "int"
+              name: 'token_exchange_rate',
+              type: 'int',
             },
             {
-              "name": "gas_price",
-              "type": "int"
-            }
-          ]
+              name: 'gas_price',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
+        vars: [],
       },
       {
-        "name": "gas_config",
-        "typedef": {
-          "record": [
+        name: 'gas_config',
+        typedef: {
+          record: [
             {
-              "name": "domain",
-              "type": "int"
+              name: 'domain',
+              type: 'int',
             },
             {
-              "name": "exchange_rate",
-              "type": "int"
+              name: 'exchange_rate',
+              type: 'int',
             },
             {
-              "name": "gas_price",
-              "type": "int"
-            }
-          ]
+              name: 'gas_price',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const TIMELOCK_DOMAIN_ROUTING_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "IsmChangeQueued": [
-            "int",
-            "int"
-          ]
+          IsmChangeQueued: ['int', 'int'],
         },
         {
-          "IsmRemovalQueued": [
-            "int",
-            "int"
-          ]
+          IsmRemovalQueued: ['int', 'int'],
         },
         {
-          "IsmChangeExecuted": [
-            "int"
-          ]
+          IsmChangeExecuted: ['int'],
         },
         {
-          "IsmChangeCancelled": [
-            "int"
-          ]
+          IsmChangeCancelled: ['int'],
         },
         {
-          "DefaultIsmSet": [
-            "address"
-          ]
+          DefaultIsmSet: ['address'],
         },
         {
-          "TimelockSet": [
-            "int",
-            "int"
-          ]
+          TimelockSet: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "timelock",
-            "type": "int"
-          }
+            name: 'timelock',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "TimelockDomainRoutingIsm.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'TimelockDomainRoutingIsm.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
+            name: 'domain',
+            type: 'int',
           },
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "queue_set_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'queue_set_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "queue_remove_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'queue_remove_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "execute_change",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'execute_change',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "cancel_change",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'cancel_change',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "ism",
-            "type": "IInterchainSecurityModule"
-          }
+            name: 'ism',
+            type: 'IInterchainSecurityModule',
+          },
         ],
-        "name": "set_default_ism",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_default_ism',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_timelock",
-            "type": "int"
-          }
+            name: 'new_timelock',
+            type: 'int',
+          },
         ],
-        "name": "set_timelock",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_timelock',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_timelock",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_timelock',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_domains",
-        "payable": false,
-        "returns": {
-          "list": [
-            "int"
-          ]
+        arguments: [],
+        name: 'get_domains',
+        payable: false,
+        returns: {
+          list: ['int'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_pending_owner",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'get_pending_owner',
+        payable: false,
+        returns: {
+          option: ['address'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "domain",
-            "type": "int"
-          }
+            name: 'domain',
+            type: 'int',
+          },
         ],
-        "name": "get_pending_change",
-        "payable": false,
-        "returns": {
-          "option": [
-            "TimelockDomainRoutingIsm.pending_change"
-          ]
+        name: 'get_pending_change',
+        payable: false,
+        returns: {
+          option: ['TimelockDomainRoutingIsm.pending_change'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
-          }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
         ],
-        "name": "route",
-        "payable": false,
-        "returns": "IInterchainSecurityModule",
-        "stateful": false
+        name: 'route',
+        payable: false,
+        returns: 'IInterchainSecurityModule',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "sender",
-            "type": "address"
-          }
+            name: 'sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "TimelockDomainRoutingIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'TimelockDomainRoutingIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "isms",
-          "type": {
-            "map": [
-              "int",
-              "IInterchainSecurityModule"
-            ]
-          }
+          name: 'isms',
+          type: {
+            map: ['int', 'IInterchainSecurityModule'],
+          },
         },
         {
-          "name": "domains",
-          "type": {
-            "list": [
-              "int"
-            ]
-          }
+          name: 'domains',
+          type: {
+            list: ['int'],
+          },
         },
         {
-          "name": "default_ism",
-          "type": {
-            "option": [
-              "IInterchainSecurityModule"
-            ]
-          }
+          name: 'default_ism',
+          type: {
+            option: ['IInterchainSecurityModule'],
+          },
         },
         {
-          "name": "timelock",
-          "type": "int"
+          name: 'timelock',
+          type: 'int',
         },
         {
-          "name": "pending",
-          "type": {
-            "map": [
-              "int",
-              "TimelockDomainRoutingIsm.pending_change"
-            ]
-          }
-        }
-      ]
+          name: 'pending',
+          type: {
+            map: ['int', 'TimelockDomainRoutingIsm.pending_change'],
+          },
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "pending_change",
-        "typedef": {
-          "record": [
+        name: 'pending_change',
+        typedef: {
+          record: [
             {
-              "name": "ism",
-              "type": {
-                "option": [
-                  "IInterchainSecurityModule"
-                ]
-              }
+              name: 'ism',
+              type: {
+                option: ['IInterchainSecurityModule'],
+              },
             },
             {
-              "name": "timestamp",
-              "type": "int"
-            }
-          ]
+              name: 'timestamp',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const TIMELOCK_GOVERNANCE_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "OperationScheduled": [
+          OperationScheduled: [
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "address",
-            "int"
-          ]
+            'address',
+            'int',
+          ],
         },
         {
-          "OperationExecuted": [
+          OperationExecuted: [
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "address"
-          ]
+            'address',
+          ],
         },
         {
-          "OperationCancelled": [
+          OperationCancelled: [
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "MinDelayChanged": [
-            "int",
-            "int"
-          ]
+          MinDelayChanged: ['int', 'int'],
         },
         {
-          "ProposerAdded": [
-            "address"
-          ]
+          ProposerAdded: ['address'],
         },
         {
-          "ProposerRemoved": [
-            "address"
-          ]
+          ProposerRemoved: ['address'],
         },
         {
-          "ExecutorAdded": [
-            "address"
-          ]
+          ExecutorAdded: ['address'],
         },
         {
-          "ExecutorRemoved": [
-            "address"
-          ]
+          ExecutorRemoved: ['address'],
         },
         {
-          "CancellerAdded": [
-            "address"
-          ]
+          CancellerAdded: ['address'],
         },
         {
-          "CancellerRemoved": [
-            "address"
-          ]
+          CancellerRemoved: ['address'],
         },
         {
-          "AdminTransferStarted": [
-            "address",
-            "address"
-          ]
+          AdminTransferStarted: ['address', 'address'],
         },
         {
-          "AdminTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          AdminTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "admin",
-            "type": "address"
+            name: 'admin',
+            type: 'address',
           },
           {
-            "name": "min_delay",
-            "type": "int"
-          }
+            name: 'min_delay',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "TimelockGovernance.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'TimelockGovernance.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "target",
-            "type": "address"
+            name: 'action',
+            type: 'GovActions.gov_action',
           },
           {
-            "name": "call_data",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'delay',
+            type: 'int',
           },
           {
-            "name": "value",
-            "type": "int"
+            name: 'predecessor',
+            type: {
+              option: [
+                {
+                  bytes: 32,
+                },
+              ],
+            },
           },
           {
-            "name": "delay",
-            "type": "int"
-          }
+            name: 'salt',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "schedule",
-        "payable": false,
-        "returns": {
-          "bytes": 32
+        name: 'schedule',
+        payable: false,
+        returns: {
+          bytes: 32,
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "op_id",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'actions',
+            type: {
+              list: ['GovActions.gov_action'],
+            },
+          },
+          {
+            name: 'delay',
+            type: 'int',
+          },
+          {
+            name: 'predecessor',
+            type: {
+              option: [
+                {
+                  bytes: 32,
+                },
+              ],
+            },
+          },
+          {
+            name: 'salt',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "execute",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'schedule_batch',
+        payable: false,
+        returns: {
+          bytes: 32,
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "op_id",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'op_id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "cancel",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'execute',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'op_id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "add_proposer",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'cancel',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "remove_proposer",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'add_proposer',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "add_executor",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_proposer',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "remove_executor",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'add_executor',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "add_canceller",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_executor',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "remove_canceller",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'add_canceller',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_delay",
-            "type": "int"
-          }
+            name: 'addr',
+            type: 'address',
+          },
         ],
-        "name": "set_min_delay",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'remove_canceller',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_admin",
-            "type": "address"
-          }
+            name: 'new_delay',
+            type: 'int',
+          },
         ],
-        "name": "transfer_admin",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_min_delay',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_admin",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: 'new_admin',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_admin',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
-          {
-            "name": "op_id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "get_operation",
-        "payable": false,
-        "returns": {
-          "option": [
-            "TimelockGovernance.operation"
-          ]
+        arguments: [],
+        name: 'accept_admin',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": false
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "op_id",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'target',
+            type: 'IOwnable',
+          },
         ],
-        "name": "is_pending",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'verify_governance',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
-          {
-            "name": "op_id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "is_ready",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "op_id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "is_executed",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "is_proposer",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "is_executor",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "is_canceller",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_min_delay",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_admin",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_pending_admin",
-        "payable": false,
-        "returns": {
-          "option": [
-            "address"
-          ]
+        arguments: [],
+        name: 'lock_admin_to_timelock',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": false
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_op_count",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      }
+        arguments: [
+          {
+            name: 'op_id',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'get_operation',
+        payable: false,
+        returns: {
+          option: ['TimelockGovernance.operation'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'op_id',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'is_pending',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'op_id',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'is_ready',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'op_id',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'is_executed',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'addr',
+            type: 'address',
+          },
+        ],
+        name: 'is_proposer',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'addr',
+            type: 'address',
+          },
+        ],
+        name: 'is_executor',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'addr',
+            type: 'address',
+          },
+        ],
+        name: 'is_canceller',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_min_delay',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_admin',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_pending_admin',
+        payable: false,
+        returns: {
+          option: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_op_count',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'action',
+            type: 'GovActions.gov_action',
+          },
+          {
+            name: 'predecessor',
+            type: {
+              option: [
+                {
+                  bytes: 32,
+                },
+              ],
+            },
+          },
+          {
+            name: 'salt',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'compute_operation_id',
+        payable: false,
+        returns: {
+          bytes: 32,
+        },
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'actions',
+            type: {
+              list: ['GovActions.gov_action'],
+            },
+          },
+          {
+            name: 'predecessor',
+            type: {
+              option: [
+                {
+                  bytes: 32,
+                },
+              ],
+            },
+          },
+          {
+            name: 'salt',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'compute_batch_operation_id',
+        payable: false,
+        returns: {
+          bytes: 32,
+        },
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "TimelockGovernance",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'TimelockGovernance',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "admin",
-          "type": "address"
+          name: 'admin',
+          type: 'address',
         },
         {
-          "name": "pending_admin",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_admin',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "proposers",
-          "type": {
-            "map": [
-              "address",
-              "bool"
-            ]
-          }
+          name: 'proposers',
+          type: {
+            map: ['address', 'bool'],
+          },
         },
         {
-          "name": "executors",
-          "type": {
-            "map": [
-              "address",
-              "bool"
-            ]
-          }
+          name: 'executors',
+          type: {
+            map: ['address', 'bool'],
+          },
         },
         {
-          "name": "cancellers",
-          "type": {
-            "map": [
-              "address",
-              "bool"
-            ]
-          }
+          name: 'cancellers',
+          type: {
+            map: ['address', 'bool'],
+          },
         },
         {
-          "name": "min_delay",
-          "type": "int"
+          name: 'min_delay',
+          type: 'int',
         },
         {
-          "name": "operations",
-          "type": {
-            "map": [
+          name: 'operations',
+          type: {
+            map: [
               {
-                "bytes": 32
+                bytes: 32,
               },
-              "TimelockGovernance.operation"
-            ]
-          }
+              'TimelockGovernance.operation',
+            ],
+          },
         },
         {
-          "name": "op_count",
-          "type": "int"
-        }
-      ]
-    },
-    "typedefs": [
-      {
-        "name": "operation",
-        "typedef": {
-          "record": [
-            {
-              "name": "target",
-              "type": "address"
-            },
-            {
-              "name": "call_data",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "value",
-              "type": "int"
-            },
-            {
-              "name": "queued_at",
-              "type": "int"
-            },
-            {
-              "name": "ready_at",
-              "type": "int"
-            },
-            {
-              "name": "executed",
-              "type": "bool"
-            },
-            {
-              "name": "cancelled",
-              "type": "bool"
-            }
-          ]
+          name: 'op_count',
+          type: 'int',
         },
-        "vars": []
-      }
-    ]
-  }
+      ],
+    },
+    typedefs: [
+      {
+        name: 'operation',
+        typedef: {
+          record: [
+            {
+              name: 'actions',
+              type: {
+                list: ['GovActions.gov_action'],
+              },
+            },
+            {
+              name: 'predecessor',
+              type: {
+                option: [
+                  {
+                    bytes: 32,
+                  },
+                ],
+              },
+            },
+            {
+              name: 'queued_at',
+              type: 'int',
+            },
+            {
+              name: 'ready_at',
+              type: 'int',
+            },
+            {
+              name: 'executed',
+              type: 'bool',
+            },
+            {
+              name: 'cancelled',
+              type: 'bool',
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const TIMELOCK_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "MessageQueued": [
+          MessageQueued: [
             {
-              "bytes": 32
+              bytes: 32,
             },
-            "int"
-          ]
+            'int',
+          ],
         },
         {
-          "MessageCancelled": [
+          MessageCancelled: [
             {
-              "bytes": 32
-            }
-          ]
+              bytes: 32,
+            },
+          ],
         },
         {
-          "PreverifierSet": [
-            "address",
-            "address"
-          ]
+          PreverifierSet: ['address', 'address'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "preverifier",
-            "type": "address"
+            name: 'preverifier',
+            type: 'address',
           },
           {
-            "name": "timelock_window",
-            "type": "int"
-          }
-        ],
-        "name": "init",
-        "payable": false,
-        "returns": "TimelockIsm.state",
-        "stateful": true
-      },
-      {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
-          {
-            "name": "message_id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "queue_message",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "message_id",
-            "type": {
-              "bytes": 32
-            }
-          }
-        ],
-        "name": "cancel_message",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
-      },
-      {
-        "arguments": [
-          {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'mailbox',
+            type: 'IMailbox',
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'timelock_window',
+            type: 'int',
+          },
+        ],
+        name: 'init',
+        payable: false,
+        returns: 'TimelockIsm.state',
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
+        ],
+        name: 'queue_message',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'message_id',
+            type: {
+              bytes: 32,
+            },
+          },
+        ],
+        name: 'cancel_message',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_sender",
-            "type": "address"
-          }
-        ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
-      },
-      {
-        "arguments": [
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
+          },
           {
-            "name": "message_id",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: '_sender',
+            type: 'address',
+          },
         ],
-        "name": "get_ready_at",
-        "payable": false,
-        "returns": {
-          "option": [
-            "int"
-          ]
-        },
-        "stateful": false
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "message_id",
-            "type": {
-              "bytes": 32
-            }
-          }
+            name: 'message_id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "is_cancelled",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'get_ready_at',
+        payable: false,
+        returns: {
+          option: ['int'],
+        },
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_timelock_window",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_preverifier",
-            "type": "address"
-          }
+            name: 'message_id',
+            type: {
+              bytes: 32,
+            },
+          },
         ],
-        "name": "set_preverifier",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        name: 'is_cancelled',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_preverifier",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_timelock_window',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_mailbox',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_preverifier',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_preverifier',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
-        },
-        "stateful": true
+        arguments: [],
+        name: 'get_preverifier',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "TimelockIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'TimelockIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "preverifier",
-          "type": "address"
+          name: 'preverifier',
+          type: 'address',
         },
         {
-          "name": "timelock_window",
-          "type": "int"
+          name: 'mailbox',
+          type: 'IMailbox',
         },
         {
-          "name": "ready_at",
-          "type": {
-            "map": [
+          name: 'timelock_window',
+          type: 'int',
+        },
+        {
+          name: 'queue',
+          type: {
+            map: [
               {
-                "bytes": 32
+                bytes: 32,
               },
-              "int"
-            ]
-          }
+              'TimelockIsm.queued_entry',
+            ],
+          },
         },
         {
-          "name": "cancelled",
-          "type": {
-            "map": [
+          name: 'cancelled',
+          type: {
+            map: [
               {
-                "bytes": 32
+                bytes: 32,
               },
-              "bool"
-            ]
-          }
-        }
-      ]
+              'bool',
+            ],
+          },
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [
+      {
+        name: 'queued_entry',
+        typedef: {
+          record: [
+            {
+              name: 'ready_at',
+              type: 'int',
+            },
+            {
+              name: 'message_hash',
+              type: {
+                bytes: 32,
+              },
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const TRUSTED_RELAYER_ISM_ACI = {
-  "contract": {
-    "functions": [
+  contract: {
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox",
-            "type": "address"
+            name: 'mailbox',
+            type: 'address',
           },
           {
-            "name": "trusted_relayer",
-            "type": "address"
-          }
+            name: 'trusted_relayer',
+            type: 'address',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "TrustedRelayerIsm.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'TrustedRelayerIsm.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "_metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_message",
-            "type": {
-              "bytes": "any"
-            }
+            name: '_message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "sender",
-            "type": "address"
-          }
+            name: 'sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_trusted_relayer",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
+        arguments: [],
+        name: 'get_trusted_relayer',
+        payable: false,
+        returns: 'address',
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_mailbox",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_mailbox',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "TrustedRelayerIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'TrustedRelayerIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "mailbox",
-          "type": "address"
+          name: 'mailbox',
+          type: 'address',
         },
         {
-          "name": "trusted_relayer",
-          "type": "address"
-        }
-      ]
+          name: 'trusted_relayer',
+          type: 'address',
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const VALIDATOR_ANNOUNCE_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ValidatorAnnouncement": [
+          ValidatorAnnouncement: [
             {
-              "bytes": 20
+              bytes: 20,
             },
-            "string"
-          ]
-        }
-      ]
+            'string',
+          ],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "mailbox_address",
-            "type": "address"
+            name: 'mailbox_address',
+            type: 'address',
           },
           {
-            "name": "local_domain",
-            "type": "int"
-          }
+            name: 'local_domain',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "ValidatorAnnounce.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'ValidatorAnnounce.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "location",
-            "type": "string"
-          }
+            name: 'location',
+            type: 'string',
+          },
         ],
-        "name": "get_announcement_digest",
-        "payable": false,
-        "returns": {
-          "bytes": 32
+        name: 'get_announcement_digest',
+        payable: false,
+        returns: {
+          bytes: 32,
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "validator",
-            "type": {
-              "bytes": 20
-            }
+            name: 'validator',
+            type: {
+              bytes: 20,
+            },
           },
           {
-            "name": "storage_location",
-            "type": "string"
+            name: 'storage_location',
+            type: 'string',
           },
           {
-            "name": "signature",
-            "type": {
-              "bytes": 65
-            }
-          }
+            name: 'signature',
+            type: {
+              bytes: 65,
+            },
+          },
         ],
-        "name": "announce",
-        "payable": false,
-        "returns": "bool",
-        "stateful": true
+        name: 'announce',
+        payable: false,
+        returns: 'bool',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_announced_validators",
-        "payable": false,
-        "returns": {
-          "list": [
+        arguments: [],
+        name: 'get_announced_validators',
+        payable: false,
+        returns: {
+          list: [
             {
-              "bytes": 20
-            }
-          ]
+              bytes: 20,
+            },
+          ],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "validators",
-            "type": {
-              "list": [
+            name: 'validators',
+            type: {
+              list: [
                 {
-                  "bytes": 20
-                }
-              ]
-            }
-          }
+                  bytes: 20,
+                },
+              ],
+            },
+          },
         ],
-        "name": "get_announced_storage_locations",
-        "payable": false,
-        "returns": {
-          "list": [
+        name: 'get_announced_storage_locations',
+        payable: false,
+        returns: {
+          list: [
             {
-              "list": [
-                "string"
-              ]
-            }
-          ]
+              list: ['string'],
+            },
+          ],
         },
-        "stateful": false
-      }
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "ValidatorAnnounce",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'ValidatorAnnounce',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "mailbox_address",
-          "type": "address"
+          name: 'mailbox_address',
+          type: 'address',
         },
         {
-          "name": "local_domain",
-          "type": "int"
+          name: 'local_domain',
+          type: 'int',
         },
         {
-          "name": "announced_validators",
-          "type": {
-            "list": [
+          name: 'announced_validators',
+          type: {
+            list: [
               {
-                "bytes": 20
-              }
-            ]
-          }
+                bytes: 20,
+              },
+            ],
+          },
         },
         {
-          "name": "storage_locations",
-          "type": {
-            "map": [
+          name: 'storage_locations',
+          type: {
+            map: [
               {
-                "bytes": 20
+                bytes: 20,
               },
               {
-                "list": [
-                  "string"
-                ]
-              }
-            ]
-          }
+                list: ['string'],
+              },
+            ],
+          },
         },
         {
-          "name": "replay_protection",
-          "type": {
-            "map": [
+          name: 'replay_protection',
+          type: {
+            map: [
               {
-                "bytes": 32
+                bytes: 32,
               },
-              "bool"
-            ]
-          }
-        }
-      ]
+              'bool',
+            ],
+          },
+        },
+      ],
     },
-    "typedefs": []
-  }
+    typedefs: [],
+  },
 };
 
 export const VALIDATOR_STAKING_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ValidatorStaked": [
-            "address",
-            "int",
+          ValidatorStaked: [
+            'address',
+            'int',
             {
-              "bytes": 20
-            }
-          ]
+              bytes: 20,
+            },
+          ],
         },
         {
-          "UnstakeInitiated": [
-            "address",
-            "int"
-          ]
+          UnstakeInitiated: ['address', 'int'],
         },
         {
-          "UnstakeCompleted": [
-            "address",
-            "int"
-          ]
+          UnstakeCompleted: ['address', 'int'],
         },
         {
-          "ValidatorSlashed": [
-            "address",
-            "int",
-            "address"
-          ]
+          ValidatorSlashed: ['address', 'int', 'address'],
         },
         {
-          "SlasherSet": [
-            "address"
-          ]
+          SlasherSet: ['address'],
         },
         {
-          "MinStakeUpdated": [
-            "int"
-          ]
+          MinStakeUpdated: ['int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          OwnershipTransferStarted: ['address', 'address'],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferred: ['address', 'address'],
+        },
+        {
+          ThresholdWeightUpdated: ['int'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "min_stake",
-            "type": "int"
+            name: 'min_stake',
+            type: 'int',
           },
           {
-            "name": "unstake_delay",
-            "type": "int"
-          }
+            name: 'unstake_delay',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "ValidatorStaking.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'ValidatorStaking.state',
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "signing_key",
-            "type": {
-              "bytes": 20
-            }
-          }
+            name: 'signing_key',
+            type: {
+              bytes: 20,
+            },
+          },
         ],
-        "name": "stake",
-        "payable": true,
-        "returns": {
-          "tuple": []
+        name: 'stake',
+        payable: true,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "initiate_unstake",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'initiate_unstake',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "complete_unstake",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'complete_unstake',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "validator",
-            "type": "address"
+            name: 'validator',
+            type: 'address',
           },
           {
-            "name": "amount",
-            "type": "int"
+            name: 'amount',
+            type: 'int',
           },
           {
-            "name": "reporter",
-            "type": "address"
-          }
+            name: 'reporter',
+            type: 'address',
+          },
         ],
-        "name": "slash",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'slash',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "slasher_addr",
-            "type": "address"
-          }
+            name: 'validator',
+            type: 'address',
+          },
         ],
-        "name": "set_slasher",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'freeze',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "new_min",
-            "type": "int"
-          }
+            name: 'validator',
+            type: 'address',
+          },
         ],
-        "name": "set_min_stake",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'unfreeze',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "get_validator",
-        "payable": false,
-        "returns": {
-          "option": [
-            "ValidatorStaking.validator_info"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_active_validators",
-        "payable": false,
-        "returns": {
-          "list": [
-            "address"
-          ]
-        },
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_total_staked",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_min_stake",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "get_unstake_delay",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "deployed_block",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [],
-        "name": "owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      },
-      {
-        "arguments": [
+            name: 'addr',
+            type: 'address',
+          },
           {
-            "name": "addr",
-            "type": "address"
-          }
+            name: 'block',
+            type: 'int',
+          },
         ],
-        "name": "is_active_validator",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'get_weight_at_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "addr",
-            "type": "address"
-          }
-        ],
-        "name": "get_validator_weight",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
-      },
-      {
-        "arguments": [
+            name: 'addr',
+            type: 'address',
+          },
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'block',
+            type: 'int',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'get_key_at_block',
+        payable: false,
+        returns: {
+          option: [
+            {
+              bytes: 20,
+            },
+          ],
         },
-        "stateful": true
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [
+          {
+            name: 'block',
+            type: 'int',
+          },
+        ],
+        name: 'get_total_weight_at_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'block',
+            type: 'int',
+          },
+        ],
+        name: 'get_threshold_at_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_threshold_weight',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'threshold',
+            type: 'int',
+          },
+        ],
+        name: 'set_threshold_weight',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
-      }
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'slasher_addr',
+            type: 'address',
+          },
+        ],
+        name: 'set_slasher',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_min',
+            type: 'int',
+          },
+        ],
+        name: 'set_min_stake',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'addr',
+            type: 'address',
+          },
+        ],
+        name: 'get_validator',
+        payable: false,
+        returns: {
+          option: ['ValidatorStaking.validator_info'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_active_validators',
+        payable: false,
+        returns: {
+          list: ['address'],
+        },
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_total_staked',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_min_stake',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'get_unstake_delay',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'deployed_block',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [],
+        name: 'owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'addr',
+            type: 'address',
+          },
+        ],
+        name: 'is_active_validator',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'addr',
+            type: 'address',
+          },
+        ],
+        name: 'get_validator_weight',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
+          {
+            name: 'recipient',
+            type: 'address',
+          },
+        ],
+        name: 'emergency_withdraw_excess',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [
+          {
+            name: 'new_owner',
+            type: 'address',
+          },
+        ],
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
     ],
-    "kind": "contract_main",
-    "name": "ValidatorStaking",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'ValidatorStaking',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "min_stake",
-          "type": "int"
+          name: 'min_stake',
+          type: 'int',
         },
         {
-          "name": "unstake_delay",
-          "type": "int"
+          name: 'unstake_delay',
+          type: 'int',
         },
         {
-          "name": "slasher",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'slasher',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "validators",
-          "type": {
-            "map": [
-              "address",
-              "ValidatorStaking.validator_info"
-            ]
-          }
+          name: 'validators',
+          type: {
+            map: ['address', 'ValidatorStaking.validator_info'],
+          },
         },
         {
-          "name": "active_validators",
-          "type": {
-            "list": [
-              "address"
-            ]
-          }
+          name: 'active_validators',
+          type: {
+            list: ['address'],
+          },
         },
         {
-          "name": "total_staked",
-          "type": "int"
+          name: 'total_staked',
+          type: 'int',
         },
         {
-          "name": "deployed_block",
-          "type": "int"
-        }
-      ]
+          name: 'deployed_block',
+          type: 'int',
+        },
+        {
+          name: 'weight_history',
+          type: {
+            map: ['address', 'ValidatorStaking.checkpoint_array'],
+          },
+        },
+        {
+          name: 'key_history',
+          type: {
+            map: ['address', 'ValidatorStaking.key_checkpoint_array'],
+          },
+        },
+        {
+          name: 'total_weight_history',
+          type: 'ValidatorStaking.checkpoint_array',
+        },
+        {
+          name: 'threshold_weight',
+          type: 'int',
+        },
+        {
+          name: 'threshold_history',
+          type: 'ValidatorStaking.checkpoint_array',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "validator_info",
-        "typedef": {
-          "record": [
+        name: 'validator_info',
+        typedef: {
+          record: [
             {
-              "name": "staked_amount",
-              "type": "int"
+              name: 'staked_amount',
+              type: 'int',
             },
             {
-              "name": "status",
-              "type": "int"
+              name: 'status',
+              type: 'int',
             },
             {
-              "name": "unstake_start",
-              "type": "int"
+              name: 'unstake_start',
+              type: 'int',
             },
             {
-              "name": "signing_key",
-              "type": {
-                "bytes": 20
-              }
-            }
-          ]
+              name: 'signing_key',
+              type: {
+                bytes: 20,
+              },
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+      {
+        name: 'checkpoint_entry',
+        typedef: {
+          record: [
+            {
+              name: 'value',
+              type: 'int',
+            },
+            {
+              name: 'block_height',
+              type: 'int',
+            },
+          ],
+        },
+        vars: [],
+      },
+      {
+        name: 'key_checkpoint',
+        typedef: {
+          record: [
+            {
+              name: 'signing_key',
+              type: {
+                bytes: 20,
+              },
+            },
+            {
+              name: 'block_height',
+              type: 'int',
+            },
+          ],
+        },
+        vars: [],
+      },
+      {
+        name: 'checkpoint_array',
+        typedef: {
+          record: [
+            {
+              name: 'entries',
+              type: {
+                map: ['int', 'ValidatorStaking.checkpoint_entry'],
+              },
+            },
+            {
+              name: 'length',
+              type: 'int',
+            },
+          ],
+        },
+        vars: [],
+      },
+      {
+        name: 'key_checkpoint_array',
+        typedef: {
+          record: [
+            {
+              name: 'entries',
+              type: {
+                map: ['int', 'ValidatorStaking.key_checkpoint'],
+              },
+            },
+            {
+              name: 'length',
+              type: 'int',
+            },
+          ],
+        },
+        vars: [],
+      },
+    ],
+  },
 };
 
 export const WEIGHTED_MULTISIG_ISM_ACI = {
-  "contract": {
-    "event": {
-      "variant": [
+  contract: {
+    event: {
+      variant: [
         {
-          "ValidatorsAndWeightSet": [
-            "int",
-            "int"
-          ]
+          ValidatorsAndWeightSet: ['int', 'int'],
         },
         {
-          "OwnershipTransferStarted": [
-            "address",
-            "address"
-          ]
+          ConfigurationFrozen: [],
         },
         {
-          "OwnershipTransferred": [
-            "address",
-            "address"
-          ]
-        }
-      ]
+          OwnershipTransferStarted: ['address', 'address'],
+        },
+        {
+          OwnershipTransferred: ['address', 'address'],
+        },
+      ],
     },
-    "functions": [
+    functions: [
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "owner",
-            "type": "address"
+            name: 'owner',
+            type: 'address',
           },
           {
-            "name": "vals",
-            "type": {
-              "list": [
-                "WeightedMultisigIsm.validator_info"
-              ]
-            }
+            name: 'vals',
+            type: {
+              list: ['WeightedMultisigIsm.validator_info'],
+            },
           },
           {
-            "name": "threshold_weight",
-            "type": "int"
-          }
+            name: 'threshold_weight',
+            type: 'int',
+          },
         ],
-        "name": "init",
-        "payable": false,
-        "returns": "WeightedMultisigIsm.state",
-        "stateful": true
+        name: 'init',
+        payable: false,
+        returns: 'WeightedMultisigIsm.state',
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "module_type",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'module_type',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [
           {
-            "name": "vals",
-            "type": {
-              "list": [
-                "WeightedMultisigIsm.validator_info"
-              ]
-            }
+            name: 'vals',
+            type: {
+              list: ['WeightedMultisigIsm.validator_info'],
+            },
           },
           {
-            "name": "threshold_weight",
-            "type": "int"
-          }
+            name: 'threshold_weight',
+            type: 'int',
+          },
         ],
-        "name": "set_validators_and_threshold_weight",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'set_validators_and_threshold_weight',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_validators",
-        "payable": false,
-        "returns": {
-          "list": [
-            "WeightedMultisigIsm.validator_info"
-          ]
+        arguments: [],
+        name: 'get_validators',
+        payable: false,
+        returns: {
+          list: ['WeightedMultisigIsm.validator_info'],
         },
-        "stateful": false
+        stateful: false,
       },
       {
-        "arguments": [],
-        "name": "get_threshold_weight",
-        "payable": false,
-        "returns": "int",
-        "stateful": false
+        arguments: [],
+        name: 'get_threshold_weight',
+        payable: false,
+        returns: 'int',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'get_max_validators',
+        payable: false,
+        returns: 'int',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "metadata",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'metadata',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "message",
-            "type": {
-              "bytes": "any"
-            }
+            name: 'message',
+            type: {
+              bytes: 'any',
+            },
           },
           {
-            "name": "_sender",
-            "type": "address"
-          }
+            name: '_sender',
+            type: 'address',
+          },
         ],
-        "name": "verify",
-        "payable": false,
-        "returns": "bool",
-        "stateful": false
+        name: 'verify',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
       },
       {
-        "arguments": [
+        arguments: [],
+        name: 'freeze',
+        payable: false,
+        returns: {
+          tuple: [],
+        },
+        stateful: true,
+      },
+      {
+        arguments: [],
+        name: 'is_frozen',
+        payable: false,
+        returns: 'bool',
+        stateful: false,
+      },
+      {
+        arguments: [
           {
-            "name": "new_owner",
-            "type": "address"
-          }
+            name: 'new_owner',
+            type: 'address',
+          },
         ],
-        "name": "transfer_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        name: 'transfer_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "accept_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'accept_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "renounce_ownership",
-        "payable": false,
-        "returns": {
-          "tuple": []
+        arguments: [],
+        name: 'renounce_ownership',
+        payable: false,
+        returns: {
+          tuple: [],
         },
-        "stateful": true
+        stateful: true,
       },
       {
-        "arguments": [],
-        "name": "get_owner",
-        "payable": false,
-        "returns": "address",
-        "stateful": false
-      }
+        arguments: [],
+        name: 'get_owner',
+        payable: false,
+        returns: 'address',
+        stateful: false,
+      },
     ],
-    "kind": "contract_main",
-    "name": "WeightedMultisigIsm",
-    "payable": false,
-    "state": {
-      "record": [
+    kind: 'contract_main',
+    name: 'WeightedMultisigIsm',
+    payable: false,
+    state: {
+      record: [
         {
-          "name": "owner",
-          "type": "address"
+          name: 'owner',
+          type: 'address',
         },
         {
-          "name": "pending_owner",
-          "type": {
-            "option": [
-              "address"
-            ]
-          }
+          name: 'pending_owner',
+          type: {
+            option: ['address'],
+          },
         },
         {
-          "name": "validators",
-          "type": {
-            "list": [
-              "WeightedMultisigIsm.validator_info"
-            ]
-          }
+          name: 'validators',
+          type: {
+            list: ['WeightedMultisigIsm.validator_info'],
+          },
         },
         {
-          "name": "threshold_weight",
-          "type": "int"
-        }
-      ]
+          name: 'threshold_weight',
+          type: 'int',
+        },
+        {
+          name: 'frozen',
+          type: 'bool',
+        },
+      ],
     },
-    "typedefs": [
+    typedefs: [
       {
-        "name": "validator_info",
-        "typedef": {
-          "record": [
+        name: 'validator_info',
+        typedef: {
+          record: [
             {
-              "name": "signing_address",
-              "type": {
-                "bytes": 20
-              }
+              name: 'signing_address',
+              type: {
+                bytes: 20,
+              },
             },
             {
-              "name": "weight",
-              "type": "int"
-            }
-          ]
+              name: 'weight',
+              type: 'int',
+            },
+          ],
         },
-        "vars": []
-      }
-    ]
-  }
+        vars: [],
+      },
+    ],
+  },
 };
 
 // Hand-written ACI exports preserved from previous index.ts
@@ -12583,7 +13364,7 @@ export const AEX9_ACI = {
       },
     ],
   },
-};;;;;;
+};
 
 export const WARP_ROUTER_ACI = {
   contract: {
@@ -12758,4 +13539,4 @@ export const WARP_ROUTER_ACI = {
       },
     ],
   },
-};;;;;;
+};

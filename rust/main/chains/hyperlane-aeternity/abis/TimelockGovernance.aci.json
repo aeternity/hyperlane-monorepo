@@ -1,6 +1,800 @@
 [
   {
     "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_3",
+              "type": "address"
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IInterchainSecurityModule",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "hook_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "supports_metadata",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_3",
+              "type": "address"
+            }
+          ],
+          "name": "post_dispatch",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IPostDispatchHook",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "local_domain",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "nonce",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "latest_dispatched_id",
+          "payable": false,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "delivered",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "default_ism",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IInterchainSecurityModule"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "default_hook",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IPostDispatchHook"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "required_hook",
+          "payable": false,
+          "returns": {
+            "option": [
+              "IPostDispatchHook"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "_3",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_4",
+              "type": {
+                "option": [
+                  {
+                    "bytes": "any"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "_5",
+              "type": {
+                "option": [
+                  "IPostDispatchHook"
+                ]
+              }
+            },
+            {
+              "name": "_6",
+              "type": {
+                "option": [
+                  "address"
+                ]
+              }
+            }
+          ],
+          "name": "dispatch",
+          "payable": true,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_3",
+              "type": "address"
+            },
+            {
+              "name": "_4",
+              "type": "address"
+            }
+          ],
+          "name": "process",
+          "payable": true,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "_3",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_4",
+              "type": {
+                "option": [
+                  {
+                    "bytes": "any"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "_5",
+              "type": {
+                "option": [
+                  "IPostDispatchHook"
+                ]
+              }
+            }
+          ],
+          "name": "quote_dispatch",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_own_ism",
+          "payable": false,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "recipient_ism_for",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_default_ism",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_default_hook",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_required_hook",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IMailbox",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "enroll_remote_router",
+          "payable": false,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            }
+          ],
+          "name": "unenroll_remote_router",
+          "payable": false,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            }
+          ],
+          "name": "get_remote_router",
+          "payable": false,
+          "returns": {
+            "option": [
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_enrolled_domains",
+          "payable": false,
+          "returns": {
+            "list": [
+              "int"
+            ]
+          },
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IRouter",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IOwnable",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "pause",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "unpause",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IPausable",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "module_type",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            },
+            {
+              "name": "_2",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "verify",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "bytes": "any"
+              }
+            }
+          ],
+          "name": "validators_and_threshold",
+          "payable": false,
+          "returns": {
+            "tuple": [
+              {
+                "list": [
+                  {
+                    "bytes": 20
+                  }
+                ]
+              },
+              "int"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": {
+                "list": [
+                  {
+                    "bytes": 20
+                  }
+                ]
+              }
+            },
+            {
+              "name": "_2",
+              "type": "int"
+            }
+          ],
+          "name": "set_validators_and_threshold",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IMultisigIsm",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "add_signer",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "remove_signer",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "int"
+            }
+          ],
+          "name": "change_threshold",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IMultiSigWallet.fee_protection"
+            }
+          ],
+          "name": "update_fee_protection",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "disable_fee_protection",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IMultiSigWallet",
+      "payable": false,
+      "typedefs": [
+        {
+          "name": "fee_protection",
+          "typedef": {
+            "record": [
+              {
+                "name": "max_fee",
+                "type": "int"
+              },
+              {
+                "name": "max_gasprice",
+                "type": "int"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "GovActions",
+      "typedefs": [
+        {
+          "name": "gov_action",
+          "typedef": {
+            "variant": [
+              {
+                "SetDefaultIsm": [
+                  "IMailbox",
+                  "IInterchainSecurityModule"
+                ]
+              },
+              {
+                "SetDefaultHook": [
+                  "IMailbox",
+                  "IPostDispatchHook"
+                ]
+              },
+              {
+                "SetRequiredHook": [
+                  "IMailbox",
+                  "IPostDispatchHook"
+                ]
+              },
+              {
+                "TransferMailboxOwnership": [
+                  "IMailbox",
+                  "address"
+                ]
+              },
+              {
+                "GenericApproval": []
+              },
+              {
+                "EnrollRemoteRouter": [
+                  "IRouter",
+                  "int",
+                  {
+                    "bytes": 32
+                  }
+                ]
+              },
+              {
+                "UnenrollRemoteRouter": [
+                  "IRouter",
+                  "int"
+                ]
+              },
+              {
+                "TransferOwnership": [
+                  "IOwnable",
+                  "address"
+                ]
+              },
+              {
+                "PauseContract": [
+                  "IPausable"
+                ]
+              },
+              {
+                "UnpauseContract": [
+                  "IPausable"
+                ]
+              },
+              {
+                "UpdateValidatorSet": [
+                  "IMultisigIsm",
+                  {
+                    "list": [
+                      {
+                        "bytes": 20
+                      }
+                    ]
+                  },
+                  "int"
+                ]
+              },
+              {
+                "MultiSigAddSigner": [
+                  "IMultiSigWallet",
+                  "address"
+                ]
+              },
+              {
+                "MultiSigRemoveSigner": [
+                  "IMultiSigWallet",
+                  "address"
+                ]
+              },
+              {
+                "MultiSigChangeThreshold": [
+                  "IMultiSigWallet",
+                  "int"
+                ]
+              },
+              {
+                "MultiSigUpdateFeeProtection": [
+                  "IMultiSigWallet",
+                  "int",
+                  "int"
+                ]
+              },
+              {
+                "MultiSigDisableFeeProtection": [
+                  "IMultiSigWallet"
+                ]
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  },
+  {
+    "contract": {
       "event": {
         "variant": [
           {
@@ -97,25 +891,69 @@
         {
           "arguments": [
             {
-              "name": "target",
-              "type": "address"
-            },
-            {
-              "name": "call_data",
-              "type": {
-                "bytes": "any"
-              }
-            },
-            {
-              "name": "value",
-              "type": "int"
+              "name": "action",
+              "type": "GovActions.gov_action"
             },
             {
               "name": "delay",
               "type": "int"
+            },
+            {
+              "name": "predecessor",
+              "type": {
+                "option": [
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "salt",
+              "type": {
+                "bytes": 32
+              }
             }
           ],
           "name": "schedule",
+          "payable": false,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "actions",
+              "type": {
+                "list": [
+                  "GovActions.gov_action"
+                ]
+              }
+            },
+            {
+              "name": "delay",
+              "type": "int"
+            },
+            {
+              "name": "predecessor",
+              "type": {
+                "option": [
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "salt",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "schedule_batch",
           "payable": false,
           "returns": {
             "bytes": 32
@@ -278,6 +1116,27 @@
         {
           "arguments": [
             {
+              "name": "target",
+              "type": "IOwnable"
+            }
+          ],
+          "name": "verify_governance",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "lock_admin_to_timelock",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
               "name": "op_id",
               "type": {
                 "bytes": 32
@@ -402,6 +1261,70 @@
           "payable": false,
           "returns": "int",
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "action",
+              "type": "GovActions.gov_action"
+            },
+            {
+              "name": "predecessor",
+              "type": {
+                "option": [
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "salt",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "compute_operation_id",
+          "payable": false,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "actions",
+              "type": {
+                "list": [
+                  "GovActions.gov_action"
+                ]
+              }
+            },
+            {
+              "name": "predecessor",
+              "type": {
+                "option": [
+                  {
+                    "bytes": 32
+                  }
+                ]
+              }
+            },
+            {
+              "name": "salt",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "compute_batch_operation_id",
+          "payable": false,
+          "returns": {
+            "bytes": 32
+          },
+          "stateful": false
         }
       ],
       "kind": "contract_main",
@@ -475,18 +1398,22 @@
           "typedef": {
             "record": [
               {
-                "name": "target",
-                "type": "address"
-              },
-              {
-                "name": "call_data",
+                "name": "actions",
                 "type": {
-                  "bytes": "any"
+                  "list": [
+                    "GovActions.gov_action"
+                  ]
                 }
               },
               {
-                "name": "value",
-                "type": "int"
+                "name": "predecessor",
+                "type": {
+                  "option": [
+                    {
+                      "bytes": 32
+                    }
+                  ]
+                }
               },
               {
                 "name": "queued_at",

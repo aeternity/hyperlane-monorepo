@@ -77,6 +77,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_3",
+              "type": "address"
             }
           ],
           "name": "post_dispatch",
@@ -268,6 +272,16 @@
             "MaxMessageBodyBytesSet": [
               "int"
             ]
+          },
+          {
+            "Paused": [
+              "address"
+            ]
+          },
+          {
+            "Unpaused": [
+              "address"
+            ]
           }
         ]
       },
@@ -281,6 +295,18 @@
             {
               "name": "owner",
               "type": "address"
+            },
+            {
+              "name": "default_ism",
+              "type": "IInterchainSecurityModule"
+            },
+            {
+              "name": "default_hook",
+              "type": "IPostDispatchHook"
+            },
+            {
+              "name": "required_hook",
+              "type": "IPostDispatchHook"
             }
           ],
           "name": "init",
@@ -480,6 +506,31 @@
           "stateful": false
         },
         {
+          "arguments": [],
+          "name": "pause",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "unpause",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_paused",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
           "arguments": [
             {
               "name": "default_ism",
@@ -578,24 +629,6 @@
         {
           "arguments": [
             {
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "name": "ism",
-              "type": "IInterchainSecurityModule"
-            }
-          ],
-          "name": "set_recipient_ism",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
-        },
-        {
-          "arguments": [
-            {
               "name": "ism",
               "type": "IInterchainSecurityModule"
             }
@@ -661,6 +694,14 @@
               "type": {
                 "option": [
                   "IPostDispatchHook"
+                ]
+              }
+            },
+            {
+              "name": "refund_address",
+              "type": {
+                "option": [
+                  "address"
                 ]
               }
             }
@@ -739,6 +780,24 @@
           ],
           "name": "process",
           "payable": true,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "int"
+            }
+          ],
+          "name": "rescue_funds",
+          "payable": false,
           "returns": {
             "tuple": []
           },
@@ -831,6 +890,10 @@
           {
             "name": "max_message_body_bytes",
             "type": "int"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
           }
         ]
       },

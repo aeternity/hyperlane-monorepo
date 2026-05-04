@@ -102,6 +102,12 @@
     }
   },
   {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [

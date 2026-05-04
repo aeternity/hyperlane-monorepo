@@ -1,12 +1,52 @@
 [
   {
     "contract": {
+      "functions": [
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            },
+            {
+              "name": "_2",
+              "type": "int"
+            }
+          ],
+          "name": "transfer",
+          "payable": false,
+          "returns": "unit",
+          "stateful": false
+        }
+      ],
+      "kind": "contract_interface",
+      "name": "IAEX9Token",
+      "payable": false,
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
       "event": {
         "variant": [
           {
             "CallExecuted": [
               "address",
               "int"
+            ]
+          },
+          {
+            "CommitmentSet": [
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          {
+            "CommitmentRevealed": [
+              {
+                "bytes": 32
+              }
             ]
           }
         ]
@@ -59,6 +99,30 @@
         },
         {
           "arguments": [],
+          "name": "get_commitment",
+          "payable": false,
+          "returns": {
+            "option": [
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_executor",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
           "name": "deployed_block",
           "payable": false,
           "returns": "int",
@@ -77,6 +141,28 @@
           ],
           "name": "send_ae",
           "payable": true,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "token_addr",
+              "type": "address"
+            },
+            {
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "type": "int"
+            }
+          ],
+          "name": "send_aex9",
+          "payable": false,
           "returns": {
             "tuple": []
           },
@@ -113,6 +199,66 @@
             "tuple": []
           },
           "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "hash",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "set_commitment",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "hash",
+              "type": {
+                "bytes": 32
+              }
+            },
+            {
+              "name": "designated_executor",
+              "type": "address"
+            }
+          ],
+          "name": "set_commitment_with_executor",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "ops",
+              "type": {
+                "list": [
+                  "InterchainAccount.call_op"
+                ]
+              }
+            },
+            {
+              "name": "salt",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "reveal_and_execute",
+          "payable": true,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         }
       ],
       "kind": "contract_main",
@@ -135,12 +281,52 @@
             }
           },
           {
+            "name": "commitment",
+            "type": {
+              "option": [
+                {
+                  "bytes": 32
+                }
+              ]
+            }
+          },
+          {
+            "name": "executor",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
             "name": "deployed_block",
             "type": "int"
           }
         ]
       },
-      "typedefs": []
+      "typedefs": [
+        {
+          "name": "call_op",
+          "typedef": {
+            "variant": [
+              {
+                "SendAE": [
+                  "address",
+                  "int"
+                ]
+              },
+              {
+                "SendAEX9": [
+                  "address",
+                  "address",
+                  "int"
+                ]
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
     }
   }
 ]

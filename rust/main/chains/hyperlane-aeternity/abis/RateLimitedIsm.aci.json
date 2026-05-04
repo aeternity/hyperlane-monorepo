@@ -77,6 +77,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_3",
+              "type": "address"
             }
           ],
           "name": "post_dispatch",
@@ -219,6 +223,14 @@
                   "IPostDispatchHook"
                 ]
               }
+            },
+            {
+              "name": "_6",
+              "type": {
+                "option": [
+                  "address"
+                ]
+              }
             }
           ],
           "name": "dispatch",
@@ -309,6 +321,66 @@
           "payable": false,
           "returns": "unit",
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "recipient_ism_for",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_default_ism",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_default_hook",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_required_hook",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
         }
       ],
       "kind": "contract_interface",
@@ -403,6 +475,12 @@
           "vars": []
         }
       ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
     }
   },
   {

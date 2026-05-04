@@ -79,6 +79,12 @@
     }
   },
   {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [
@@ -87,6 +93,9 @@
               "int",
               "int"
             ]
+          },
+          {
+            "ConfigurationFrozen": []
           },
           {
             "OwnershipTransferStarted": [
@@ -181,6 +190,13 @@
           "stateful": false
         },
         {
+          "arguments": [],
+          "name": "get_max_validators",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
           "arguments": [
             {
               "name": "_message",
@@ -203,6 +219,22 @@
               "int"
             ]
           },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "freeze",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_frozen",
+          "payable": false,
+          "returns": "bool",
           "stateful": false
         },
         {
@@ -299,6 +331,10 @@
           {
             "name": "threshold",
             "type": "int"
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       },

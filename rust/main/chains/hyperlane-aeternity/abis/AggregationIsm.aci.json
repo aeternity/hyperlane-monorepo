@@ -59,6 +59,12 @@
     }
   },
   {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [
@@ -67,6 +73,9 @@
               "int",
               "int"
             ]
+          },
+          {
+            "ConfigurationFrozen": []
           },
           {
             "OwnershipTransferStarted": [
@@ -88,6 +97,18 @@
             {
               "name": "owner",
               "type": "address"
+            },
+            {
+              "name": "mods",
+              "type": {
+                "list": [
+                  "IInterchainSecurityModule"
+                ]
+              }
+            },
+            {
+              "name": "threshold",
+              "type": "int"
             }
           ],
           "name": "init",
@@ -167,6 +188,22 @@
           "stateful": false
         },
         {
+          "arguments": [],
+          "name": "freeze",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_frozen",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
           "arguments": [
             {
               "name": "new_owner",
@@ -234,6 +271,10 @@
           {
             "name": "threshold",
             "type": "int"
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       },

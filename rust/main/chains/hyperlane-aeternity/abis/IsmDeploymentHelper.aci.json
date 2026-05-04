@@ -52,6 +52,12 @@
             ]
           },
           {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
             "OwnershipTransferred": [
               "address",
               "address"
@@ -132,6 +138,17 @@
           "stateful": false
         },
         {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
           "arguments": [
             {
               "name": "new_owner",
@@ -139,6 +156,24 @@
             }
           ],
           "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
           "payable": false,
           "returns": {
             "tuple": []
@@ -154,6 +189,14 @@
           {
             "name": "owner",
             "type": "address"
+          },
+          {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
           },
           {
             "name": "deployments",

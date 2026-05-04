@@ -210,6 +210,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "refund_addr",
+              "type": "address"
             }
           ],
           "name": "post_dispatch",

@@ -34,12 +34,10 @@ describe('Mailbox query functions', () => {
         owner: mockMethod('ak_ownerAddr'),
         deployed_block: mockMethod(100),
         latest_dispatched_id: mockMethod(latestId),
+        get_max_message_body_bytes: mockMethod(0),
       });
 
-      const state = await getMailboxState(
-        createMockSdk(),
-        'ct_mailbox',
-      );
+      const state = await getMailboxState(createMockSdk(), 'ct_mailbox');
 
       expect(state.localDomain).to.equal(457);
       expect(state.nonce).to.equal(10);
@@ -49,6 +47,7 @@ describe('Mailbox query functions', () => {
       expect(state.owner).to.equal('ak_ownerAddr');
       expect(state.deployedBlock).to.equal(100);
       expect(state.latestDispatchedId).to.equal(latestId);
+      expect(state.maxMessageBodyBytes).to.equal(0);
     });
 
     it('handles undefined optional fields', async () => {
@@ -61,12 +60,10 @@ describe('Mailbox query functions', () => {
         owner: mockMethod('ak_owner'),
         deployed_block: mockMethod(1),
         latest_dispatched_id: mockMethod('0x00'),
+        get_max_message_body_bytes: mockMethod(0),
       });
 
-      const state = await getMailboxState(
-        createMockSdk(),
-        'ct_mailbox',
-      );
+      const state = await getMailboxState(createMockSdk(), 'ct_mailbox');
 
       expect(state.defaultIsm).to.equal('');
       expect(state.defaultHook).to.equal('');

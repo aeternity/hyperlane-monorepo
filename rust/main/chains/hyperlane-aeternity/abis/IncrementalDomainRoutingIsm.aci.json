@@ -102,6 +102,12 @@
     }
   },
   {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [
@@ -114,6 +120,9 @@
             "DefaultIsmSet": [
               "address"
             ]
+          },
+          {
+            "ConfigurationFrozen": []
           },
           {
             "OwnershipTransferStarted": [
@@ -249,6 +258,22 @@
           "stateful": false
         },
         {
+          "arguments": [],
+          "name": "freeze",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "is_frozen",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
           "arguments": [
             {
               "name": "new_owner",
@@ -329,6 +354,10 @@
                 "IInterchainSecurityModule"
               ]
             }
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       },

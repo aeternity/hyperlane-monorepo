@@ -30,6 +30,24 @@
               "address",
               "int"
             ]
+          },
+          {
+            "FeesCollected": [
+              "address",
+              "int"
+            ]
+          },
+          {
+            "OwnershipTransferStarted": [
+              "address",
+              "address"
+            ]
+          },
+          {
+            "OwnershipTransferred": [
+              "address",
+              "address"
+            ]
           }
         ]
       },
@@ -92,6 +110,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "refund_addr",
+              "type": "address"
             }
           ],
           "name": "post_dispatch",
@@ -183,6 +205,56 @@
           "payable": false,
           "returns": "address",
           "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_pending_owner",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_collected_fees",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_owner",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "accept_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "renounce_ownership",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         }
       ],
       "kind": "contract_main",
@@ -195,6 +267,14 @@
             "type": "address"
           },
           {
+            "name": "pending_owner",
+            "type": {
+              "option": [
+                "address"
+              ]
+            }
+          },
+          {
             "name": "beneficiary",
             "type": "address"
           },
@@ -204,6 +284,10 @@
           },
           {
             "name": "max_protocol_fee",
+            "type": "int"
+          },
+          {
+            "name": "collected_fees",
             "type": "int"
           }
         ]

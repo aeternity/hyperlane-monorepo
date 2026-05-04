@@ -61,8 +61,18 @@ describe('Aeternity types', () => {
       expect(AeternityIsmTypes.NOOP).to.equal('NoopIsm');
     });
 
-    it('has exactly 11 members', () => {
-      expect(Object.keys(AeternityIsmTypes)).to.have.length(11);
+    it('defines AMOUNT_ROUTING', () => {
+      expect(AeternityIsmTypes.AMOUNT_ROUTING).to.equal('AmountRoutingIsm');
+    });
+
+    it('defines TIMELOCK_DOMAIN_ROUTING', () => {
+      expect(AeternityIsmTypes.TIMELOCK_DOMAIN_ROUTING).to.equal(
+        'TimelockDomainRoutingIsm',
+      );
+    });
+
+    it('has exactly 13 members', () => {
+      expect(Object.keys(AeternityIsmTypes)).to.have.length(13);
     });
   });
 
@@ -103,8 +113,28 @@ describe('Aeternity types', () => {
       );
     });
 
-    it('has exactly 8 members', () => {
-      expect(Object.keys(AeternityHookTypes)).to.have.length(8);
+    it('defines RATE_LIMITED', () => {
+      expect(AeternityHookTypes.RATE_LIMITED).to.equal('RateLimitedHook');
+    });
+
+    it('defines AMOUNT_ROUTING', () => {
+      expect(AeternityHookTypes.AMOUNT_ROUTING).to.equal('AmountRoutingHook');
+    });
+
+    it('defines DESTINATION_RECIPIENT_ROUTING', () => {
+      expect(AeternityHookTypes.DESTINATION_RECIPIENT_ROUTING).to.equal(
+        'DestinationRecipientRoutingHook',
+      );
+    });
+
+    it('defines OFFCHAIN_QUOTED_IGP', () => {
+      expect(AeternityHookTypes.OFFCHAIN_QUOTED_IGP).to.equal(
+        'OffchainQuotedIGP',
+      );
+    });
+
+    it('has exactly 12 members', () => {
+      expect(Object.keys(AeternityHookTypes)).to.have.length(12);
     });
   });
 

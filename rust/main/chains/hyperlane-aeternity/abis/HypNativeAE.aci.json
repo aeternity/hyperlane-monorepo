@@ -77,6 +77,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_3",
+              "type": "address"
             }
           ],
           "name": "post_dispatch",
@@ -219,6 +223,14 @@
                   "IPostDispatchHook"
                 ]
               }
+            },
+            {
+              "name": "_6",
+              "type": {
+                "option": [
+                  "address"
+                ]
+              }
             }
           ],
           "name": "dispatch",
@@ -309,6 +321,66 @@
           "payable": false,
           "returns": "unit",
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "recipient_ism_for",
+          "payable": false,
+          "returns": "IInterchainSecurityModule",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IInterchainSecurityModule"
+            }
+          ],
+          "name": "set_default_ism",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_default_hook",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "IPostDispatchHook"
+            }
+          ],
+          "name": "set_required_hook",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "transfer_ownership",
+          "payable": false,
+          "returns": "unit",
+          "stateful": true
         }
       ],
       "kind": "contract_interface",
@@ -493,12 +565,6 @@
           },
           {
             "FeeClaimed": [
-              "address",
-              "int"
-            ]
-          },
-          {
-            "NativeRescued": [
               "address",
               "int"
             ]
@@ -851,6 +917,17 @@
         },
         {
           "arguments": [],
+          "name": "get_token",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
           "name": "get_enrolled_domains",
           "payable": false,
           "returns": {
@@ -858,6 +935,13 @@
               "int"
             ]
           },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "min_transfer_amount",
+          "payable": false,
+          "returns": "int",
           "stateful": false
         },
         {
@@ -970,24 +1054,6 @@
             "tuple": []
           },
           "stateful": true
-        },
-        {
-          "arguments": [
-            {
-              "name": "amount",
-              "type": "int"
-            },
-            {
-              "name": "recipient",
-              "type": "address"
-            }
-          ],
-          "name": "rescue_native",
-          "payable": false,
-          "returns": {
-            "tuple": []
-          },
-          "stateful": true
         }
       ],
       "kind": "contract_main",
@@ -1070,6 +1136,10 @@
           {
             "name": "deployed_block",
             "type": "int"
+          },
+          {
+            "name": "reentrancy_lock",
+            "type": "bool"
           }
         ]
       },

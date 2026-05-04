@@ -1,5 +1,11 @@
 [
   {
+    "namespace": {
+      "name": "IsmType",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "functions": [
         {

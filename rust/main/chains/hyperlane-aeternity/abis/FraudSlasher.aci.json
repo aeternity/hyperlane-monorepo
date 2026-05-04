@@ -3,6 +3,13 @@
     "contract": {
       "functions": [
         {
+          "arguments": [],
+          "name": "owner",
+          "payable": false,
+          "returns": "address",
+          "stateful": false
+        },
+        {
           "arguments": [
             {
               "name": "_1",
@@ -18,6 +25,30 @@
             }
           ],
           "name": "slash",
+          "payable": false,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "freeze",
+          "payable": false,
+          "returns": "unit",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "_1",
+              "type": "address"
+            }
+          ],
+          "name": "unfreeze",
           "payable": false,
           "returns": "unit",
           "stateful": false
@@ -180,6 +211,37 @@
               "address",
               "address"
             ]
+          },
+          {
+            "ValidatorFrozen": [
+              "address",
+              {
+                "bytes": 32
+              }
+            ]
+          },
+          {
+            "SlashCancelled": [
+              {
+                "bytes": 32
+              },
+              "address"
+            ]
+          },
+          {
+            "FraudProofSubmitted": [
+              "address",
+              {
+                "bytes": 32
+              },
+              "int"
+            ]
+          },
+          {
+            "DisputeWindowUpdated": [
+              "int",
+              "int"
+            ]
           }
         ]
       },
@@ -196,6 +258,14 @@
             },
             {
               "name": "slash_amount",
+              "type": "int"
+            },
+            {
+              "name": "dispute_window",
+              "type": "int"
+            },
+            {
+              "name": "min_dispute_window",
               "type": "int"
             }
           ],
@@ -301,11 +371,57 @@
         {
           "arguments": [
             {
+              "name": "proof_id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "finalize_slash",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "proof_id",
+              "type": {
+                "bytes": 32
+              }
+            }
+          ],
+          "name": "cancel_slash",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
               "name": "new_amount",
               "type": "int"
             }
           ],
           "name": "set_slash_amount",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "window",
+              "type": "int"
+            }
+          ],
+          "name": "set_dispute_window",
           "payable": false,
           "returns": {
             "tuple": []
@@ -320,6 +436,20 @@
           "stateful": false
         },
         {
+          "arguments": [],
+          "name": "get_dispute_window",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_min_dispute_window",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
           "arguments": [
             {
               "name": "proof_id",
@@ -329,6 +459,18 @@
             }
           ],
           "name": "is_proof_slashed",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "addr",
+              "type": "address"
+            }
+          ],
+          "name": "is_validator_frozen",
           "payable": false,
           "returns": "bool",
           "stateful": false
@@ -414,10 +556,85 @@
           {
             "name": "deployed_block",
             "type": "int"
+          },
+          {
+            "name": "min_dispute_window",
+            "type": "int"
+          },
+          {
+            "name": "dispute_window",
+            "type": "int"
+          },
+          {
+            "name": "pending_slashes",
+            "type": {
+              "map": [
+                {
+                  "bytes": 32
+                },
+                "FraudSlasher.pending_slash"
+              ]
+            }
+          },
+          {
+            "name": "frozen_validators",
+            "type": {
+              "map": [
+                "address",
+                "bool"
+              ]
+            }
           }
         ]
       },
-      "typedefs": []
+      "typedefs": [
+        {
+          "name": "pending_slash",
+          "typedef": {
+            "record": [
+              {
+                "name": "validator",
+                "type": "address"
+              },
+              {
+                "name": "reporter",
+                "type": "address"
+              },
+              {
+                "name": "proof_id",
+                "type": {
+                  "bytes": 32
+                }
+              },
+              {
+                "name": "fraud_type",
+                "type": "int"
+              },
+              {
+                "name": "amount",
+                "type": "int"
+              },
+              {
+                "name": "frozen_at",
+                "type": "int"
+              },
+              {
+                "name": "finalize_after",
+                "type": "int"
+              },
+              {
+                "name": "finalized",
+                "type": "bool"
+              },
+              {
+                "name": "cancelled",
+                "type": "bool"
+              }
+            ]
+          },
+          "vars": []
+        }
+      ]
     }
   }
 ]

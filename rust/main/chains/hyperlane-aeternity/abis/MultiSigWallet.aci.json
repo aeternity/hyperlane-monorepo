@@ -1,39 +1,125 @@
 [
   {
+    "namespace": {
+      "name": "ListInternal",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "List",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Pair",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Set",
+      "typedefs": [
+        {
+          "name": "set",
+          "typedef": {
+            "record": [
+              {
+                "name": "to_map",
+                "type": {
+                  "map": [
+                    "'a",
+                    "unit"
+                  ]
+                }
+              }
+            ]
+          },
+          "vars": [
+            {
+              "name": "'a"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "namespace": {
+      "name": "String",
+      "typedefs": []
+    }
+  },
+  {
     "contract": {
       "event": {
         "variant": [
           {
-            "TransactionSubmitted": [
-              "int",
+            "TxProposed": [
+              "hash",
               "address",
               "int"
             ]
           },
           {
-            "TransactionConfirmed": [
-              "int",
+            "TxConfirmed": [
+              "hash",
               "address"
             ]
           },
           {
-            "TransactionRevoked": [
-              "int",
+            "TxRefused": [
+              "hash",
               "address"
             ]
           },
           {
-            "TransactionExecuted": [
+            "TxConsensusReached": [
+              "hash"
+            ]
+          },
+          {
+            "TxConsensusLost": [
+              "hash"
+            ]
+          },
+          {
+            "TxRevoked": [
+              "hash",
+              "address"
+            ]
+          },
+          {
+            "TxAuthorized": [
+              "hash"
+            ]
+          },
+          {
+            "FeeProtectionUpdated": [
+              "address",
+              "int",
               "int"
             ]
           },
           {
-            "OwnerAdded": [
+            "FeeProtectionDisabled": [
               "address"
             ]
           },
           {
-            "OwnerRemoved": [
+            "SignerAdded": [
+              "address"
+            ]
+          },
+          {
+            "SignerRemoved": [
               "address"
             ]
           },
@@ -49,16 +135,16 @@
         {
           "arguments": [
             {
-              "name": "owners",
+              "name": "confirmations_required",
+              "type": "int"
+            },
+            {
+              "name": "signers",
               "type": {
-                "list": [
+                "Set.set": [
                   "address"
                 ]
               }
-            },
-            {
-              "name": "threshold",
-              "type": "int"
             }
           ],
           "name": "init",
@@ -69,30 +155,38 @@
         {
           "arguments": [
             {
-              "name": "target",
-              "type": "address"
-            },
-            {
-              "name": "value",
+              "name": "nonce",
               "type": "int"
-            },
-            {
-              "name": "data",
-              "type": {
-                "bytes": "any"
-              }
             }
           ],
-          "name": "submit",
+          "name": "authorize",
           "payable": false,
-          "returns": "int",
+          "returns": "bool",
           "stateful": true
         },
         {
           "arguments": [
             {
-              "name": "tx_id",
-              "type": "int"
+              "name": "tx_hash",
+              "type": "hash"
+            },
+            {
+              "name": "ttl",
+              "type": "Chain.ttl"
+            }
+          ],
+          "name": "propose",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "tx_hash",
+              "type": "hash"
             }
           ],
           "name": "confirm",
@@ -105,8 +199,22 @@
         {
           "arguments": [
             {
-              "name": "tx_id",
-              "type": "int"
+              "name": "tx_hash",
+              "type": "hash"
+            }
+          ],
+          "name": "refuse",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "tx_hash",
+              "type": "hash"
             }
           ],
           "name": "revoke",
@@ -119,11 +227,11 @@
         {
           "arguments": [
             {
-              "name": "tx_id",
-              "type": "int"
+              "name": "fee_protection",
+              "type": "MultiSigWallet.fee_protection"
             }
           ],
-          "name": "execute",
+          "name": "update_fee_protection",
           "payable": false,
           "returns": {
             "tuple": []
@@ -131,59 +239,49 @@
           "stateful": true
         },
         {
-          "arguments": [
-            {
-              "name": "tx_id",
-              "type": "int"
-            }
-          ],
-          "name": "get_transaction",
+          "arguments": [],
+          "name": "disable_fee_protection",
           "payable": false,
           "returns": {
-            "option": [
-              "MultiSigWallet.transaction"
-            ]
+            "tuple": []
           },
-          "stateful": false
+          "stateful": true
         },
         {
-          "arguments": [
-            {
-              "name": "tx_id",
-              "type": "int"
-            },
-            {
-              "name": "owner",
-              "type": "address"
-            }
-          ],
-          "name": "is_confirmed",
+          "arguments": [],
+          "name": "get_version",
           "payable": false,
-          "returns": "bool",
+          "returns": "string",
           "stateful": false
         },
         {
-          "arguments": [
-            {
-              "name": "addr",
-              "type": "address"
-            }
-          ],
-          "name": "is_owner",
+          "arguments": [],
+          "name": "is_fee_protection_enabled",
           "payable": false,
           "returns": "bool",
           "stateful": false
         },
         {
           "arguments": [],
-          "name": "get_threshold",
+          "name": "get_fee_protection",
+          "payable": false,
+          "returns": {
+            "option": [
+              "MultiSigWallet.fee_protection"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "get_nonce",
           "payable": false,
           "returns": "int",
           "stateful": false
         },
         {
           "arguments": [],
-          "name": "get_owners",
+          "name": "get_signers",
           "payable": false,
           "returns": {
             "list": [
@@ -194,10 +292,52 @@
         },
         {
           "arguments": [],
-          "name": "get_tx_count",
+          "name": "get_consensus_info",
           "payable": false,
-          "returns": "int",
+          "returns": "MultiSigWallet.consensus_info",
           "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_signer",
+              "type": "address"
+            }
+          ],
+          "name": "add_signer",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "signer",
+              "type": "address"
+            }
+          ],
+          "name": "remove_signer",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "new_threshold",
+              "type": "int"
+            }
+          ],
+          "name": "change_threshold",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
         }
       ],
       "kind": "contract_main",
@@ -206,38 +346,44 @@
       "state": {
         "record": [
           {
-            "name": "owners",
+            "name": "signers",
             "type": {
-              "map": [
-                "address",
-                "bool"
-              ]
-            }
-          },
-          {
-            "name": "owner_list",
-            "type": {
-              "list": [
+              "Set.set": [
                 "address"
               ]
             }
           },
           {
-            "name": "threshold",
+            "name": "confirmations_required",
             "type": "int"
           },
           {
-            "name": "tx_count",
-            "type": "int"
-          },
-          {
-            "name": "transactions",
+            "name": "current_tx",
             "type": {
-              "map": [
-                "int",
+              "option": [
                 "MultiSigWallet.transaction"
               ]
             }
+          },
+          {
+            "name": "fee_protection",
+            "type": {
+              "option": [
+                "MultiSigWallet.fee_protection"
+              ]
+            }
+          },
+          {
+            "name": "fee_protection_enabled",
+            "type": "bool"
+          },
+          {
+            "name": "nonce",
+            "type": "int"
+          },
+          {
+            "name": "version",
+            "type": "string"
           }
         ]
       },
@@ -247,34 +393,103 @@
           "typedef": {
             "record": [
               {
-                "name": "target",
-                "type": "address"
+                "name": "tx_hash",
+                "type": "hash"
               },
               {
-                "name": "value",
+                "name": "expires_at",
                 "type": "int"
               },
               {
-                "name": "data",
-                "type": {
-                  "bytes": "any"
-                }
+                "name": "proposed_by",
+                "type": "address"
               },
               {
-                "name": "executed",
-                "type": "bool"
-              },
-              {
-                "name": "confirmations",
+                "name": "confirmed_by",
                 "type": {
-                  "map": [
-                    "address",
-                    "bool"
+                  "Set.set": [
+                    "address"
                   ]
                 }
               },
               {
-                "name": "confirm_count",
+                "name": "refused_by",
+                "type": {
+                  "Set.set": [
+                    "address"
+                  ]
+                }
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "consensus_info",
+          "typedef": {
+            "record": [
+              {
+                "name": "tx_hash",
+                "type": {
+                  "option": [
+                    "hash"
+                  ]
+                }
+              },
+              {
+                "name": "confirmations_required",
+                "type": "int"
+              },
+              {
+                "name": "confirmed_by",
+                "type": {
+                  "list": [
+                    "address"
+                  ]
+                }
+              },
+              {
+                "name": "refused_by",
+                "type": {
+                  "list": [
+                    "address"
+                  ]
+                }
+              },
+              {
+                "name": "has_consensus",
+                "type": "bool"
+              },
+              {
+                "name": "expiration_height",
+                "type": "int"
+              },
+              {
+                "name": "expired",
+                "type": "bool"
+              },
+              {
+                "name": "proposed_by",
+                "type": {
+                  "option": [
+                    "address"
+                  ]
+                }
+              }
+            ]
+          },
+          "vars": []
+        },
+        {
+          "name": "fee_protection",
+          "typedef": {
+            "record": [
+              {
+                "name": "max_fee",
+                "type": "int"
+              },
+              {
+                "name": "max_gasprice",
                 "type": "int"
               }
             ]

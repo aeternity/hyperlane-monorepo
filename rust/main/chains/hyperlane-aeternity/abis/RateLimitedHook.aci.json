@@ -178,6 +178,10 @@
               "type": {
                 "bytes": "any"
               }
+            },
+            {
+              "name": "_refund_addr",
+              "type": "address"
             }
           ],
           "name": "post_dispatch",
